@@ -16,7 +16,7 @@ struct TippCard: View {
     //var cardColor: String
     
     var cardColors2: [String]  = [
-        "cardgreen2", "cardblue2", "cardyellow2", "cardpurple2", "cardorange2", "cardred2", "cardturqouise2", "cardyelgre2", "cardpink2"
+        "cardgreen2", "cardblue2", "cardyellow2", "cardpurple2", "cardorange2", "cardred2", "cardturqouise2", "cardyelgre2", "cardpink2g"
     ]
     
     var body: some View {
