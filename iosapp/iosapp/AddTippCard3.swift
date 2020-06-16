@@ -11,87 +11,107 @@ import SwiftUI
 struct AddTippCard3: View {
     @ObservedObject private var keyboard = KeyboardResponder()
     
-    
     var level: String
     var category: String
     
     @State var tippTitle: String = ""
     @State var isFocused = false
+    @Binding var showAddTipps: Bool
     
     func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
     
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
+    @Environment(\.presentationMode) private var presentationMode
     
     var body: some View {
-        ZStack {
-            VStack {
-                HStack {
-                    Spacer()
-                    Text("3/5").bold().padding(20).foregroundColor(Color.secondary)
-                }
+        VStack {
+            HStack {
+                Text("Tipp posten")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .padding(.leading, 20)
+                
                 Spacer()
-            }
-            VStack {
-                VStack {
-                    Image(uiImage: #imageLiteral(resourceName: "Working"))
-                        .resizable()
-                        .scaledToFit()
-                        .animation(.easeInOut)
-                    Text("Wähle einen Titel für deinen Tipp")
+                Button(action: {
+                    self.showAddTipps = false
+                }) {
+                    Image(systemName: "xmark.circle")
                         .font(.title)
-                        .fontWeight(.medium)
-                        .multilineTextAlignment(.center)
-                        .padding()
-                        .animation(.easeInOut)
-                    VStack {
-                        HStack (alignment: .center){
-                            Section {
-                                TextField("Dein Tipp", text: $tippTitle)
-                                    .font(.system(size: 18))
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                                    .onTapGesture {
-                                        self.isFocused = true
-                                }
-                            }
-                        }
-                    }.padding(.horizontal)
-                        .edgesIgnoringSafeArea(.bottom)
-                        .animation(.easeInOut)
-                }.offset(y: isFocused ? -140 : 0)
-                    .animation(.easeInOut)
-                Spacer()
-                HStack {
-                    Button (action: {
-                        self.mode.wrappedValue.dismiss()
-                    }) {
-                        Image(systemName: "arrow.left")
-                            .font(.headline)
-                            .padding(5)
-                            .frame(width: 80, height: 40)
+                        .padding(10)
+                        .padding(.trailing, 15)
+                }
+            }
+            .padding(.top, 30)
+            ZStack {
+                VStack {
+                    HStack {
+                        Spacer()
+                        Text("3/5").bold().padding(20).foregroundColor(Color.secondary)
                     }
                     Spacer()
-                    NavigationLink (destination: AddTippCard4(category: category, level: level, tippTitel: tippTitle)
-                        .navigationBarTitle("")
-                        .navigationBarHidden(true)
-                        .navigationBarBackButtonHidden(true)){
-                            Image(systemName: "arrow.right")
+                }
+                VStack {
+                    VStack {
+                        Image(uiImage: #imageLiteral(resourceName: "Woman Carrying Browser Tab"))
+                            .resizable()
+                            .scaledToFit()
+                            .animation(.easeInOut)
+                        Text("Wähle einen Titel für deinen Tipp")
+                            .font(.title)
+                            .fontWeight(.medium)
+                            .multilineTextAlignment(.center)
+                            .padding()
+                            .animation(.easeInOut)
+                        VStack {
+                            HStack (alignment: .center){
+                                Section {
+                                    TextField("Dein Tipp", text: $tippTitle)
+                                        .font(.system(size: 18))
+                                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                                        .onTapGesture {
+                                            self.isFocused = true
+                                    }
+                                }
+                            }
+                        }.padding(.horizontal)
+                            .edgesIgnoringSafeArea(.bottom)
+                            .animation(.easeInOut)
+                    }.offset(y: isFocused ? -140 : 0)
+                        .animation(.easeInOut)
+                    Spacer()
+                    HStack {
+                        Button (action: {
+                            self.mode.wrappedValue.dismiss()
+                        }) {
+                            Image(systemName: "arrow.left")
                                 .font(.headline)
-                                .accentColor(Color(!tippTitle.isEmpty ? "white" :"white"))
                                 .padding(5)
                                 .frame(width: 80, height: 40)
-                                .background(Color(!tippTitle.isEmpty ? "blue" : "blueDisabled"))
-                                .cornerRadius(15)
-                    }.disabled(tippTitle.isEmpty)
-                }.offset(y: isFocused ? -300 : 0)
-                    .animation(.easeInOut)
-                    .padding(20)
-            }.accentColor(Color("black"))
-        }.onTapGesture {
-            self.isFocused = false
-            self.hideKeyboard()
-        }
+                        }
+                        Spacer()
+                        NavigationLink (destination: AddTippCard4(category: category, level: level, tippTitel: tippTitle, showAddTipps: $showAddTipps)
+                            .navigationBarTitle("")
+                            .navigationBarHidden(true)
+                            .navigationBarBackButtonHidden(true)){
+                                Image(systemName: "arrow.right")
+                                    .font(.headline)
+                                    .accentColor(Color(!tippTitle.isEmpty ? "white" :"white"))
+                                    .padding(5)
+                                    .frame(width: 80, height: 40)
+                                    .background(Color(!tippTitle.isEmpty ? "blue" : "blueDisabled"))
+                                    .cornerRadius(15)
+                        }.disabled(tippTitle.isEmpty)
+                    }.offset(y: isFocused ? -300 : 0)
+                        .animation(.easeInOut)
+                        .padding(20)
+                }.accentColor(Color("black"))
+            }.onTapGesture {
+                self.isFocused = false
+                self.hideKeyboard()
+            }
+        }.animation(.spring())
     }
 }
 
@@ -112,6 +132,6 @@ struct DismissingKeyboard: ViewModifier {
 
 struct AddTippCard3_Previews: PreviewProvider {
     static var previews: some View {
-        AddTippCard3(level: "Level", category: "Nahrung")
+        AddTippCard3(level: "Level", category: "Nahrung", showAddTipps: .constant(true))
     }
 }

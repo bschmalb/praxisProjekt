@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		B70BF79F2487EA8000B4C911 /* ProfilView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B70BF79E2487EA8000B4C911 /* ProfilView.swift */; };
 		B70BF7A12487EAC200B4C911 /* TagebuchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B70BF7A02487EAC200B4C911 /* TagebuchView.swift */; };
-		B70BF7A624880B9500B4C911 /* FilterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B70BF7A524880B9500B4C911 /* FilterView.swift */; };
 		B712CD14248973CD00A883A1 /* SwiftUIPager in Frameworks */ = {isa = PBXBuildFile; productRef = B712CD13248973CD00A883A1 /* SwiftUIPager */; };
 		B712CD162489747800A883A1 /* TippCardsPager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B712CD152489747800A883A1 /* TippCardsPager.swift */; };
 		B725218A248FDF9C00C43507 /* TippCardList.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7252189248FDF9C00C43507 /* TippCardList.swift */; };
@@ -27,6 +26,10 @@
 		B7846970248D2E28000A4331 /* AddTippCard5.swift in Sources */ = {isa = PBXBuildFile; fileRef = B784696F248D2E28000A4331 /* AddTippCard5.swift */; };
 		B7846972248D7B6C000A4331 /* TippDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7846971248D7B6C000A4331 /* TippDataStore.swift */; };
 		B7846974248D7D3D000A4331 /* TippCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7846973248D7D3D000A4331 /* TippCard.swift */; };
+		B7919AEF24981BBD00014240 /* success.json in Resources */ = {isa = PBXBuildFile; fileRef = B7919AEE24981BBD00014240 /* success.json */; };
+		B7919AF224981C1900014240 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = B7919AF124981C1900014240 /* Lottie */; };
+		B7919AF424981C5B00014240 /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7919AF324981C5B00014240 /* LottieView.swift */; };
+		B7919AF624981E3F00014240 /* SuccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7919AF524981E3F00014240 /* SuccessView.swift */; };
 		B7A8CBDC242C10C50036FD6E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A8CBDB242C10C50036FD6E /* AppDelegate.swift */; };
 		B7A8CBDE242C10C50036FD6E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A8CBDD242C10C50036FD6E /* SceneDelegate.swift */; };
 		B7A8CBE0242C10C50036FD6E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A8CBDF242C10C50036FD6E /* ContentView.swift */; };
@@ -36,6 +39,8 @@
 		B7A8CBF3242C10C80036FD6E /* iosappTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A8CBF2242C10C80036FD6E /* iosappTests.swift */; };
 		B7A8CBFE242C10C80036FD6E /* iosappUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A8CBFD242C10C80036FD6E /* iosappUITests.swift */; };
 		B7CB3F28243A6D6600E4A0C7 /* TippData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7CB3F27243A6D6600E4A0C7 /* TippData.swift */; };
+		B7CF0F6D2497C02C00595EB2 /* RateTippData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7CF0F6C2497C02C00595EB2 /* RateTippData.swift */; };
+		B7CF0F6F2497C0C300595EB2 /* RateTippDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7CF0F6E2497C0C300595EB2 /* RateTippDataStore.swift */; };
 		B7CF27B6249035DA009058E8 /* RateTippView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7CF27B5249035DA009058E8 /* RateTippView.swift */; };
 /* End PBXBuildFile section */
 
@@ -59,7 +64,6 @@
 /* Begin PBXFileReference section */
 		B70BF79E2487EA8000B4C911 /* ProfilView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilView.swift; sourceTree = "<group>"; };
 		B70BF7A02487EAC200B4C911 /* TagebuchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagebuchView.swift; sourceTree = "<group>"; };
-		B70BF7A524880B9500B4C911 /* FilterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterView.swift; sourceTree = "<group>"; };
 		B712CD152489747800A883A1 /* TippCardsPager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippCardsPager.swift; sourceTree = "<group>"; };
 		B7252189248FDF9C00C43507 /* TippCardList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippCardList.swift; sourceTree = "<group>"; };
 		B7481A38248AC9B900C4CCF1 /* AddTippView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTippView.swift; sourceTree = "<group>"; };
@@ -76,7 +80,10 @@
 		B784696F248D2E28000A4331 /* AddTippCard5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTippCard5.swift; sourceTree = "<group>"; };
 		B7846971248D7B6C000A4331 /* TippDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippDataStore.swift; sourceTree = "<group>"; };
 		B7846973248D7D3D000A4331 /* TippCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippCard.swift; sourceTree = "<group>"; };
-		B7A8CBD8242C10C50036FD6E /* iosapp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iosapp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B7919AEE24981BBD00014240 /* success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = success.json; sourceTree = "<group>"; };
+		B7919AF324981C5B00014240 /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
+		B7919AF524981E3F00014240 /* SuccessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessView.swift; sourceTree = "<group>"; };
+		B7A8CBD8242C10C50036FD6E /* SustainableLife.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SustainableLife.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7A8CBDB242C10C50036FD6E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B7A8CBDD242C10C50036FD6E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		B7A8CBDF242C10C50036FD6E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -91,6 +98,8 @@
 		B7A8CBFD242C10C80036FD6E /* iosappUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iosappUITests.swift; sourceTree = "<group>"; };
 		B7A8CBFF242C10C80036FD6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B7CB3F27243A6D6600E4A0C7 /* TippData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippData.swift; sourceTree = "<group>"; };
+		B7CF0F6C2497C02C00595EB2 /* RateTippData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateTippData.swift; sourceTree = "<group>"; };
+		B7CF0F6E2497C0C300595EB2 /* RateTippDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateTippDataStore.swift; sourceTree = "<group>"; };
 		B7CF27B5249035DA009058E8 /* RateTippView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateTippView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -100,6 +109,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B712CD14248973CD00A883A1 /* SwiftUIPager in Frameworks */,
+				B7919AF224981C1900014240 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,11 +135,10 @@
 			children = (
 				B7481A38248AC9B900C4CCF1 /* AddTippView.swift */,
 				B7481A3A248ACDC700C4CCF1 /* AddTippCards.swift */,
-				B784696F248D2E28000A4331 /* AddTippCard5.swift */,
 				B7494058248CF9E700933A37 /* AddTippCard2.swift */,
 				B7846969248D0A21000A4331 /* AddTippCard3.swift */,
 				B784696D248D2C13000A4331 /* AddTippCard4.swift */,
-				B7CF27B5249035DA009058E8 /* RateTippView.swift */,
+				B784696F248D2E28000A4331 /* AddTippCard5.swift */,
 			);
 			name = AddTipp;
 			sourceTree = "<group>";
@@ -137,9 +146,6 @@
 		B7649E3524912F4E0079984A /* Tipps */ = {
 			isa = PBXGroup;
 			children = (
-				B7846971248D7B6C000A4331 /* TippDataStore.swift */,
-				B7649E302490F3AB0079984A /* TippController.swift */,
-				B7CB3F27243A6D6600E4A0C7 /* TippData.swift */,
 				B712CD152489747800A883A1 /* TippCardsPager.swift */,
 				B7649E32249105540079984A /* TippView.swift */,
 				B7846973248D7D3D000A4331 /* TippCard.swift */,
@@ -147,6 +153,14 @@
 				B77784E4248BDB7500C58AEE /* TippCardsCustom.swift */,
 			);
 			path = Tipps;
+			sourceTree = "<group>";
+		};
+		B7919AED24981BBC00014240 /* Lottie */ = {
+			isa = PBXGroup;
+			children = (
+				B7919AEE24981BBD00014240 /* success.json */,
+			);
+			path = Lottie;
 			sourceTree = "<group>";
 		};
 		B7A8CBCF242C10C50036FD6E = {
@@ -162,7 +176,7 @@
 		B7A8CBD9242C10C50036FD6E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B7A8CBD8242C10C50036FD6E /* iosapp.app */,
+				B7A8CBD8242C10C50036FD6E /* SustainableLife.app */,
 				B7A8CBEE242C10C80036FD6E /* iosappTests.xctest */,
 				B7A8CBF9242C10C80036FD6E /* iosappUITests.xctest */,
 			);
@@ -176,11 +190,15 @@
 				B7A8CBDD242C10C50036FD6E /* SceneDelegate.swift */,
 				B7494057248CF98400933A37 /* AddTipp */,
 				B7A8CBDF242C10C50036FD6E /* ContentView.swift */,
-				B70BF7A524880B9500B4C911 /* FilterView.swift */,
+				B7CF27B5249035DA009058E8 /* RateTippView.swift */,
+				B7BF71BD2497CF76007A3A92 /* Data */,
 				B7649E3524912F4E0079984A /* Tipps */,
 				B77784E8248BDC7700C58AEE /* PageView.swift */,
 				B77784E6248BDBA600C58AEE /* PageViewController.swift */,
+				B7919AF324981C5B00014240 /* LottieView.swift */,
+				B7919AF524981E3F00014240 /* SuccessView.swift */,
 				B7A8CBE1242C10C80036FD6E /* Assets.xcassets */,
+				B7919AED24981BBC00014240 /* Lottie */,
 				B70BF79E2487EA8000B4C911 /* ProfilView.swift */,
 				B7A8CBE6242C10C80036FD6E /* LaunchScreen.storyboard */,
 				B70BF7A02487EAC200B4C911 /* TagebuchView.swift */,
@@ -217,6 +235,18 @@
 			path = iosappUITests;
 			sourceTree = "<group>";
 		};
+		B7BF71BD2497CF76007A3A92 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				B7CF0F6E2497C0C300595EB2 /* RateTippDataStore.swift */,
+				B7CF0F6C2497C02C00595EB2 /* RateTippData.swift */,
+				B7846971248D7B6C000A4331 /* TippDataStore.swift */,
+				B7649E302490F3AB0079984A /* TippController.swift */,
+				B7CB3F27243A6D6600E4A0C7 /* TippData.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -235,9 +265,10 @@
 			name = iosapp;
 			packageProductDependencies = (
 				B712CD13248973CD00A883A1 /* SwiftUIPager */,
+				B7919AF124981C1900014240 /* Lottie */,
 			);
 			productName = iosapp;
-			productReference = B7A8CBD8242C10C50036FD6E /* iosapp.app */;
+			productReference = B7A8CBD8242C10C50036FD6E /* SustainableLife.app */;
 			productType = "com.apple.product-type.application";
 		};
 		B7A8CBED242C10C80036FD6E /* iosappTests */ = {
@@ -310,6 +341,7 @@
 			mainGroup = B7A8CBCF242C10C50036FD6E;
 			packageReferences = (
 				B712CD12248973CD00A883A1 /* XCRemoteSwiftPackageReference "SwiftUIPager" */,
+				B7919AF024981C1900014240 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 			);
 			productRefGroup = B7A8CBD9242C10C50036FD6E /* Products */;
 			projectDirPath = "";
@@ -328,6 +360,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B7A8CBE8242C10C80036FD6E /* LaunchScreen.storyboard in Resources */,
+				B7919AEF24981BBD00014240 /* success.json in Resources */,
 				B7A8CBE5242C10C80036FD6E /* Preview Assets.xcassets in Resources */,
 				B7A8CBE2242C10C80036FD6E /* Assets.xcassets in Resources */,
 			);
@@ -354,14 +387,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B70BF7A624880B9500B4C911 /* FilterView.swift in Sources */,
 				B7649E33249105540079984A /* TippView.swift in Sources */,
 				B7A8CBDC242C10C50036FD6E /* AppDelegate.swift in Sources */,
 				B77784E5248BDB7500C58AEE /* TippCardsCustom.swift in Sources */,
 				B77784E7248BDBA600C58AEE /* PageViewController.swift in Sources */,
+				B7919AF624981E3F00014240 /* SuccessView.swift in Sources */,
 				B77784E9248BDC7700C58AEE /* PageView.swift in Sources */,
 				B784696C248D25BD000A4331 /* KeyboardResponder.swift in Sources */,
 				B7846970248D2E28000A4331 /* AddTippCard5.swift in Sources */,
+				B7CF0F6F2497C0C300595EB2 /* RateTippDataStore.swift in Sources */,
 				B784696E248D2C13000A4331 /* AddTippCard4.swift in Sources */,
 				B7481A3B248ACDC700C4CCF1 /* AddTippCards.swift in Sources */,
 				B725218A248FDF9C00C43507 /* TippCardList.swift in Sources */,
@@ -374,6 +408,8 @@
 				B712CD162489747800A883A1 /* TippCardsPager.swift in Sources */,
 				B70BF7A12487EAC200B4C911 /* TagebuchView.swift in Sources */,
 				B7494059248CF9E700933A37 /* AddTippCard2.swift in Sources */,
+				B7CF0F6D2497C02C00595EB2 /* RateTippData.swift in Sources */,
+				B7919AF424981C5B00014240 /* LottieView.swift in Sources */,
 				B7A8CBE0242C10C50036FD6E /* ContentView.swift in Sources */,
 				B7CF27B6249035DA009058E8 /* RateTippView.swift in Sources */,
 				B7CB3F28243A6D6600E4A0C7 /* TippData.swift in Sources */,
@@ -545,6 +581,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_ASSET_PATHS = "\"iosapp/Preview Content\"";
 				DEVELOPMENT_TEAM = BU3T4Y74PR;
 				ENABLE_PREVIEWS = YES;
@@ -554,7 +591,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.bastianschmalbach.iosapp;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = SustainableLife;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -565,6 +602,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_ASSET_PATHS = "\"iosapp/Preview Content\"";
 				DEVELOPMENT_TEAM = BU3T4Y74PR;
 				ENABLE_PREVIEWS = YES;
@@ -574,7 +612,7 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.bastianschmalbach.iosapp;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = SustainableLife;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -714,6 +752,14 @@
 				minimumVersion = 1.6.0;
 			};
 		};
+		B7919AF024981C1900014240 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.1.8;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -721,6 +767,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B712CD12248973CD00A883A1 /* XCRemoteSwiftPackageReference "SwiftUIPager" */;
 			productName = SwiftUIPager;
+		};
+		B7919AF124981C1900014240 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B7919AF024981C1900014240 /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

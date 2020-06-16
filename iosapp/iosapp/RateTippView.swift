@@ -10,59 +10,139 @@ import SwiftUI
 
 struct RateTippView: View {
     
-    @ObservedObject var store = TippDataStore()
-
+    @ObservedObject var store2 = RateTippDataStore()
+    
+    //    var bewertenTipps: [Tipp] = store.tipps
+    
+    @State var rateTipps: [Tipp] = []
+    
     @State private var showAddTipps2 = false
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     @State var counter = 0
+    @State var thumbUp = false
+    @State var thumbDown = false
+    @State var endReached = false
+    
     
     var body: some View {
-        VStack {
-            HStack {
-                Button (action: {
-                    self.mode.wrappedValue.dismiss()
-                }) {
-                    Image(systemName: "arrow.left.circle")
-                        .accentColor(.primary)
+        NavigationView {
+            VStack {
+                HStack {
+                    Button (action: {
+                        self.mode.wrappedValue.dismiss()
+                    }) {
+                        Image(systemName: "arrow.left.circle")
+                            .accentColor(.primary)
+                            .font(.title)
+                            .padding(10)
+                            .padding(.leading, 15)
+                    }
+                    Spacer()
+                    Text("Tipps bewerten")
                         .font(.title)
-                        .padding(10)
-                        .padding(.leading, 15)
+                        .fontWeight(.bold)
+                    Spacer()
+                    Button(action: {
+                        self.showAddTipps2.toggle()
+                    }) {
+                        Image(systemName: "plus.circle")
+                            .accentColor(.primary)
+                            .font(.title)
+                            .padding(10)
+                            .padding(.trailing, 15)
+                    }.sheet(isPresented: $showAddTipps2, content: { AddTippView(showAddTipps: self.$showAddTipps2)})
                 }
-                Spacer()
-                Text("Tipps bewerten")
-                    .font(.title)
-                    .fontWeight(.bold)
-                Spacer()
-                Button(action: {
-                    self.showAddTipps2.toggle()
-                }) {
-                    Image(systemName: "plus.circle")
-                        .accentColor(.primary)
-                        .font(.title)
-                        .padding(10)
-                        .padding(.trailing, 15)
-                }.sheet(isPresented: $showAddTipps2, content: { AddTippView()})
-            }
-            .padding(.top, 20.0)
-            
-            HStack {
-                Text("Wenn ein Tipp von der Community gutes Feedback bekommt, wird dieser für alle Nutzer angezeigt")
-            }.padding()
-            
-            TippCard
-            
-            HStack {
-                Button(action: {
+                .padding(.top, 20.0)
+                
+                HStack {
+                    Text("Wenn ein Tipp von der Community gutes Feedback bekommt, wird dieser für alle Nutzer angezeigt")
+                }.padding()
+                
+                if !endReached {
+                    TippCard(tipp: store2.rateTipps[counter])
+                }
+                else {
+                   TippCard(tipp: Tipp(id: "123", title: "Vorerst keine weiteren Tipps mehr zum bewerten verfügbar", source: "", level: "", category: "Success Work", score: 0))
+                }
                     
-                }) {
-                    Text("Daumen Hoch")
+                if !endReached {
+                    HStack {
+                        Button(action: {
+                            
+                        }) {
+                            Image(systemName: "hand.thumbsup")
+                                .font(.title)
+                                .accentColor(Color("black"))
+                                .padding(10)
+                                .frame(width: UIScreen.main.bounds.width / 2 - 25, height: 50)
+                                .background(Color("buttonWhite"))
+                                .cornerRadius(15)
+                                .shadow(color: Color(.green).opacity(thumbUp ? 0.5 : 0.1), radius: 5, x: 4, y: 3)
+                                .scaleEffect(thumbUp ? 1.1 : 1)
+                                .gesture(
+                                    LongPressGesture().onChanged{ value in
+                                        patchScore(id: self.store2.rateTipps[self.counter].id, thumb: "up")
+                                        if (self.counter < self.store2.rateTipps.count - 1){
+                                            withAnimation(){self.counter += 1}
+                                        }
+                                        else {
+                                            withAnimation(){self.endReached = true}
+                                        }
+                                        self.thumbUp = true
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                                            self.thumbUp = false
+                                        }
+                                    }
+                            )
+                        }
+                        Button(action: {
+                            
+                        }) {
+                            Image(systemName: "hand.thumbsdown")
+                                .font(.title)
+                                .accentColor(Color("black"))
+                                .padding(10)
+                                .frame(width: UIScreen.main.bounds.width / 2 - 25, height: 50)
+                                .background(Color("buttonWhite"))
+                                .cornerRadius(15)
+                                .shadow(color: Color(.red).opacity(thumbDown ? 0.3 : 0.05), radius: 5, x: 4, y: 3)
+                                .scaleEffect(thumbDown ? 1.1 : 1)
+                                .gesture(
+                                    LongPressGesture().onChanged(){ value in
+                                        patchScore(id: self.store2.rateTipps[self.counter].id, thumb: "down")
+                                        if (self.counter < self.store2.rateTipps.count - 1){
+                                            withAnimation(){self.counter += 1}
+                                        }
+                                        else {
+                                            withAnimation(){self.endReached = true}
+                                        }
+                                        self.thumbDown = true
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                                            self.thumbDown = false
+                                        }
+                                    }
+                            )
+                        }
+                    }.padding(.top, 10)
                 }
+                
+                Spacer()
             }
-            
-            
-            Spacer()
-        }
+                .navigationBarTitle("")
+                .navigationBarHidden(true)
+        }.animation(.spring())
     }
+}
+
+func patchScore(id: String, thumb: String) {
+    guard let url = URL(string: "http://bastianschmalbach.ddns.net/tipps/" + id + "?thumb=" + thumb) else { return }
+    var request = URLRequest(url: url)
+    request.httpMethod = "PATCH"
+    print(url)
+    
+    URLSession.shared.dataTask(with: request) { data, response, error in
+        
+    }.resume()
 }
 
 struct RateTippView_Previews: PreviewProvider {

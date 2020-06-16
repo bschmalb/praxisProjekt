@@ -13,8 +13,9 @@ struct TippView: View {
     @State var isChecked = false
     @State var isBookmarked = false
     @State var tipps: [Tipp] = []
-    @State private var showAddTipps = false
+    @State var showAddTipps = false
     @State var model = ToggleModel()
+//    @Binding var filter = []
     
     var body: some View {
         NavigationView {
@@ -47,12 +48,12 @@ struct TippView: View {
                                 .font(.title)
                                 .padding(10)
                                 .padding(.trailing, 15)
-                        }.sheet(isPresented: $showAddTipps, content: { AddTippView()})
+                        }.sheet(isPresented: $showAddTipps, content: { AddTippView(showAddTipps: self.$showAddTipps)})
                     }
                     .padding(.top, 10.0)
                     .offset(y: 10)
                     
-                    FilterView()
+//                    FilterView()
                     
                     TippCardList()
                     
@@ -74,16 +75,17 @@ struct TippView: View {
                                     Spacer()
                                 }.frame(width: UIScreen.main.bounds.width - 40)
                             }
-                            .sheet(isPresented: $showAddTipps, content: { AddTippView() })
+                            .sheet(isPresented: $showAddTipps, content: { AddTippView(showAddTipps: self.$showAddTipps) })
                             .background(Color("buttonWhite"))
                             .cornerRadius(15)
-                            .shadow(color: Color(.black).opacity(0.1), radius: 10, x: 8, y: 6)
+                            .shadow(color: Color(.black).opacity(0.05), radius: 10, x: 8, y: 6)
                         }
                         HStack {
                             NavigationLink (destination: RateTippView()
                                 .navigationBarBackButtonHidden(false)
                                 .navigationBarTitle("")
-                                .navigationBarHidden(true)){
+                                .navigationBarHidden(true)
+                            ){
                                     HStack {
                                         Image(systemName: "hand.thumbsup")
                                             .font(.system(size: 20, weight: .medium))
@@ -97,7 +99,7 @@ struct TippView: View {
                             }.frame(width: UIScreen.main.bounds.width - 40)
                                 .background(Color("buttonWhite"))
                                 .cornerRadius(15)
-                                .shadow(color: Color(.black).opacity(0.1), radius: 10, x: 8, y: 6)
+                                .shadow(color: Color(.black).opacity(0.05), radius: 10, x: 8, y: 6)
                         }
                     }
                     Spacer()
@@ -119,7 +121,7 @@ struct TippView: View {
 //                        }) {
 //                            Image(systemName: "plus.circle")
 //                                .font(.title)
-//                        }.sheet(isPresented: $showAddTipps, content: { AddTippView()})
+//                        }.sheet(isPresented: $showAddTipps, content: { AddTippView(showAddTipps: self.$showAddTipps)})
 //                })
         }
     }

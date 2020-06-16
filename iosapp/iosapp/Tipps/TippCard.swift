@@ -16,7 +16,7 @@ struct TippCard: View {
     //var cardColor: String
     
     var cardColors2: [String]  = [
-        "cardgreen", "cardblue", "cardyellow", "cardpurple", "cardorange"
+        "cardgreen2", "cardblue2", "cardyellow2", "cardpurple2", "cardorange2", "cardred2", "cardturqouise2", "cardyelgre2", "cardpink2"
     ]
     
     var body: some View {
@@ -29,13 +29,14 @@ struct TippCard: View {
                     .frame(minHeight: 150, maxHeight: 200)
                 Text(tipp.title)
                     .font(.system(size: 24, weight: .medium))
+                    .foregroundColor(Color("alwaysblack"))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
                 Button(action: {
                     // What to perform
                 }) {
                     Text("Quelle")
-                        .foregroundColor(.secondary)
+                        .foregroundColor(.gray)
                         .font(.footnote)
                         .multilineTextAlignment(.center)
                         .padding(.top, 5)
@@ -46,7 +47,7 @@ struct TippCard: View {
                     }) {
                         Image(systemName: "checkmark")
                             .font(.system(size: 25))
-                            .foregroundColor(Color("black"))
+                            .foregroundColor(Color("alwaysblack"))
                             .padding(20)
                             .padding(.bottom, 10)
                             .padding(.leading, 50)
@@ -58,7 +59,7 @@ struct TippCard: View {
                     }) {
                         Image(systemName: "bookmark")
                             .font(.system(size: 25))
-                            .foregroundColor(Color("black"))
+                            .foregroundColor(Color("alwaysblack"))
                             .padding(20)
                             .padding(.bottom, 10)
                             .padding(.trailing, 50)
@@ -68,6 +69,26 @@ struct TippCard: View {
             }
             .background(Color(cardColors2.randomElement() ?? cardColors2[0]))
                 .cornerRadius(15)
+            VStack {
+                HStack(alignment: .top) {
+                    Image(tipp.category)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 30, height: 30)
+                        .opacity(0.1)
+                        .padding(.leading, 20)
+                        .padding(.vertical)
+                    Image(tipp.level)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 30, height: 30)
+                        .opacity(0.1)
+                        .padding(.vertical)
+                    Spacer()
+                }
+                Spacer()
+            }.frame(width: UIScreen.main.bounds.width - 40, height:
+                375)
         }.frame(width: UIScreen.main.bounds.width - 40, height: UIScreen.main.bounds.height/2.1)
     }
 }
