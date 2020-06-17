@@ -58,12 +58,12 @@ struct RateTippView: View {
                     Text("Wenn ein Tipp von der Community gutes Feedback bekommt, wird dieser für alle Nutzer angezeigt")
                 }.padding()
                 
-                if !endReached {
-                    TippCard(tipp: store2.rateTipps[counter])
-                }
-                else {
-                   TippCard(tipp: Tipp(id: "123", title: "Vorerst keine weiteren Tipps mehr zum bewerten verfügbar", source: "", level: "", category: "Success Work", score: 0))
-                }
+//                if !endReached {
+//                    TippCard(tipp: store2.rateTipps[counter])
+//                }
+//                else {
+//                   TippCard(tipp: Tipp(id: "123", title: "Vorerst keine weiteren Tipps mehr zum bewerten verfügbar", source: "", level: "", category: "Success Work", score: 0))
+//                }
                     
                 if !endReached {
                     HStack {

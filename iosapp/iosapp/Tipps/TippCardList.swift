@@ -43,28 +43,6 @@ struct TippCardList: View {
                             }
                         }
                     }
-                    //                    ForEach(filter.indices, id: \.self){index in
-                    //                        Button(action: {
-                    //                            self.filterTipps()
-                    //                            self.filter[index].isSelected.toggle()
-                    //                        }) {
-                    //                            HStack {
-                    //                                Image("\(self.filter[index].icon)")
-                    //                                    .resizable()
-                    //                                    .scaledToFit()
-                    //                                    .font(.title)
-                    //                                    .frame(width: 30, height: 30)
-                    //                                Text(self.filter[index].name)
-                    //                                    .font(.headline)
-                    //                                    .fontWeight(.medium)
-                    //                                    .accentColor(Color("black"))
-                    //                            }.padding(.horizontal, 10)
-                    //                                .padding(.vertical, 6)
-                    //                        }
-                    //                        .background(Color(self.filter[index].isSelected ? "buttonWhite" : "transparent"))
-                    //                        .cornerRadius(15)
-                    //                        .shadow(color: self.filter[index].isSelected ? Color(.black).opacity(0.1) : Color("transparent"), radius: 4, x: 4, y: 2)
-                    //                    }
                 }
                 .padding(.vertical, 10)
             }.accentColor(Color("black"))
@@ -73,17 +51,20 @@ struct TippCardList: View {
                 if !self.unfilteredTipps.isEmpty {
                     ScrollView (.horizontal, showsIndicators: false) {
                         HStack (spacing: -5){
-                            ForEach(self.filteredTipps) { tipps in
+                            ForEach(filteredTipps.indices, id: \.self) { index in
                                 GeometryReader { geometry in
-                                    TippCard(tipp: tipps)
+                                    TippCard(isChecked: self.$filteredTipps[index].isChecked, isBookmarked: self.$filteredTipps[index].isBookmarked, tipp: self.filteredTipps[index])
                                         .padding(10)
                                         .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX) - 20 ) / -20), axis: (x: 0, y: 10.0, z:0))
                                         .shadow(color: Color(.black).opacity(0.1), radius: 5, x: 4, y: 3)
-                                }.frame(width: UIScreen.main.bounds.width - 40, height: UIScreen.main.bounds.height/2.1 + 20)
+                                }
+                                    .frame(width: UIScreen.main.bounds.width - 40, height: UIScreen.main.bounds.height/2.1 + 20)
                             }
-                        }.padding(.leading, 20)
+                        }
+                            .padding(.leading, 20)
                             .padding(.trailing, 20)
                     }
+                        .animation(.spring())
                 }
                 else {
                     NoConnectionCard()
@@ -98,6 +79,7 @@ struct TippCardList: View {
     }
     
     func filterTipps(filterName: String){
+        self.filteredTipps = []
         self.filteredTipps = unfilteredTipps
         if (filterName == "Ernährung" || filterName == "Transport" || filterName == "Recycling" || filterName == "Ressourcen") {
             if (!filterCategory.contains(filterName)){

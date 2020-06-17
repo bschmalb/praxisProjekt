@@ -26,6 +26,7 @@
 		B7846970248D2E28000A4331 /* AddTippCard5.swift in Sources */ = {isa = PBXBuildFile; fileRef = B784696F248D2E28000A4331 /* AddTippCard5.swift */; };
 		B7846972248D7B6C000A4331 /* TippDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7846971248D7B6C000A4331 /* TippDataStore.swift */; };
 		B7846974248D7D3D000A4331 /* TippCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7846973248D7D3D000A4331 /* TippCard.swift */; };
+		B7874C07249A48CA0045D609 /* LevelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7874C06249A48CA0045D609 /* LevelView.swift */; };
 		B7919AEF24981BBD00014240 /* success.json in Resources */ = {isa = PBXBuildFile; fileRef = B7919AEE24981BBD00014240 /* success.json */; };
 		B7919AF224981C1900014240 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = B7919AF124981C1900014240 /* Lottie */; };
 		B7919AF424981C5B00014240 /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7919AF324981C5B00014240 /* LottieView.swift */; };
@@ -80,6 +81,7 @@
 		B784696F248D2E28000A4331 /* AddTippCard5.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTippCard5.swift; sourceTree = "<group>"; };
 		B7846971248D7B6C000A4331 /* TippDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippDataStore.swift; sourceTree = "<group>"; };
 		B7846973248D7D3D000A4331 /* TippCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippCard.swift; sourceTree = "<group>"; };
+		B7874C06249A48CA0045D609 /* LevelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelView.swift; sourceTree = "<group>"; };
 		B7919AEE24981BBD00014240 /* success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = success.json; sourceTree = "<group>"; };
 		B7919AF324981C5B00014240 /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
 		B7919AF524981E3F00014240 /* SuccessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessView.swift; sourceTree = "<group>"; };
@@ -187,21 +189,22 @@
 			isa = PBXGroup;
 			children = (
 				B7A8CBDB242C10C50036FD6E /* AppDelegate.swift */,
+				B7874C06249A48CA0045D609 /* LevelView.swift */,
 				B7A8CBDD242C10C50036FD6E /* SceneDelegate.swift */,
 				B7494057248CF98400933A37 /* AddTipp */,
 				B7A8CBDF242C10C50036FD6E /* ContentView.swift */,
 				B7CF27B5249035DA009058E8 /* RateTippView.swift */,
 				B7BF71BD2497CF76007A3A92 /* Data */,
 				B7649E3524912F4E0079984A /* Tipps */,
+				B70BF79E2487EA8000B4C911 /* ProfilView.swift */,
+				B70BF7A02487EAC200B4C911 /* TagebuchView.swift */,
+				B7919AF524981E3F00014240 /* SuccessView.swift */,
+				B7919AF324981C5B00014240 /* LottieView.swift */,
 				B77784E8248BDC7700C58AEE /* PageView.swift */,
 				B77784E6248BDBA600C58AEE /* PageViewController.swift */,
-				B7919AF324981C5B00014240 /* LottieView.swift */,
-				B7919AF524981E3F00014240 /* SuccessView.swift */,
 				B7A8CBE1242C10C80036FD6E /* Assets.xcassets */,
 				B7919AED24981BBC00014240 /* Lottie */,
-				B70BF79E2487EA8000B4C911 /* ProfilView.swift */,
 				B7A8CBE6242C10C80036FD6E /* LaunchScreen.storyboard */,
-				B70BF7A02487EAC200B4C911 /* TagebuchView.swift */,
 				B7A8CBE9242C10C80036FD6E /* Info.plist */,
 				B7A8CBE3242C10C80036FD6E /* Preview Content */,
 				B784696B248D25BD000A4331 /* KeyboardResponder.swift */,
@@ -408,6 +411,7 @@
 				B712CD162489747800A883A1 /* TippCardsPager.swift in Sources */,
 				B70BF7A12487EAC200B4C911 /* TagebuchView.swift in Sources */,
 				B7494059248CF9E700933A37 /* AddTippCard2.swift in Sources */,
+				B7874C07249A48CA0045D609 /* LevelView.swift in Sources */,
 				B7CF0F6D2497C02C00595EB2 /* RateTippData.swift in Sources */,
 				B7919AF424981C5B00014240 /* LottieView.swift in Sources */,
 				B7A8CBE0242C10C50036FD6E /* ContentView.swift in Sources */,

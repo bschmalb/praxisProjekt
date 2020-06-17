@@ -50,7 +50,42 @@ struct ContentView: View {
                 Text("Profil")
             }
         }.accentColor(.primary)
+        .onAppear(){
+            self.createUser()
+        }
     }
+    func createUser(){
+        if let uuid = UIDevice.current.identifierForVendor?.uuidString {
+            let userData = User(id: uuid, name: "", checkedTipps: [], savedTipps: [], checkedChallenges: [], savedChallenges: [])
+            
+            guard let encoded = try? JSONEncoder().encode(userData) else {
+                print("Failed to encode order")
+                return
+            }
+            guard let url = URL(string: "http://bastianschmalbach.ddns.net/users") else { return }
+            var request = URLRequest(url: url)
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpMethod = "POST"
+            request.httpBody = encoded
+            
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let data = data else {
+                    print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
+                    return
+                }
+                print(data)
+            }.resume()
+        }
+    }
+}
+
+struct User: Encodable {
+    var id: String
+    var name: String
+    var checkedTipps: [String]
+    var savedTipps: [String]
+    var checkedChallenges: [String]
+    var savedChallenges: [String]
 }
 
 struct ContentView_Previews: PreviewProvider {

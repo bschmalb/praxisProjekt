@@ -10,13 +10,14 @@ import SwiftUI
 
 struct TippCard: View {
     
-    //    @ObservedObject var store = TippDataStore()
+//    @ObservedObject var store = TippDataStore()
     
+    @Binding var isChecked: Bool
+    @Binding var isBookmarked: Bool
     var tipp: Tipp
-    //var cardColor: String
     
     var cardColors2: [String]  = [
-        "cardgreen2", "cardblue2", "cardyellow2", "cardpurple2", "cardorange2", "cardred2", "cardturqouise2", "cardyelgre2", "cardpink2g"
+        "cardgreen2", "cardblue2", "cardyellow2", "cardpurple2", "cardorange2", "cardred2", "cardturqouise2", "cardyelgre2", "cardpink2"
     ]
     
     var body: some View {
@@ -43,11 +44,12 @@ struct TippCard: View {
                 }
                 HStack {
                     Button(action: {
-                        
+                        self.isChecked.toggle()
+                        self.addToProfile(tippId: self.tipp.id)
                     }) {
                         Image(systemName: "checkmark")
                             .font(.system(size: 25))
-                            .foregroundColor(Color("alwaysblack"))
+                            .foregroundColor(Color(isChecked ? .white : .black))
                             .padding(20)
                             .padding(.bottom, 10)
                             .padding(.leading, 50)
@@ -55,11 +57,11 @@ struct TippCard: View {
                     }
                     Spacer()
                     Button(action: {
-                        
+                        self.isBookmarked.toggle()
                     }) {
                         Image(systemName: "bookmark")
                             .font(.system(size: 25))
-                            .foregroundColor(Color("alwaysblack"))
+                            .foregroundColor(Color(isBookmarked ? .white : .black))
                             .padding(20)
                             .padding(.bottom, 10)
                             .padding(.trailing, 50)
@@ -91,10 +93,36 @@ struct TippCard: View {
                 375)
         }.frame(width: UIScreen.main.bounds.width - 40, height: UIScreen.main.bounds.height/2.1)
     }
+    func addToProfile(tippId: String) {
+        let patchData = TippPatchCheck(checkedTipps: tippId)
+        
+        if let uuid = UIDevice.current.identifierForVendor?.uuidString {
+            
+            guard let encoded = try? JSONEncoder().encode(patchData) else {
+                print("Failed to encode order")
+                return
+            }
+            
+            guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + uuid) else { return }
+            var request = URLRequest(url: url)
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpMethod = "PATCH"
+            request.httpBody = encoded
+            
+            URLSession.shared.dataTask(with: request) { data, response, error in
+
+            }.resume()
+        }
+    }
+    
+}
+
+struct TippPatchCheck : Encodable{
+    var checkedTipps: String
 }
 
 struct TippCard_Previews: PreviewProvider {
     static var previews: some View {
-        TippCard(tipp: .init(id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", level: "Leicht", category: "Ernährung", score: 25))
+        TippCard(isChecked: .constant(false), isBookmarked: .constant(false), tipp: .init(id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", level: "Leicht", category: "Ernährung", score: 25))
     }
 }
