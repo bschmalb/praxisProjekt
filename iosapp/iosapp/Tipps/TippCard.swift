@@ -16,6 +16,8 @@ struct TippCard: View {
     @Binding var isBookmarked: Bool
     var tipp: Tipp
     
+//    var user: User
+    
     var cardColors2: [String]  = [
         "cardgreen2", "cardblue2", "cardyellow2", "cardpurple2", "cardorange2", "cardred2", "cardturqouise2", "cardyelgre2", "cardpink2"
     ]
@@ -27,7 +29,7 @@ struct TippCard: View {
                 Image("I"+tipp.category)
                     .resizable()
                     .scaledToFit()
-                    .frame(minHeight: 150, maxHeight: 200)
+                    .frame(minHeight: 100, maxHeight: 200)
                 Text(tipp.title)
                     .font(.system(size: 24, weight: .medium))
                     .foregroundColor(Color("alwaysblack"))
@@ -45,10 +47,12 @@ struct TippCard: View {
                 HStack {
                     Button(action: {
                         self.isChecked.toggle()
-                        self.addToProfile(tippId: self.tipp.id)
+                        self.addToProfile(tippId: self.tipp.id, method: 0)
+                        impact(style: .medium)
                     }) {
                         Image(systemName: "checkmark")
-                            .font(.system(size: 25))
+//                            .font(.system(size: 25)
+                            .font(Font.system(size: 25, weight: isChecked ? .medium : .regular))
                             .foregroundColor(Color(isChecked ? .white : .black))
                             .padding(20)
                             .padding(.bottom, 10)
@@ -58,9 +62,11 @@ struct TippCard: View {
                     Spacer()
                     Button(action: {
                         self.isBookmarked.toggle()
+                        self.addToProfile(tippId: self.tipp.id, method: 1)
+                        impact(style: .medium)
                     }) {
                         Image(systemName: "bookmark")
-                            .font(.system(size: 25))
+                            .font(Font.system(size: 25, weight: isBookmarked ? .medium : .regular))
                             .foregroundColor(Color(isBookmarked ? .white : .black))
                             .padding(20)
                             .padding(.bottom, 10)
@@ -89,20 +95,47 @@ struct TippCard: View {
                     Spacer()
                 }
                 Spacer()
-            }.frame(width: UIScreen.main.bounds.width - 40, height:
-                375)
-        }.frame(width: UIScreen.main.bounds.width - 40, height: UIScreen.main.bounds.height/2.1)
+            }.frame(width: UIScreen.main.bounds.width - 30, height:
+                UIScreen.main.bounds.height / 2.1)
+        }.frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height/2.1)
+            .onAppear(){
+                self.getUserTipps()
+        }
     }
-    func addToProfile(tippId: String) {
+    func getUserTipps(){
+        if let uuid = UIDevice.current.identifierForVendor?.uuidString {
+            guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + uuid) else { return }
+            let request = URLRequest(url: url)
+            
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let data = data else {
+                    print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
+                    return
+                }
+                if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
+                    if (decodedResponse.checkedTipps.contains(self.tipp.id) ) {
+                        self.isChecked = true
+                    }
+                    if (decodedResponse.savedTipps.contains(self.tipp.id) ) {
+                        self.isBookmarked = true
+                    }
+                }
+            }.resume()
+        }
+    }
+    
+    func addToProfile(tippId: String, method: Int) {
         let patchData = TippPatchCheck(checkedTipps: tippId)
+        let patchData2 = TippPatchSave(savedTipps: tippId)
         
         if let uuid = UIDevice.current.identifierForVendor?.uuidString {
             
-            guard let encoded = try? JSONEncoder().encode(patchData) else {
-                print("Failed to encode order")
-                return
+            var encoded: Data?
+            if (method == 0) {
+                encoded = try? JSONEncoder().encode(patchData)
+            } else {
+                encoded = try? JSONEncoder().encode(patchData2)
             }
-            
             guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + uuid) else { return }
             var request = URLRequest(url: url)
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -119,6 +152,9 @@ struct TippCard: View {
 
 struct TippPatchCheck : Encodable{
     var checkedTipps: String
+}
+struct TippPatchSave : Encodable{
+    var savedTipps: String
 }
 
 struct TippCard_Previews: PreviewProvider {

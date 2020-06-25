@@ -10,8 +10,6 @@ import SwiftUI
 
 struct TippView: View {
     
-    @State var isChecked = false
-    @State var isBookmarked = false
     @State var tipps: [Tipp] = []
     @State var showAddTipps = false
     @State var model = ToggleModel()
@@ -35,7 +33,8 @@ struct TippView: View {
                         Spacer()
                         Button(action: {
                             self.model.isDark.toggle()
-                            haptic(type: .success)
+                            UserDefaults.standard.set(self.model.isDark, forKey: "isDark")
+                            impact(style: .medium)
                         }) {
                             Image(systemName: "moon.circle")
                                 .font(.title)
@@ -43,6 +42,7 @@ struct TippView: View {
                         }
                         Button(action: {
                             self.showAddTipps.toggle()
+                            impact(style: .medium)
                         }) {
                             Image(systemName: "plus.circle")
                                 .font(.title)
@@ -50,17 +50,16 @@ struct TippView: View {
                                 .padding(.trailing, 15)
                         }.sheet(isPresented: $showAddTipps, content: { AddTippView(showAddTipps: self.$showAddTipps)})
                     }
-                    .padding(.top, 10.0)
+                    .padding(.top, UIScreen.main.bounds.height / 81)
                     .offset(y: 10)
                     
-//                    FilterView()
-                    
                     TippCardList()
-                    
+                        
                     VStack {
                         HStack {
                             Button(action: {
                                 self.showAddTipps.toggle()
+                                impact(style: .medium)
                             }) {
                                 HStack {
                                     HStack {
@@ -73,12 +72,12 @@ struct TippView: View {
                                     .padding(13)
                                     .padding(.leading, 10)
                                     Spacer()
-                                }.frame(width: UIScreen.main.bounds.width - 40)
+                                }.frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height / 16)
                             }
                             .sheet(isPresented: $showAddTipps, content: { AddTippView(showAddTipps: self.$showAddTipps) })
                             .background(Color("buttonWhite"))
                             .cornerRadius(15)
-                            .shadow(color: Color(.black).opacity(0.05), radius: 10, x: 8, y: 6)
+                            .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
                         }
                         HStack {
                             NavigationLink (destination: RateTippView()
@@ -96,33 +95,17 @@ struct TippView: View {
                                     .padding(13)
                                     .padding(.leading, 10)
                                     Spacer()
-                            }.frame(width: UIScreen.main.bounds.width - 40)
+                            }.frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height / 16)
                                 .background(Color("buttonWhite"))
                                 .cornerRadius(15)
-                                .shadow(color: Color(.black).opacity(0.05), radius: 10, x: 8, y: 6)
+                                .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
                         }
-                    }
+                    }.offset(y: -UIScreen.main.bounds.height / 81)
                     Spacer()
                 }
             }.accentColor(.primary)
             .navigationBarTitle("")
             .navigationBarHidden(true)
-//                .navigationBarItems(trailing:
-//                    HStack {
-//                        Button(action: {
-//                            self.model.isDark.toggle()
-//                            haptic(type: .success)
-//                        }) {
-//                            Image(systemName: "moon.circle")
-//                                .font(.title)
-//                        }
-//                        Button(action: {
-//                            self.showAddTipps.toggle()
-//                        }) {
-//                            Image(systemName: "plus.circle")
-//                                .font(.title)
-//                        }.sheet(isPresented: $showAddTipps, content: { AddTippView(showAddTipps: self.$showAddTipps)})
-//                })
         }
     }
 }

@@ -42,6 +42,7 @@ struct AddTippView: View {
                     Spacer()
                     Button(action: {
                         self.showAddTipps = false
+                        impact(style: .medium)
                     }) {
                         Image(systemName: "xmark.circle")
                             .font(.title)
@@ -72,7 +73,7 @@ struct AddTippView: View {
                         HStack (spacing: 20) {
                             
                             Button(action: {
-                                haptic(type: .success)
+                                impact(style: .medium)
                                 self.transportSelected = false
                                 self.recyclingSelected = false
                                 self.ressourcenSelected = false
@@ -90,6 +91,7 @@ struct AddTippView: View {
                                         .accentColor(Color(self.nahrungSelected ? "white" : "black"))
                                     Text("Nahrung")
                                         .font(.subheadline).fontWeight(.medium)
+                                        .fixedSize()
                                         .foregroundColor(Color(self.nahrungSelected ? "white" : "black"))
                                         .multilineTextAlignment(.center)
                                         .padding(5)
@@ -101,7 +103,7 @@ struct AddTippView: View {
                                 
                             }
                             Button(action: {
-                                haptic(type: .success)
+                                impact(style: .medium)
                                 self.nahrungSelected = false
                                 self.recyclingSelected = false
                                 self.ressourcenSelected = false
@@ -129,7 +131,7 @@ struct AddTippView: View {
                                 
                             }
                             Button(action: {
-                                haptic(type: .success)
+                                impact(style: .medium)
                                 self.nahrungSelected = false
                                 self.transportSelected = false
                                 self.ressourcenSelected = false
@@ -158,7 +160,7 @@ struct AddTippView: View {
                         }.padding(.bottom, 10)
                         HStack (spacing: 30) {
                             Button(action: {
-                                haptic(type: .success)
+                                impact(style: .medium)
                                 self.nahrungSelected = false
                                 self.transportSelected = false
                                 self.recyclingSelected = false

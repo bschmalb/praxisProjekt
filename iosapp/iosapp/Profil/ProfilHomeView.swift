@@ -1,66 +1,40 @@
 //
-//  ProfilView.swift
+//  ProfilHomeView.swift
 //  iosapp
 //
-//  Created by Bastian Schmalbach on 03.06.20.
+//  Created by Bastian Schmalbach on 19.06.20.
 //  Copyright © 2020 Bastian Schmalbach. All rights reserved.
 //
 
 import SwiftUI
 
-struct ProfilView: View {
+struct ProfilHomeView: View {
     
     @State var tcSelected = false
     @State var tippsSelected = false
     @State var challengesSelected = false
     
     var body: some View {
+        
         NavigationView {
             ZStack {
-                ZStack {
-                    Color("background")
-                        .edgesIgnoringSafeArea(.all)
-                }
-                
+                Color("background")
+                .edgesIgnoringSafeArea(.all)
                 VStack {
-                    HStack {
-                        Spacer()
-                        LevelView(frameWidth: 60, frameHeight: 60)
-                            .padding(30)
-                            .offset(y: -5)
-                    }
-                    Spacer()
-                }
-                
-                VStack {
-                    HStack {
-                        VStack (alignment: .leading){
-                            Text("Hallo Basti")
-                                .font(.title)
-                                .fontWeight(.bold)
-                                .padding(.leading, 20)
-                                .padding(.bottom, 5)
-                            Text("Wilkommen in deinem Profil")
-                                .font(.callout)
-                                .padding(.leading, 20)
-                        }
-                        Spacer()
-                    }
-                    .padding(.top, 10.0)
-                    .offset(y: 10)
-                    
-                    
-                    Image("ProfileImage")
+                    if !tcSelected {
+                        Image("ProfileImage")
                             .resizable()
                             .scaledToFit()
-                            .padding(tcSelected ? 0 : 40)
+                            .padding(40)
                             .padding(.top, 20)
+                    }
                     
                     if (!challengesSelected) {
-                        Button(action: {
-                            self.tippsSelected.toggle()
-                            self.tcSelected.toggle()
-                        }) {
+                        NavigationLink(destination: ProfilTippView()
+                            .navigationBarTitle("")
+                            .navigationBarHidden(true)
+                            .navigationBarBackButtonHidden(true)
+                        ) {
                             HStack (spacing: 20){
                                 Image(systemName: "lightbulb")
                                     .font(.system(size: 22))
@@ -70,20 +44,20 @@ struct ProfilView: View {
                                     .font(.system(size: 22))
                                     .fontWeight(.medium)
                                 Spacer()
-                                Image(systemName: "chevron.up")
+                                Image(systemName: "chevron.right")
                                     .rotationEffect(Angle(degrees: tippsSelected ? 180 : 0))
                                     .font(.system(size: 20))
                                     .padding(.trailing, 28)
                             }.padding(10)
-                        }
-                        .opacity(challengesSelected ? 0 : 1)
+                        }.navigationBarTitle("Navigation")
                     }
                     
                     if (!tippsSelected) {
-                        Button(action: {
-                            self.challengesSelected.toggle()
-                            self.tcSelected.toggle()
-                        }) {
+                        NavigationLink(destination: ProfilTippView()
+                            .navigationBarTitle("")
+                            .navigationBarHidden(true)
+                            .navigationBarBackButtonHidden(true)
+                        ) {
                             HStack (spacing: 20){
                                 Image(systemName: "person.3")
                                     .font(.system(size: 22))
@@ -93,14 +67,13 @@ struct ProfilView: View {
                                     .font(.system(size: 22))
                                     .fontWeight(.medium)
                                 Spacer()
-                                Image(systemName: "chevron.up")
+                                Image(systemName: "chevron.right")
                                     .rotationEffect(Angle(degrees: challengesSelected ? 180 : 0))
                                     .font(.system(size: 20))
                                     .padding(.trailing, 28)
                             }
                             .padding(10)
-                        }
-                        .opacity(tippsSelected ? 0 : 1)
+                        }.navigationBarTitle("Navigation")
                     }
                     
                     if (!tcSelected) {
@@ -136,26 +109,25 @@ struct ProfilView: View {
                             }.padding(10)
                         }
                     }
-                    
-//                    if (tippsSelected) {
-//                        TippCard(tipp: Tipp(id: "123", title: "Tipp", source: "Google.com", level: "Leicht", category: "Ernährung", score: 20, isChecked: false, isBookmarked: false))
-//                    }
-//                    if (challengesSelected) {
-//                        TippCard(tipp: Tipp(id: "123", title: "Challenge", source: "Google.com", level: "Leicht", category: "Ernährung", score: 20, isChecked: false, isBookmarked: false))
-//                    }
+                    if tippsSelected {
+                        ProfilTippView()
+                    }
+                    if (challengesSelected) {
+                        TippCard(isChecked: .constant(false), isBookmarked: .constant(false), tipp: Tipp(id: "123", title: "Challenge", source: "Google.com", level: "Leicht", category: "Ernährung", score: 20))
+                    }
                     Spacer()
-                }
-                .animation(.spring())
-                .accentColor(.primary)
-                .navigationBarTitle("")
-                .navigationBarHidden(true)
+                }.padding(.top, 30)
+                .padding(.bottom, 20)
             }
-        }
+            .navigationBarTitle("")
+            .navigationBarHidden(true)
+            .navigationBarBackButtonHidden(true)
+        }.accentColor(Color("black"))
     }
 }
 
-struct ProfilView_Previews: PreviewProvider {
+struct ProfilHomeView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilView()
+        ProfilHomeView()
     }
 }

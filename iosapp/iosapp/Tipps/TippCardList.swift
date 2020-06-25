@@ -20,7 +20,9 @@ struct TippCardList: View {
     @State var filterString: String = ""
     
     @State var filterCategory: [String] = []
+    @State var filterCategory2: [String] = ["Ernährung", "Transport", "Recycling", "Ressourcen"]
     @State var filterLevel: [String] = []
+    @State var filterLevel2: [String] = ["Einfach", "Mittel", "Schwer"]
     @State var filterPoster: [String] = []
     
     //    var cardColors: [String]  = [
@@ -40,36 +42,99 @@ struct TippCardList: View {
                                 .onTapGesture {
                                     self.filter[index].isSelected.toggle()
                                     self.filterTipps(filterName: self.filter[index].name)
-                            }
+                                    impact(style: .heavy)
+                                }
                         }
                     }
                 }
-                .padding(.vertical, 10)
+                .padding(.vertical, UIScreen.main.bounds.height / 81)
             }.accentColor(Color("black"))
             
             VStack {
-                if !self.unfilteredTipps.isEmpty {
-                    ScrollView (.horizontal, showsIndicators: false) {
-                        HStack (spacing: -5){
-                            ForEach(filteredTipps.indices, id: \.self) { index in
-                                GeometryReader { geometry in
-                                    TippCard(isChecked: self.$filteredTipps[index].isChecked, isBookmarked: self.$filteredTipps[index].isBookmarked, tipp: self.filteredTipps[index])
-                                        .padding(10)
-                                        .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX) - 20 ) / -20), axis: (x: 0, y: 10.0, z:0))
-                                        .shadow(color: Color(.black).opacity(0.1), radius: 5, x: 4, y: 3)
+                if (!self.filteredTipps.isEmpty) {
+                    GeometryReader { proxy in
+                        UIScrollViewWrapper {
+                            HStack {
+                                ForEach(filteredTipps.indices, id: \.self) { index in
+                                    HStack {
+                                        if(self.filterCategory2.contains(self.filteredTipps[index].category) && self.filterLevel2.contains(self.filteredTipps[index].level)) {
+                                            GeometryReader { geometry in
+                                                TippCard(isChecked: self.$filteredTipps[index].isChecked, isBookmarked: self.$filteredTipps[index].isBookmarked, tipp: self.filteredTipps[index])
+                                                    .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX) - 20 ) / -8), axis: (x: 0, y: 10.0, z:0))
+                                                    .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
+                                                    .padding(.vertical, 10)
+                                            }
+                                            .frame(width: UIScreen.main.bounds.width - 7.5, height: UIScreen.main.bounds.height/2.1 + 20)
+                                        }
+                                    }
                                 }
-                                    .frame(width: UIScreen.main.bounds.width - 40, height: UIScreen.main.bounds.height/2.1 + 20)
-                            }
+                            }.padding(.horizontal, 15)
+                            .frame(height: UIScreen.main.bounds.height/2.1 + 20)
+                            .background(Color("background"))
                         }
-                            .padding(.leading, 20)
-                            .padding(.trailing, 20)
                     }
-                        .animation(.spring())
+                    .frame(height: UIScreen.main.bounds.height/2.1 + 20)
+                    .animation(.spring())
+                    
+                    //                    ScrollView (.horizontal, showsIndicators: false) {
+                    //                        HStack (spacing: -2){
+                    //                            ForEach(filteredTipps.indices, id: \.self) { index in
+                    //                                VStack {
+                    //                                    if(self.filterCategory2.contains(self.filteredTipps[index].category) && self.filterLevel2.contains(self.filteredTipps[index].level)) {
+                    //                                        GeometryReader { geometry in
+                    //                                            TippCard(isChecked: self.$filteredTipps[index].isChecked, isBookmarked: self.$filteredTipps[index].isBookmarked, tipp: self.filteredTipps[index])
+                    //                                                .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX) - 20 ) / -20), axis: (x: 0, y: 10.0, z:0))
+                    //                                                .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
+                    //                                        }
+                    //                                        .frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height/2.1 + 20)
+                    //                                    }
+                    //                                }
+                    //                                .padding(.leading, 15)
+                    //                                .padding(.trailing, 15)
+                    //                            }
+                    //                        }
+                    //                    }
+                    //                    .animation(.spring())
+                    
+//                    ScrollView (.horizontal, showsIndicators: false) {
+//                        if #available(iOS 14.0, *) {
+//                            ScrollViewReader { value2 in
+//                                ZStack {
+//                                    HStack (spacing: -2){
+//                                        ForEach(filteredTipps.indices, id: \.self) { index in
+//                                            VStack {
+//                                                if(self.filterCategory2.contains(self.filteredTipps[index].category) && self.filterLevel2.contains(self.filteredTipps[index].level)) {
+//                                                    GeometryReader { geometry in
+//                                                        TippCard(isChecked: self.$filteredTipps[index].isChecked, isBookmarked: self.$filteredTipps[index].isBookmarked, tipp: self.filteredTipps[index])
+//                                                            .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX) - 20 ) / -20), axis: (x: 0, y: 10.0, z:0))
+//                                                            .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
+//                                                    }
+//                                                    .frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height/2.1 + 20)
+//                                                }
+//                                            }
+//                                            .gesture(DragGesture()
+//                                                        .onChanged({ value in
+//                                                            print("drag")
+//                                                        }))
+//                                            .padding(.leading, 15)
+//                                            .padding(.trailing, 15)
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        } else {
+//                            // Fallback on earlier versions
+//                        }
+//                    }
+                    .animation(.spring())
                 }
                 else {
                     NoConnectionCard()
+                        .padding(.horizontal, 15)
                 }
             }
+            .offset(y: -UIScreen.main.bounds.height / 81)
+            .animation(.spring())
         }.onAppear{
             Api().fetchTipps { (unfilteredTipps) in
                 self.unfilteredTipps = unfilteredTipps
@@ -79,41 +144,90 @@ struct TippCardList: View {
     }
     
     func filterTipps(filterName: String){
-        self.filteredTipps = []
-        self.filteredTipps = unfilteredTipps
         if (filterName == "Ernährung" || filterName == "Transport" || filterName == "Recycling" || filterName == "Ressourcen") {
-            if (!filterCategory.contains(filterName)){
-                filterCategory.append(filterName)
+            if (!filterCategory2.contains(filterName)){
+                filterCategory2.append(filterName)
             } else {
-                filterCategory.removeAll(where: {$0 == filterName})
+                filterCategory2.removeAll(where: {$0 == filterName})
             }
         }
         if (filterName == "Einfach" || filterName == "Mittel" || filterName == "Schwer") {
-            if (!filterLevel.contains(filterName)){
-                filterLevel.append(filterName)
+            if (!filterLevel2.contains(filterName)){
+                filterLevel2.append(filterName)
             } else {
-                filterLevel.removeAll(where: {$0 == filterName})
+                filterLevel2.removeAll(where: {$0 == filterName})
             }
         }
         
-        if (filterCategory.count > 0) {
-            print("remove Category")
-            for name in filterCategory {
-                filteredTipps.removeAll {
-                    $0.category == name
-                }
-            }
-        }
-        if (filterLevel.count > 0) {
-            print("remove Level")
-            for name in filterLevel {
-                filteredTipps.removeAll {
-                    $0.level == name
-                }
-            }
-        }
-        print(filterCategory)
-        print(filterLevel)
+        //        if (filterCategory.count > 0) {
+        //            print("remove Category")
+        //            for name in filterCategory {
+        //                filteredTipps.removeAll {
+        //                    $0.category == name
+        //                }
+        //            }
+        //        }
+        //        if (filterLevel.count > 0) {
+        //            print("remove Level")
+        //            for name in filterLevel {
+        //                filteredTipps.removeAll {
+        //                    $0.level == name
+        //                }
+        //            }
+        //        }
+    }
+}
+
+class UIScrollViewViewController: UIViewController {
+    
+    lazy var scrollView: UIScrollView = {
+        let v = UIScrollView()
+        v.isPagingEnabled = true
+        v.showsHorizontalScrollIndicator = false
+        return v
+    }()
+    
+    var hostingController: UIHostingController<AnyView> = UIHostingController(rootView: AnyView(EmptyView()))
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.view.addSubview(self.scrollView)
+        self.pinEdges(of: self.scrollView, to: self.view)
+        
+        self.hostingController.willMove(toParent: self)
+        self.scrollView.addSubview(self.hostingController.view)
+        self.pinEdges(of: self.hostingController.view, to: self.scrollView)
+        self.hostingController.didMove(toParent: self)
+    }
+    
+    func pinEdges(of viewA: UIView, to viewB: UIView) {
+        viewA.translatesAutoresizingMaskIntoConstraints = false
+        viewB.addConstraints([
+            viewA.leadingAnchor.constraint(equalTo: viewB.leadingAnchor),
+            viewA.trailingAnchor.constraint(equalTo: viewB.trailingAnchor),
+            viewA.topAnchor.constraint(equalTo: viewB.topAnchor),
+            viewA.bottomAnchor.constraint(equalTo: viewB.bottomAnchor),
+        ])
+    }
+    
+}
+
+struct UIScrollViewWrapper<Content: View>: UIViewControllerRepresentable {
+    
+    var content: () -> Content
+    
+    init(@ViewBuilder content: @escaping () -> Content) {
+        self.content = content
+    }
+    
+    func makeUIViewController(context: Context) -> UIScrollViewViewController {
+        let vc = UIScrollViewViewController()
+        vc.hostingController.rootView = AnyView(self.content())
+        return vc
+    }
+    
+    func updateUIViewController(_ viewController: UIScrollViewViewController, context: Context) {
+        viewController.hostingController.rootView = AnyView(self.content())
     }
 }
 
@@ -134,11 +248,11 @@ struct FilterView: View {
                     .fontWeight(.medium)
                     .accentColor(Color("black"))
             }.padding(.horizontal, 10)
-                .padding(.vertical, 6)
+            .padding(.vertical, 6)
         }
         .background(Color(isSelected ? "buttonWhite" : "transparent"))
         .cornerRadius(15)
-        .shadow(color: isSelected ? Color(.black).opacity(0.1) : Color("transparent"), radius: 4, x: 4, y: 2)
+        .shadow(color: isSelected ?Color("black").opacity(0.1) : Color("transparent"), radius: 5, x: 4, y: 4)
     }
 }
 
@@ -176,47 +290,15 @@ struct NoConnectionCard: View {
                     .resizable()
                     .scaledToFit()
                 Text("Stelle sicher, dass du mit dem Internet verbunden bist")
-                    .font(.title)
+                    .font(.system(size: 16))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
-                Button(action: {
-                    // What to perform
-                }) {
-                    Text("Quelle")
-                        .foregroundColor(.secondary)
-                        .font(.footnote)
-                        .multilineTextAlignment(.center)
-                        .padding(5)
-                }
                 Spacer()
-                HStack {
-                    Button(action: {
-                        
-                    }) {
-                        Image(systemName: "checkmark")
-                            .font(.system(size: 25))
-                            .foregroundColor(Color("black"))
-                            .padding(30)
-                            .padding(.leading, 30)
-                        
-                    }
-                    Spacer()
-                    Button(action: {
-                        
-                    }) {
-                        Image(systemName: "bookmark")
-                            .font(.system(size: 25))
-                            .foregroundColor(Color("black"))
-                            .padding(40)
-                            .padding(.trailing, 30)
-                    }
-                }
-                
             }
-            .background(Color("white"))
+            .background(Color("buttonWhite"))
             .cornerRadius(15)
             .shadow(color: Color(.black).opacity(0.1), radius: 10, x: 8, y: 6)
-        }.frame(width: UIScreen.main.bounds.width - 40, height: UIScreen.main.bounds.height/2.1)
-            .padding(.vertical, 10)
+        }.frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height/2.1)
+        .padding(.vertical, 10)
     }
 }

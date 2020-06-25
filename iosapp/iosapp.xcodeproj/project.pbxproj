@@ -13,10 +13,10 @@
 		B712CD162489747800A883A1 /* TippCardsPager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B712CD152489747800A883A1 /* TippCardsPager.swift */; };
 		B725218A248FDF9C00C43507 /* TippCardList.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7252189248FDF9C00C43507 /* TippCardList.swift */; };
 		B7481A39248AC9B900C4CCF1 /* AddTippView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7481A38248AC9B900C4CCF1 /* AddTippView.swift */; };
-		B7481A3B248ACDC700C4CCF1 /* AddTippCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7481A3A248ACDC700C4CCF1 /* AddTippCards.swift */; };
 		B7494059248CF9E700933A37 /* AddTippCard2.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7494058248CF9E700933A37 /* AddTippCard2.swift */; };
 		B7649E312490F3AB0079984A /* TippController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7649E302490F3AB0079984A /* TippController.swift */; };
 		B7649E33249105540079984A /* TippView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7649E32249105540079984A /* TippView.swift */; };
+		B767BC8E24A12C6F00D88810 /* Neumorphic in Frameworks */ = {isa = PBXBuildFile; productRef = B767BC8D24A12C6F00D88810 /* Neumorphic */; };
 		B77784E5248BDB7500C58AEE /* TippCardsCustom.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77784E4248BDB7500C58AEE /* TippCardsCustom.swift */; };
 		B77784E7248BDBA600C58AEE /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77784E6248BDBA600C58AEE /* PageViewController.swift */; };
 		B77784E9248BDC7700C58AEE /* PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77784E8248BDC7700C58AEE /* PageView.swift */; };
@@ -27,6 +27,13 @@
 		B7846972248D7B6C000A4331 /* TippDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7846971248D7B6C000A4331 /* TippDataStore.swift */; };
 		B7846974248D7D3D000A4331 /* TippCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7846973248D7D3D000A4331 /* TippCard.swift */; };
 		B7874C07249A48CA0045D609 /* LevelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7874C06249A48CA0045D609 /* LevelView.swift */; };
+		B7874C0B249D3E8C0045D609 /* ProfilTippView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7874C0A249D3E8C0045D609 /* ProfilTippView.swift */; };
+		B7874C0E249D48FB0045D609 /* ProfilHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7874C0D249D48FB0045D609 /* ProfilHomeView.swift */; };
+		B7874C11249E84A30045D609 /* TagebuchTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7874C10249E84A20045D609 /* TagebuchTabView.swift */; };
+		B7874C13249E84F50045D609 /* EntwicklungTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7874C12249E84F50045D609 /* EntwicklungTabView.swift */; };
+		B7874C16249E85520045D609 /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = B7874C15249E85520045D609 /* SwiftUICharts */; };
+		B7874C19249E96B10045D609 /* EntwicklungGraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7874C18249E96B10045D609 /* EntwicklungGraphView.swift */; };
+		B7874C1C249EA28C0045D609 /* AddTagebuchCard1.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7874C1B249EA28C0045D609 /* AddTagebuchCard1.swift */; };
 		B7919AEF24981BBD00014240 /* success.json in Resources */ = {isa = PBXBuildFile; fileRef = B7919AEE24981BBD00014240 /* success.json */; };
 		B7919AF224981C1900014240 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = B7919AF124981C1900014240 /* Lottie */; };
 		B7919AF424981C5B00014240 /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7919AF324981C5B00014240 /* LottieView.swift */; };
@@ -39,10 +46,14 @@
 		B7A8CBE8242C10C80036FD6E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B7A8CBE6242C10C80036FD6E /* LaunchScreen.storyboard */; };
 		B7A8CBF3242C10C80036FD6E /* iosappTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A8CBF2242C10C80036FD6E /* iosappTests.swift */; };
 		B7A8CBFE242C10C80036FD6E /* iosappUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A8CBFD242C10C80036FD6E /* iosappUITests.swift */; };
+		B7B4D9BA249EB4690055708E /* AddTagebuchCard2.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B4D9B9249EB4690055708E /* AddTagebuchCard2.swift */; };
+		B7B4D9BC249FBC910055708E /* TabBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B4D9BB249FBC910055708E /* TabBarView.swift */; };
+		B7B4D9BE249FC7990055708E /* ChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7B4D9BD249FC7990055708E /* ChallengeView.swift */; };
 		B7CB3F28243A6D6600E4A0C7 /* TippData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7CB3F27243A6D6600E4A0C7 /* TippData.swift */; };
 		B7CF0F6D2497C02C00595EB2 /* RateTippData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7CF0F6C2497C02C00595EB2 /* RateTippData.swift */; };
 		B7CF0F6F2497C0C300595EB2 /* RateTippDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7CF0F6E2497C0C300595EB2 /* RateTippDataStore.swift */; };
 		B7CF27B6249035DA009058E8 /* RateTippView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7CF27B5249035DA009058E8 /* RateTippView.swift */; };
+		B7D5990024A393BB004EFB66 /* CardListTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D598FF24A393BB004EFB66 /* CardListTest.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,7 +79,6 @@
 		B712CD152489747800A883A1 /* TippCardsPager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippCardsPager.swift; sourceTree = "<group>"; };
 		B7252189248FDF9C00C43507 /* TippCardList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippCardList.swift; sourceTree = "<group>"; };
 		B7481A38248AC9B900C4CCF1 /* AddTippView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTippView.swift; sourceTree = "<group>"; };
-		B7481A3A248ACDC700C4CCF1 /* AddTippCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTippCards.swift; sourceTree = "<group>"; };
 		B7494058248CF9E700933A37 /* AddTippCard2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTippCard2.swift; sourceTree = "<group>"; };
 		B7649E302490F3AB0079984A /* TippController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippController.swift; sourceTree = "<group>"; };
 		B7649E32249105540079984A /* TippView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippView.swift; sourceTree = "<group>"; };
@@ -82,6 +92,12 @@
 		B7846971248D7B6C000A4331 /* TippDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippDataStore.swift; sourceTree = "<group>"; };
 		B7846973248D7D3D000A4331 /* TippCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippCard.swift; sourceTree = "<group>"; };
 		B7874C06249A48CA0045D609 /* LevelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelView.swift; sourceTree = "<group>"; };
+		B7874C0A249D3E8C0045D609 /* ProfilTippView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilTippView.swift; sourceTree = "<group>"; };
+		B7874C0D249D48FB0045D609 /* ProfilHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilHomeView.swift; sourceTree = "<group>"; };
+		B7874C10249E84A20045D609 /* TagebuchTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagebuchTabView.swift; sourceTree = "<group>"; };
+		B7874C12249E84F50045D609 /* EntwicklungTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntwicklungTabView.swift; sourceTree = "<group>"; };
+		B7874C18249E96B10045D609 /* EntwicklungGraphView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntwicklungGraphView.swift; sourceTree = "<group>"; };
+		B7874C1B249EA28C0045D609 /* AddTagebuchCard1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagebuchCard1.swift; sourceTree = "<group>"; };
 		B7919AEE24981BBD00014240 /* success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = success.json; sourceTree = "<group>"; };
 		B7919AF324981C5B00014240 /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
 		B7919AF524981E3F00014240 /* SuccessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessView.swift; sourceTree = "<group>"; };
@@ -99,10 +115,14 @@
 		B7A8CBF9242C10C80036FD6E /* iosappUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = iosappUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7A8CBFD242C10C80036FD6E /* iosappUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iosappUITests.swift; sourceTree = "<group>"; };
 		B7A8CBFF242C10C80036FD6E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B7B4D9B9249EB4690055708E /* AddTagebuchCard2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagebuchCard2.swift; sourceTree = "<group>"; };
+		B7B4D9BB249FBC910055708E /* TabBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarView.swift; sourceTree = "<group>"; };
+		B7B4D9BD249FC7990055708E /* ChallengeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeView.swift; sourceTree = "<group>"; };
 		B7CB3F27243A6D6600E4A0C7 /* TippData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippData.swift; sourceTree = "<group>"; };
 		B7CF0F6C2497C02C00595EB2 /* RateTippData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateTippData.swift; sourceTree = "<group>"; };
 		B7CF0F6E2497C0C300595EB2 /* RateTippDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateTippDataStore.swift; sourceTree = "<group>"; };
 		B7CF27B5249035DA009058E8 /* RateTippView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateTippView.swift; sourceTree = "<group>"; };
+		B7D598FF24A393BB004EFB66 /* CardListTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardListTest.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +130,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B767BC8E24A12C6F00D88810 /* Neumorphic in Frameworks */,
+				B7874C16249E85520045D609 /* SwiftUICharts in Frameworks */,
 				B712CD14248973CD00A883A1 /* SwiftUIPager in Frameworks */,
 				B7919AF224981C1900014240 /* Lottie in Frameworks */,
 			);
@@ -136,7 +158,6 @@
 			isa = PBXGroup;
 			children = (
 				B7481A38248AC9B900C4CCF1 /* AddTippView.swift */,
-				B7481A3A248ACDC700C4CCF1 /* AddTippCards.swift */,
 				B7494058248CF9E700933A37 /* AddTippCard2.swift */,
 				B7846969248D0A21000A4331 /* AddTippCard3.swift */,
 				B784696D248D2C13000A4331 /* AddTippCard4.swift */,
@@ -152,9 +173,32 @@
 				B7649E32249105540079984A /* TippView.swift */,
 				B7846973248D7D3D000A4331 /* TippCard.swift */,
 				B7252189248FDF9C00C43507 /* TippCardList.swift */,
+				B7D598FF24A393BB004EFB66 /* CardListTest.swift */,
 				B77784E4248BDB7500C58AEE /* TippCardsCustom.swift */,
 			);
 			path = Tipps;
+			sourceTree = "<group>";
+		};
+		B7874C0F249E84830045D609 /* Profil */ = {
+			isa = PBXGroup;
+			children = (
+				B70BF79E2487EA8000B4C911 /* ProfilView.swift */,
+				B7874C0A249D3E8C0045D609 /* ProfilTippView.swift */,
+				B7874C0D249D48FB0045D609 /* ProfilHomeView.swift */,
+			);
+			path = Profil;
+			sourceTree = "<group>";
+		};
+		B7874C1A249EA2610045D609 /* Tagebuch */ = {
+			isa = PBXGroup;
+			children = (
+				B70BF7A02487EAC200B4C911 /* TagebuchView.swift */,
+				B7B4D9B8249EB4550055708E /* AddTagebuch */,
+				B7874C10249E84A20045D609 /* TagebuchTabView.swift */,
+				B7874C12249E84F50045D609 /* EntwicklungTabView.swift */,
+				B7874C18249E96B10045D609 /* EntwicklungGraphView.swift */,
+			);
+			path = Tagebuch;
 			sourceTree = "<group>";
 		};
 		B7919AED24981BBC00014240 /* Lottie */ = {
@@ -190,14 +234,16 @@
 			children = (
 				B7A8CBDB242C10C50036FD6E /* AppDelegate.swift */,
 				B7874C06249A48CA0045D609 /* LevelView.swift */,
+				B7B4D9BB249FBC910055708E /* TabBarView.swift */,
 				B7A8CBDD242C10C50036FD6E /* SceneDelegate.swift */,
+				B7B4D9BD249FC7990055708E /* ChallengeView.swift */,
 				B7494057248CF98400933A37 /* AddTipp */,
 				B7A8CBDF242C10C50036FD6E /* ContentView.swift */,
 				B7CF27B5249035DA009058E8 /* RateTippView.swift */,
 				B7BF71BD2497CF76007A3A92 /* Data */,
 				B7649E3524912F4E0079984A /* Tipps */,
-				B70BF79E2487EA8000B4C911 /* ProfilView.swift */,
-				B70BF7A02487EAC200B4C911 /* TagebuchView.swift */,
+				B7874C0F249E84830045D609 /* Profil */,
+				B7874C1A249EA2610045D609 /* Tagebuch */,
 				B7919AF524981E3F00014240 /* SuccessView.swift */,
 				B7919AF324981C5B00014240 /* LottieView.swift */,
 				B77784E8248BDC7700C58AEE /* PageView.swift */,
@@ -238,6 +284,15 @@
 			path = iosappUITests;
 			sourceTree = "<group>";
 		};
+		B7B4D9B8249EB4550055708E /* AddTagebuch */ = {
+			isa = PBXGroup;
+			children = (
+				B7874C1B249EA28C0045D609 /* AddTagebuchCard1.swift */,
+				B7B4D9B9249EB4690055708E /* AddTagebuchCard2.swift */,
+			);
+			path = AddTagebuch;
+			sourceTree = "<group>";
+		};
 		B7BF71BD2497CF76007A3A92 /* Data */ = {
 			isa = PBXGroup;
 			children = (
@@ -269,6 +324,8 @@
 			packageProductDependencies = (
 				B712CD13248973CD00A883A1 /* SwiftUIPager */,
 				B7919AF124981C1900014240 /* Lottie */,
+				B7874C15249E85520045D609 /* SwiftUICharts */,
+				B767BC8D24A12C6F00D88810 /* Neumorphic */,
 			);
 			productName = iosapp;
 			productReference = B7A8CBD8242C10C50036FD6E /* SustainableLife.app */;
@@ -345,6 +402,8 @@
 			packageReferences = (
 				B712CD12248973CD00A883A1 /* XCRemoteSwiftPackageReference "SwiftUIPager" */,
 				B7919AF024981C1900014240 /* XCRemoteSwiftPackageReference "lottie-ios" */,
+				B7874C14249E85510045D609 /* XCRemoteSwiftPackageReference "ChartView" */,
+				B767BC8C24A12C6F00D88810 /* XCRemoteSwiftPackageReference "neumorphic" */,
 			);
 			productRefGroup = B7A8CBD9242C10C50036FD6E /* Products */;
 			projectDirPath = "";
@@ -393,15 +452,20 @@
 				B7649E33249105540079984A /* TippView.swift in Sources */,
 				B7A8CBDC242C10C50036FD6E /* AppDelegate.swift in Sources */,
 				B77784E5248BDB7500C58AEE /* TippCardsCustom.swift in Sources */,
+				B7874C0B249D3E8C0045D609 /* ProfilTippView.swift in Sources */,
 				B77784E7248BDBA600C58AEE /* PageViewController.swift in Sources */,
 				B7919AF624981E3F00014240 /* SuccessView.swift in Sources */,
+				B7D5990024A393BB004EFB66 /* CardListTest.swift in Sources */,
 				B77784E9248BDC7700C58AEE /* PageView.swift in Sources */,
+				B7874C11249E84A30045D609 /* TagebuchTabView.swift in Sources */,
+				B7874C1C249EA28C0045D609 /* AddTagebuchCard1.swift in Sources */,
 				B784696C248D25BD000A4331 /* KeyboardResponder.swift in Sources */,
 				B7846970248D2E28000A4331 /* AddTippCard5.swift in Sources */,
 				B7CF0F6F2497C0C300595EB2 /* RateTippDataStore.swift in Sources */,
 				B784696E248D2C13000A4331 /* AddTippCard4.swift in Sources */,
-				B7481A3B248ACDC700C4CCF1 /* AddTippCards.swift in Sources */,
+				B7B4D9BA249EB4690055708E /* AddTagebuchCard2.swift in Sources */,
 				B725218A248FDF9C00C43507 /* TippCardList.swift in Sources */,
+				B7874C19249E96B10045D609 /* EntwicklungGraphView.swift in Sources */,
 				B784696A248D0A21000A4331 /* AddTippCard3.swift in Sources */,
 				B70BF79F2487EA8000B4C911 /* ProfilView.swift in Sources */,
 				B7481A39248AC9B900C4CCF1 /* AddTippView.swift in Sources */,
@@ -409,12 +473,16 @@
 				B7846974248D7D3D000A4331 /* TippCard.swift in Sources */,
 				B7A8CBDE242C10C50036FD6E /* SceneDelegate.swift in Sources */,
 				B712CD162489747800A883A1 /* TippCardsPager.swift in Sources */,
+				B7B4D9BC249FBC910055708E /* TabBarView.swift in Sources */,
 				B70BF7A12487EAC200B4C911 /* TagebuchView.swift in Sources */,
 				B7494059248CF9E700933A37 /* AddTippCard2.swift in Sources */,
 				B7874C07249A48CA0045D609 /* LevelView.swift in Sources */,
+				B7874C0E249D48FB0045D609 /* ProfilHomeView.swift in Sources */,
 				B7CF0F6D2497C02C00595EB2 /* RateTippData.swift in Sources */,
+				B7874C13249E84F50045D609 /* EntwicklungTabView.swift in Sources */,
 				B7919AF424981C5B00014240 /* LottieView.swift in Sources */,
 				B7A8CBE0242C10C50036FD6E /* ContentView.swift in Sources */,
+				B7B4D9BE249FC7990055708E /* ChallengeView.swift in Sources */,
 				B7CF27B6249035DA009058E8 /* RateTippView.swift in Sources */,
 				B7CB3F28243A6D6600E4A0C7 /* TippData.swift in Sources */,
 				B7846972248D7B6C000A4331 /* TippDataStore.swift in Sources */,
@@ -756,6 +824,22 @@
 				minimumVersion = 1.6.0;
 			};
 		};
+		B767BC8C24A12C6F00D88810 /* XCRemoteSwiftPackageReference "neumorphic" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/costachung/neumorphic/";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.0;
+			};
+		};
+		B7874C14249E85510045D609 /* XCRemoteSwiftPackageReference "ChartView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AppPear/ChartView";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.1;
+			};
+		};
 		B7919AF024981C1900014240 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/airbnb/lottie-ios.git";
@@ -771,6 +855,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B712CD12248973CD00A883A1 /* XCRemoteSwiftPackageReference "SwiftUIPager" */;
 			productName = SwiftUIPager;
+		};
+		B767BC8D24A12C6F00D88810 /* Neumorphic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B767BC8C24A12C6F00D88810 /* XCRemoteSwiftPackageReference "neumorphic" */;
+			productName = Neumorphic;
+		};
+		B7874C15249E85520045D609 /* SwiftUICharts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B7874C14249E85510045D609 /* XCRemoteSwiftPackageReference "ChartView" */;
+			productName = SwiftUICharts;
 		};
 		B7919AF124981C1900014240 /* Lottie */ = {
 			isa = XCSwiftPackageProductDependency;
