@@ -12,8 +12,10 @@ struct TippView: View {
     
     @State var tipps: [Tipp] = []
     @State var showAddTipps = false
-    @State var model = ToggleModel()
-//    @Binding var filter = []
+    @Binding var isDark: Bool
+    @Binding var appearenceDark: Bool
+    
+    @ObservedObject var storeTipps = TippDataStore()
     
     var body: some View {
         NavigationView {
@@ -32,8 +34,9 @@ struct TippView: View {
 
                         Spacer()
                         Button(action: {
-                            self.model.isDark.toggle()
-                            UserDefaults.standard.set(self.model.isDark, forKey: "isDark")
+                            isDark.toggle()
+                            appearenceDark.toggle()
+                            UserDefaults.standard.set(appearenceDark, forKey: "appearenceDark")
                             impact(style: .medium)
                         }) {
                             Image(systemName: "moon.circle")
@@ -106,6 +109,13 @@ struct TippView: View {
             }.accentColor(.primary)
             .navigationBarTitle("")
             .navigationBarHidden(true)
+            .onAppear {
+                if appearenceDark {
+                    isDark = false
+                }else{
+                    isDark = true
+                }
+            }
         }
     }
 }
@@ -113,6 +123,6 @@ struct TippView: View {
 struct TippView_Previews: PreviewProvider {
     var model = ToggleModel()
     static var previews: some View {
-        TippView()
+        TippView(isDark: .constant(false), appearenceDark: .constant(false))
     }
 }

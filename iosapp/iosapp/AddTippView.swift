@@ -34,7 +34,7 @@ struct AddTippView: View {
         NavigationView {
             VStack {
                 HStack {
-                    Text("Tipp posten")
+                    Text("Tipp posten:")
                         .font(.title)
                         .fontWeight(.bold)
                         .padding(.leading, 20)
@@ -89,6 +89,7 @@ struct AddTippView: View {
                                         .resizable()
                                         .scaledToFit()
                                         .accentColor(Color(self.nahrungSelected ? "white" : "black"))
+                                        .offset(y: 3)
                                     Text("Nahrung")
                                         .font(.subheadline).fontWeight(.medium)
                                         .fixedSize()
@@ -118,6 +119,7 @@ struct AddTippView: View {
                                         .resizable()
                                         .scaledToFit()
                                         .accentColor(Color(self.transportSelected ? "white" : "black"))
+                                        .offset(y: 3)
                                     Text("Transport")
                                         .font(.subheadline).fontWeight(.medium)
                                         .foregroundColor(Color(self.transportSelected ? "white" : "black"))
@@ -146,6 +148,7 @@ struct AddTippView: View {
                                         .resizable()
                                         .scaledToFit()
                                         .accentColor(Color(self.recyclingSelected ? "white" : "black"))
+                                        .offset(y: 3)
                                     Text("Recycling")
                                         .font(.subheadline).fontWeight(.medium)
                                         .foregroundColor(Color(self.recyclingSelected ? "white" : "black"))
@@ -171,10 +174,11 @@ struct AddTippView: View {
                                 self.category = "Ressourcen"
                             }) {
                                 VStack {
-                                    Image(uiImage: #imageLiteral(resourceName: "blackRecycle"))
+                                    Image(uiImage: #imageLiteral(resourceName: "Ressourcen"))
                                         .resizable()
                                         .scaledToFit()
                                         .accentColor(Color(self.ressourcenSelected ? "white" : "black"))
+                                        .offset(y: 3)
                                     Text("Ressourcen")
                                         .font(.subheadline).fontWeight(.medium)
                                         .foregroundColor(Color(self.ressourcenSelected ? "white" : "black"))

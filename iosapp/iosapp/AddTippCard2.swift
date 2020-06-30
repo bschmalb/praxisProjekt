@@ -26,7 +26,7 @@ struct AddTippCard2: View {
     var body: some View {
         VStack {
             HStack {
-                Text("Tipp posten")
+                Text("Tipp posten:")
                     .font(.title)
                     .fontWeight(.bold)
                     .padding(.leading, 20)
@@ -63,7 +63,7 @@ struct AddTippCard2: View {
                     HStack (spacing: 20) {
                         
                         Button(action: {
-                            haptic(type: .success)
+                            impact(style: .medium)
                             
                             self.mittelSelected = false
                             self.schwerSelected = false
@@ -89,7 +89,7 @@ struct AddTippCard2: View {
                             
                         }
                         Button(action: {
-                            haptic(type: .success)
+                            impact(style: .medium)
                             
                             self.leichtSelected = false
                             self.schwerSelected = false
@@ -121,7 +121,7 @@ struct AddTippCard2: View {
                             
                         }
                         Button(action: {
-                            haptic(type: .success)
+                            impact(style: .medium)
                             
                             self.leichtSelected = false
                             self.mittelSelected = false
@@ -172,23 +172,19 @@ struct AddTippCard2: View {
                     }.padding(20)
                 }.accentColor(Color("black"))
             }.onAppear(){
-                //            if (self.nahrungSelected) {
-                //                self.category = "Nahrung"
-                //            }
-                //            if (self.transportSelected) {
-                //                self.category = "Transport"
-                //            }
-                //            if (self.recyclingSelected) {
-                //                self.category = "Recycling"
-                //            }
-                //            if (self.ressourcenSelected) {
-                //                self.category = "Ressourcen"
-                //            }
-                //            print(self.category)
-                
+                impact(style: .medium)
             }
             Spacer()
-        }.accentColor(Color("black"))
+        }
+        .gesture(DragGesture()
+        .onChanged({ (value) in
+            if (value.translation.width > 0) {
+                if (value.translation.width > 30) {
+                    self.mode.wrappedValue.dismiss()
+                }
+            }
+        }))
+        .accentColor(Color("black"))
         .animation(.spring())
         
         

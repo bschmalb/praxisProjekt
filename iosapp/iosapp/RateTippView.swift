@@ -12,8 +12,6 @@ struct RateTippView: View {
     
     @ObservedObject var store2 = RateTippDataStore()
     
-    //    var bewertenTipps: [Tipp] = store.tipps
-    
     @State private var showAddTipps2 = false
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     @State var counter = 0
@@ -60,13 +58,11 @@ struct RateTippView: View {
                     }.padding()
                     
                     if (!endReached && !store2.rateTipps.isEmpty) {
-                        if (store2.rateTipps[counter].score < 20) {
-                            TippCard(isChecked: self.$store2.rateTipps[counter].isChecked, isBookmarked: self.$store2.rateTipps[counter].isBookmarked, tipp: store2.rateTipps[counter])
+                        TippCard(isChecked: self.$store2.rateTipps[counter].isChecked, isBookmarked: self.$store2.rateTipps[counter].isBookmarked, tipp: store2.rateTipps[counter])
                                 .animation(.spring())
-                        }
                     }
                     else if (!store2.rateTipps.isEmpty) {
-                        TippCard(isChecked: .constant(false), isBookmarked: .constant(false), tipp: Tipp(id: "123", title: "Vorerst keine weiteren Tipps mehr zum bewerten verfügbar", source: "", level: "", category: "Success Work", score: 0))
+                        TippCard(isChecked: .constant(false), isBookmarked: .constant(false), tipp: Tipp(id: "123", title: "Vorerst keine weiteren Tipps mehr zum bewerten verfügbar", source: "", level: "", category: "Success Work", score: 0, postedBy: "123"))
                             .animation(.spring())
                     }
                     else {
@@ -161,7 +157,6 @@ func patchScore(id: String, thumb: String) {
     guard let url = URL(string: "http://bastianschmalbach.ddns.net/tipps/" + id + "?thumb=" + thumb) else { return }
     var request = URLRequest(url: url)
     request.httpMethod = "PATCH"
-    print(url)
     
     URLSession.shared.dataTask(with: request) { data, response, error in
         

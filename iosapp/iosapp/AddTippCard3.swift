@@ -28,7 +28,7 @@ struct AddTippCard3: View {
     var body: some View {
         VStack {
             HStack {
-                Text("Tipp posten")
+                Text("Tipp posten:")
                     .font(.title)
                     .fontWeight(.bold)
                     .padding(.leading, 20)
@@ -58,7 +58,7 @@ struct AddTippCard3: View {
                             .resizable()
                             .scaledToFit()
                             .animation(.easeInOut)
-                        Text("Wähle einen Titel für deinen Tipp")
+                        Text("Gebe deinen Tipp ein")
                             .font(.title)
                             .fontWeight(.medium)
                             .multilineTextAlignment(.center)
@@ -112,6 +112,17 @@ struct AddTippCard3: View {
                 self.hideKeyboard()
             }
         }.animation(.spring())
+        .gesture(DragGesture()
+        .onChanged({ (value) in
+            if (value.translation.width > 0) {
+                if (value.translation.width > 30) {
+                    self.mode.wrappedValue.dismiss()
+                }
+            }
+        }))
+        .onAppear {
+            impact(style: .medium)
+        }
     }
 }
 

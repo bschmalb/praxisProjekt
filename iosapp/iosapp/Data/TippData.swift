@@ -15,11 +15,12 @@ struct Tipp: Codable, Hashable, Identifiable{
     let level: String
     let category: String
     var score: Int16
+    var postedBy: String?
     var isChecked: Bool = false
     var isBookmarked: Bool = false
     
     enum CodingKeys: String, CodingKey {
-        case id, title, source, level, category, score
+        case id, title, source, level, category, score, postedBy
     }
 }
 

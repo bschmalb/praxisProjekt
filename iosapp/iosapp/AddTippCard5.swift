@@ -15,6 +15,7 @@ struct PostTipp: Codable {
     let category: String
     let level: String
     let score: Int16
+    let postedBy: String
 }
 
 struct AddTippCard5: View {
@@ -34,171 +35,189 @@ struct AddTippCard5: View {
     
     
     var body: some View {
-        VStack {
-            HStack {
-                Text("Tipp posten")
-                    .font(.title)
-                    .fontWeight(.bold)
-                    .padding(.leading, 20)
-                
-                Spacer()
-                Button(action: {
-                    self.showAddTipps = false
-                }) {
-                    Image(systemName: "xmark.circle")
+        ZStack {
+            VStack {
+                HStack {
+                    Text("Tipp posten:")
                         .font(.title)
-                        .padding(10)
-                        .padding(.trailing, 15)
-                }
-            }
-            .padding(.top, 30)
-            ZStack {
-                VStack {
-                    HStack {
-                        Spacer()
-                        Text("5/5").bold().padding(20).foregroundColor(Color.secondary)
-                    }
-                    Spacer()
-                }
-                VStack {
-                    Spacer()
-                    Text("Hier ist eine Vorschau deines Tipp:")
-                        .font(.system(size: 20))
-                        .padding(.horizontal, 20)
-                        .animation(.spring())
+                        .fontWeight(.bold)
+                        .padding(.leading, 20)
                     
-                    ZStack {
-                        VStack{
+                    Spacer()
+                    Button(action: {
+                        self.showAddTipps = false
+                    }) {
+                        Image(systemName: "xmark.circle")
+                            .font(.title)
+                            .padding(10)
+                            .padding(.trailing, 15)
+                    }
+                }
+                .padding(.top, 30)
+                ZStack {
+                    VStack {
+                        HStack {
                             Spacer()
-                            Image("I"+category)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(minHeight: 150, maxHeight: 200)
-                            Text(tippTitel)
-                                .font(.title)
-                                .foregroundColor(Color("alwaysblack"))
-                                .multilineTextAlignment(.center)
-                                .padding(.horizontal)
-                                .onTapGesture {
-                                    self.mode.wrappedValue.dismiss()
-                                    self.mode.wrappedValue.dismiss()
-                            }
-                            Button(action: {
-                                self.mode.wrappedValue.dismiss()
-                            }) {
-                                Text(quelle)
-                                    .font(.footnote)
+                            Text("5/5").bold().padding(20).foregroundColor(Color.secondary)
+                        }
+                        Spacer()
+                    }
+                    VStack {
+                        Spacer()
+                        //                        Text("Vorschau deines Tipp:")
+                        //                            .font(.system(size: 20))
+                        //                            .foregroundColor(Color("black").opacity(0.5))
+                        //                            .padding(.horizontal, 20)
+                        //                            .animation(.spring())
+                        
+                        ZStack {
+                            VStack{
+                                Spacer()
+                                Image("I"+category)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(minHeight: 150, maxHeight: 200)
+                                Text(tippTitel)
+                                    .font(.title)
                                     .foregroundColor(Color("alwaysblack"))
                                     .multilineTextAlignment(.center)
-                                    .padding(5)
-                            }
-                            Spacer()
-                            HStack {
-                                Image(systemName: "checkmark")
-                                    .font(.system(size: 25))
-                                    .foregroundColor(.black)
-                                    .opacity(0.1)
-                                    .padding(.bottom, 30)
-                                    .padding(.leading, 60)
+                                    .padding(.horizontal)
+                                //                                    .onTapGesture {
+                                //                                        self.mode.wrappedValue.dismiss()
+                                //                                        self.mode.wrappedValue.dismiss()
+                                //                                }
+                                Button(action: {
+                                    //                                    self.mode.wrappedValue.dismiss()
+                                }) {
+                                    Text(quelle)
+                                        .font(.footnote)
+                                        .foregroundColor(Color("alwaysblack"))
+                                        .multilineTextAlignment(.center)
+                                        .padding(5)
+                                }
                                 Spacer()
-                                Image(systemName: "bookmark")
-                                    .font(.system(size: 25))
-                                    .foregroundColor(.black)
-                                    .opacity(0.1)
-                                    .padding(.bottom, 30)
-                                    .padding(.trailing, 60)
+                                HStack {
+                                    Image(systemName: "checkmark")
+                                        .font(.system(size: 25))
+                                        .foregroundColor(.black)
+                                        .opacity(0.1)
+                                        .padding(.bottom, 30)
+                                        .padding(.leading, 60)
+                                    Spacer()
+                                    Image(systemName: "bookmark")
+                                        .font(.system(size: 25))
+                                        .foregroundColor(.black)
+                                        .opacity(0.1)
+                                        .padding(.bottom, 30)
+                                        .padding(.trailing, 60)
+                                }
                             }
-                        }
-                        .frame(width: UIScreen.main.bounds.width - 40, height:
-                            375)
+                            .frame(width: UIScreen.main.bounds.width - 40, height:
+                                    375)
                             .background(Color("cardgreen2"))
                             .cornerRadius(15)
                             .shadow(radius: 5)
-                        VStack {
-                            HStack(alignment: .top) {
-                                Image(category)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 30, height: 30)
-                                    .opacity(0.1)
-                                    .padding(.leading, 30)
-                                    .padding(.vertical)
-                                Image(level)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 30, height: 30)
-                                    .opacity(0.1)
-                                    .padding(.vertical)
+                            VStack {
+                                HStack(alignment: .top) {
+                                    Image(category)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 30, height: 30)
+                                        .opacity(0.1)
+                                        .padding(.leading, 30)
+                                        .padding(.vertical)
+                                    Image(level)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 30, height: 30)
+                                        .opacity(0.1)
+                                        .padding(.vertical)
+                                    Spacer()
+                                }
                                 Spacer()
-                            }
-                            Spacer()
-                        }.frame(width: UIScreen.main.bounds.width - 40, height:
-                            375)
-                    }
-                    Spacer()
-                    HStack {
-                        Button (action: {
-                            self.mode.wrappedValue.dismiss()
-                        }) {
-                            Image(systemName: "arrow.left")
-                                .font(.headline)
-                                .padding(5)
-                                .frame(width: 80, height: 40)
+                            }.frame(width: UIScreen.main.bounds.width - 40, height:
+                                        375)
                         }
                         Spacer()
-                        Button (action: {
-                            self.postTipp()
-                        })
-                        {
-                            Text("Posten!")
-                                .font(.headline)
-                                .accentColor(Color("white"))
-                                .padding(5)
-                                .frame(width: 100, height: 40)
-                                .background(Color("blue"))
-                                .cornerRadius(15)
+                        HStack {
+                            Button (action: {
+                                self.mode.wrappedValue.dismiss()
+                            }) {
+                                Image(systemName: "arrow.left")
+                                    .font(.headline)
+                                    .padding(5)
+                                    .frame(width: 80, height: 40)
+                            }
+                            Spacer()
+                            Button (action: {
+                                haptic(type: .success)
+                                self.postTipp()
+                            })
+                            {
+                                Text("Posten!")
+                                    .font(.headline)
+                                    .accentColor(Color("white"))
+                                    .padding(5)
+                                    .frame(width: 100, height: 40)
+                                    .background(Color("blue"))
+                                    .cornerRadius(15)
+                            }
                         }
+                        .padding(.horizontal, 20)
+                        .padding(.bottom, 20)
+                    }.accentColor(Color("black"))
+                }.modifier(DismissingKeyboard())
+            }
+            .animation(.spring())
+            .onAppear {
+                impact(style: .medium)
+            }
+            .gesture(DragGesture()
+                        .onChanged({ (value) in
+                            if (value.translation.width > 0) {
+                                if (value.translation.width > 30) {
+                                    self.mode.wrappedValue.dismiss()
+                                }
+                            }
+                        }))
+            if isSuccess {
+                SuccessView()
+                    .onTapGesture {
+                        self.showAddTipps = false
+                        self.isSuccess = false
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.bottom, 20)
-                }.accentColor(Color("black"))
-                if isSuccess {
-                    SuccessView()
-                        .onTapGesture {
-                            self.showAddTipps = false
-                            self.isSuccess = false
-                    }
-                }
-            }.modifier(DismissingKeyboard())
-        }.animation(.spring())
+            }
+        }
     }
     
     func postTipp(){
-        let tippData = PostTipp(id: UUID(), title: self.tippTitel, source: self.quelle, category: self.category, level: self.level, score: 0)
-        
-        guard let encoded = try? JSONEncoder().encode(tippData) else {
-            print("Failed to encode order")
-            return
-        }
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/tipps") else { return }
-        var request = URLRequest(url: url)
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpMethod = "POST"
-        request.httpBody = encoded
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data else {
-                print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
+        if let uuid = UIDevice.current.identifierForVendor?.uuidString {
+            let tippData = PostTipp(id: UUID(), title: self.tippTitel, source: self.quelle, category: self.category, level: self.level, score: 0, postedBy: uuid)
+            
+            guard let encoded = try? JSONEncoder().encode(tippData) else {
+                print("Failed to encode order")
                 return
             }
-            print(data)
+            guard let url = URL(string: "http://bastianschmalbach.ddns.net/tipps") else { return }
+            var request = URLRequest(url: url)
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpMethod = "POST"
+            request.httpBody = encoded
             
-            self.isSuccess = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 7, execute: {
-                self.showAddTipps = false;
-                self.isSuccess = false
-            })
-        }.resume()
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let data = data else {
+                    print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
+                    return
+                }
+                print(data)
+                
+                self.isSuccess = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 7, execute: {
+                    self.showAddTipps = false;
+                    self.isSuccess = false
+                })
+            }.resume()
+        }
     }
 }
 

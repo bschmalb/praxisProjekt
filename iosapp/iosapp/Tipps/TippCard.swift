@@ -10,13 +10,11 @@ import SwiftUI
 
 struct TippCard: View {
     
-//    @ObservedObject var store = TippDataStore()
+//    @ObservedObject var userStore = UserDataStore()
     
     @Binding var isChecked: Bool
     @Binding var isBookmarked: Bool
     var tipp: Tipp
-    
-//    var user: User
     
     var cardColors2: [String]  = [
         "cardgreen2", "cardblue2", "cardyellow2", "cardpurple2", "cardorange2", "cardred2", "cardturqouise2", "cardyelgre2", "cardpink2"
@@ -103,21 +101,30 @@ struct TippCard: View {
         }
     }
     func getUserTipps(){
+//        if (userStore.user.checkedTipps.contains(self.tipp.id)) {
+//            self.isChecked = true
+//        }
+//        if (userStore.user.savedTipps.contains(self.tipp.id)) {
+//            self.isBookmarked = true
+//        }
+        
         if let uuid = UIDevice.current.identifierForVendor?.uuidString {
             guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + uuid) else { return }
             let request = URLRequest(url: url)
-            
+
             URLSession.shared.dataTask(with: request) { data, response, error in
                 guard let data = data else {
                     print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
                     return
                 }
-                if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
-                    if (decodedResponse.checkedTipps.contains(self.tipp.id) ) {
-                        self.isChecked = true
-                    }
-                    if (decodedResponse.savedTipps.contains(self.tipp.id) ) {
-                        self.isBookmarked = true
+                DispatchQueue.main.async {
+                    if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
+                        if (decodedResponse.checkedTipps.contains(self.tipp.id) ) {
+                            self.isChecked = true
+                        }
+                        if (decodedResponse.savedTipps.contains(self.tipp.id) ) {
+                            self.isBookmarked = true
+                        }
                     }
                 }
             }.resume()
@@ -159,6 +166,6 @@ struct TippPatchSave : Encodable{
 
 struct TippCard_Previews: PreviewProvider {
     static var previews: some View {
-        TippCard(isChecked: .constant(false), isBookmarked: .constant(false), tipp: .init(id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", level: "Leicht", category: "Ernährung", score: 25))
+        TippCard(isChecked: .constant(false), isBookmarked: .constant(false), tipp: .init(id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", level: "Leicht", category: "Ernährung", score: 25, postedBy: "123"))
     }
 }

@@ -56,7 +56,7 @@ struct AddTagebuchCard1: View {
                     HStack (spacing: 20) {
                         
                         Button(action: {
-                            haptic(type: .success)
+                            impact(style: .medium)
                             self.secondKilometer = false
                             self.thirdKilometer = false
                             self.fourthKilometer = false
@@ -86,7 +86,7 @@ struct AddTagebuchCard1: View {
                             
                         }
                         Button(action: {
-                            haptic(type: .success)
+                            impact(style: .medium)
                             self.firstKilometer = false
                             self.thirdKilometer = false
                             self.fourthKilometer = false
@@ -115,7 +115,7 @@ struct AddTagebuchCard1: View {
                             
                         }
                         Button(action: {
-                            haptic(type: .success)
+                            impact(style: .medium)
                             self.firstKilometer = false
                             self.secondKilometer = false
                             self.fourthKilometer = false
@@ -145,7 +145,7 @@ struct AddTagebuchCard1: View {
                     }.padding(.bottom, 10)
                     HStack (spacing: 30) {
                         Button(action: {
-                            haptic(type: .success)
+                            impact(style: .medium)
                             self.firstKilometer = false
                             self.secondKilometer = false
                             self.thirdKilometer = false
@@ -175,7 +175,7 @@ struct AddTagebuchCard1: View {
                             }
                         }
                         Button(action: {
-                            haptic(type: .success)
+                            impact(style: .medium)
                             self.firstKilometer = false
                             self.secondKilometer = false
                             self.thirdKilometer = false

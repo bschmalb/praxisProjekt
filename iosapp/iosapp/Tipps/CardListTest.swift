@@ -8,44 +8,54 @@
 
 import SwiftUI
 
+@available(iOS 14.0, *)
 struct CardListTest: View {
+    
+    @StateObject var store3 = RateTippDataStore()
     
     @State var unfilteredTipps: [Tipp] = []
     @State var filteredTipps: [Tipp] = []
-    @State var rateTipps: [Tipp] = []
-    
-    @ObservedObject var store2 = RateTippDataStore()
     
     var body: some View {
         VStack {
-            GeometryReader { proxy in
-                UIScrollViewWrapper {
-                    HStack {
-                        ForEach(self.store2.rateTipps.indices, id: \.self) { index in
-                            HStack {
-                                GeometryReader { geometry in
-                                    TippCard(isChecked: self.$store2.rateTipps[index].isChecked, isBookmarked: self.$store2.rateTipps[index].isBookmarked, tipp: self.store2.rateTipps[index])
-                                        .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX) - 20 ) / -20), axis: (x: 0, y: 10.0, z:0))
+            ScrollView {
+                LazyHStack {
+                    VStack {
+                        TabView {
+                            ForEach(0..<10) { index in
+                                ZStack {
+                                    TippCard(isChecked: .constant(false), isBookmarked: .constant(false), tipp: Tipp(id: "123", title: "Titel", source: "", level: "", category: "Transport", score: 0))
                                         .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
+                                        .padding(.vertical, 10)
+//                                    TippCard(isChecked: $store3.rateTipps[index].isChecked, isBookmarked: $store3.rateTipps[index].isBookmarked, tipp: store3.rateTipps[index])
                                 }
-                                .frame(width: UIScreen.main.bounds.width - 7.5, height: UIScreen.main.bounds.height/2.1 + 20)
+                                .frame(width: UIScreen.main.bounds.width, height: 700)
                             }
                         }
-                    }.padding(.horizontal, 15)
-                    .frame(height: proxy.size.height) // This ensures the content uses the available width, otherwise it will be pinned to the left
+                        .frame(width: UIScreen.main.bounds.width, height: 500)
+                        .tabViewStyle(PageTabViewStyle())
+                    }
+                    .onAppear{
+                        Api().fetchTipps { (filteredTipps) in
+                            self.filteredTipps = self.filteredTipps
+                        }
+                    }
                 }
             }
-        }.onAppear{
-            Api().fetchTipps { (unfilteredTipps) in
-                self.unfilteredTipps = unfilteredTipps
-                self.filteredTipps = self.unfilteredTipps
-            }
+            Text("Hallo")
+            Spacer()
         }
     }
 }
 
 struct CardListTest_Previews: PreviewProvider {
     static var previews: some View {
-        CardListTest()
+        VStack {
+            if #available(iOS 14.0, *) {
+                CardListTest()
+            } else {
+                Text("Hello")
+            }
+        }
     }
 }

@@ -60,7 +60,7 @@ struct TippCardList: View {
                                         if(self.filterCategory2.contains(self.filteredTipps[index].category) && self.filterLevel2.contains(self.filteredTipps[index].level)) {
                                             GeometryReader { geometry in
                                                 TippCard(isChecked: self.$filteredTipps[index].isChecked, isBookmarked: self.$filteredTipps[index].isBookmarked, tipp: self.filteredTipps[index])
-                                                    .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX) - 20 ) / -8), axis: (x: 0, y: 10.0, z:0))
+                                                    .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX) - 20 ) / -10), axis: (x: 0, y: 10.0, z:0))
                                                     .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
                                                     .padding(.vertical, 10)
                                             }
@@ -71,6 +71,7 @@ struct TippCardList: View {
                             }.padding(.horizontal, 15)
                             .frame(height: UIScreen.main.bounds.height/2.1 + 20)
                             .background(Color("background"))
+                            .animation(.spring())
                         }
                     }
                     .frame(height: UIScreen.main.bounds.height/2.1 + 20)
@@ -130,7 +131,7 @@ struct TippCardList: View {
                 }
                 else {
                     NoConnectionCard()
-                        .padding(.horizontal, 15)
+                        .padding(15)
                 }
             }
             .offset(y: -UIScreen.main.bounds.height / 81)

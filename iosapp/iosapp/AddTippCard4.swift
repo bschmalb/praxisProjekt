@@ -30,7 +30,7 @@ struct AddTippCard4: View {
     var body: some View {
         VStack {
             HStack {
-                Text("Tipp posten")
+                Text("Tipp posten:")
                     .font(.title)
                     .fontWeight(.bold)
                     .padding(.leading, 20)
@@ -97,12 +97,12 @@ struct AddTippCard4: View {
                         NavigationLink (destination: AddTippCard5(showAddTipps: $showAddTipps, category: category, level: level, tippTitel: tippTitel, quelle: quelle)){
                             Image(systemName: "arrow.right")
                                 .font(.headline)
-                                .accentColor(Color(!quelle.isEmpty ? "white" :"white"))
+                                .accentColor(Color("white"))
                                 .padding(5)
                                 .frame(width: 80, height: 40)
-                                .background(Color(!quelle.isEmpty ? "blue" : "blueDisabled"))
+                                .background(Color("blue"))
                                 .cornerRadius(15)
-                        }.disabled(quelle.isEmpty)
+                        }
                     }.offset(y: isFocused2 ? -300 : 0)
                         .animation(.easeInOut)
                         .padding(20)
@@ -111,7 +111,19 @@ struct AddTippCard4: View {
         }.onTapGesture {
             self.isFocused2 = false
             self.hideKeyboard()
-        }.animation(.spring())
+        }
+        .gesture(DragGesture()
+        .onChanged({ (value) in
+            if (value.translation.width > 0) {
+                if (value.translation.width > 30) {
+                    self.mode.wrappedValue.dismiss()
+                }
+            }
+        }))
+        .animation(.spring())
+        .onAppear {
+            impact(style: .medium)
+        }
     }
 }
 
