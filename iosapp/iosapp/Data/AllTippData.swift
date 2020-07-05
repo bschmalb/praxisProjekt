@@ -15,12 +15,14 @@ class AllApi {
         URLSession.shared.dataTask(with: url) { (data, _, _) in
             guard let data = data else { return }
             
-            let allTipps = try! JSONDecoder().decode([Tipp].self, from: data)
-            
-            DispatchQueue.main.async {
-                completion(allTipps)
+            if let allTipps = try? JSONDecoder().decode([Tipp].self, from: data) {
+                DispatchQueue.main.async {
+                    completion(allTipps)
+                }
+                print(allTipps)
+                return
             }
         }
-    .resume()
+        .resume()
     }
 }

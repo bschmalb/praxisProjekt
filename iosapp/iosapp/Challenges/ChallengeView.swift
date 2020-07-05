@@ -14,6 +14,9 @@ struct ChallengeView: View {
     @State var showAddChallenge = false
     @State var model = ToggleModel()
     
+    @EnvironmentObject var levelEnv: UserLevel
+    @EnvironmentObject var overlay: Overlay
+    
     var body: some View {
         NavigationView {
                     ZStack {
@@ -33,7 +36,7 @@ struct ChallengeView: View {
                                 Button(action: {
                                     self.model.isDark.toggle()
                                     UserDefaults.standard.set(self.model.isDark, forKey: "isDark")
-                                    haptic(type: .success)
+                                    impact(style: .medium)
                                 }) {
                                     Image(systemName: "moon.circle")
                                         .font(.title)
@@ -51,30 +54,31 @@ struct ChallengeView: View {
                             .padding(.top, 10.0)
                             .offset(y: 10)
                             
-                            TippCardList()
+                            ChallengeCardList()
                             
                             VStack {
                                 HStack {
                                     Button(action: {
                                         self.showAddChallenge.toggle()
+                                        impact(style: .medium)
                                     }) {
                                         HStack {
                                             HStack {
                                                 Image(systemName: "plus.circle")
                                                     .font(.system(size: 22))
-                                                Text("Eigene Challenge hinzufügen")
+                                                Text("Eigenen Tipp hinzufügen")
                                                     .font(.headline)
                                                     .fontWeight(.medium)
                                             }
                                             .padding(13)
                                             .padding(.leading, 10)
                                             Spacer()
-                                        }.frame(width: UIScreen.main.bounds.width - 30, height: 50)
+                                        }.frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height / 16)
                                     }
-                                    .sheet(isPresented: $showAddChallenge, content: { AddTippView(showAddTipps: self.$showAddChallenge) })
+                                    .sheet(isPresented: $showAddChallenge, content: { AddTippView(showAddTipps: self.$showAddChallenge).environmentObject(self.levelEnv).environmentObject(self.overlay) })
                                     .background(Color("buttonWhite"))
                                     .cornerRadius(15)
-                                    .shadow(color: Color(.black).opacity(0.05), radius: 10, x: 8, y: 6)
+                                    .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
                                 }
                                 HStack {
                                     NavigationLink (destination: RateTippView()
@@ -85,19 +89,19 @@ struct ChallengeView: View {
                                             HStack {
                                                 Image(systemName: "hand.thumbsup")
                                                     .font(.system(size: 20, weight: .medium))
-                                                Text("Challenges von Nutzern bewerten")
+                                                Text("Tipps von Nutzern bewerten")
                                                     .font(.headline)
                                                     .fontWeight(.medium)
                                             }
                                             .padding(13)
                                             .padding(.leading, 10)
                                             Spacer()
-                                    }.frame(width: UIScreen.main.bounds.width - 30, height: 50)
+                                    }.frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height / 16)
                                         .background(Color("buttonWhite"))
                                         .cornerRadius(15)
-                                        .shadow(color: Color(.black).opacity(0.05), radius: 10, x: 8, y: 6)
+                                        .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
                                 }
-                            }.padding(.top, 5)
+                            }.offset(y: -UIScreen.main.bounds.height / 81)
                             Spacer()
                         }
                     }.accentColor(.primary)

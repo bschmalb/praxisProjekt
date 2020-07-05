@@ -94,7 +94,11 @@ struct AddTippCard4: View {
                                 .frame(width: 80, height: 40)
                         }
                         Spacer()
-                        NavigationLink (destination: AddTippCard5(showAddTipps: $showAddTipps, category: category, level: level, tippTitel: tippTitel, quelle: quelle)){
+                        NavigationLink (destination: AddTippCard5(showAddTipps: $showAddTipps, category: category, level: level, tippTitel: tippTitel, quelle: quelle)
+                            .navigationBarTitle("")
+                            .navigationBarHidden(true)
+                            .navigationBarBackButtonHidden(true)
+                            ){
                             Image(systemName: "arrow.right")
                                 .font(.headline)
                                 .accentColor(Color("white"))
@@ -103,7 +107,7 @@ struct AddTippCard4: View {
                                 .background(Color("blue"))
                                 .cornerRadius(15)
                         }
-                    }.offset(y: isFocused2 ? -300 : 0)
+                    }.offset(y: isFocused2 ? -UIScreen.main.bounds.height / 2.7 : 0)
                         .animation(.easeInOut)
                         .padding(20)
                 }

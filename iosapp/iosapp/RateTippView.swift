@@ -10,14 +10,20 @@ import SwiftUI
 
 struct RateTippView: View {
     
-    @ObservedObject var store2 = RateTippDataStore()
+//    @ObservedObject var store2 = RateTippDataStore()
+    @State var rateTipps: [Tipp] = []
     
     @State private var showAddTipps2 = false
+    
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
+    @EnvironmentObject var levelEnv: UserLevel
+    
     @State var counter = 0
     @State var thumbUp = false
     @State var thumbDown = false
     @State var endReached = false
+    
+    @State var userLevelLocal = 0
     
     
     var body: some View {
@@ -57,11 +63,11 @@ struct RateTippView: View {
                         Text("Wenn ein Tipp von der Community gutes Feedback bekommt, wird dieser für alle Nutzer angezeigt")
                     }.padding()
                     
-                    if (!endReached && !store2.rateTipps.isEmpty) {
-                        TippCard(isChecked: self.$store2.rateTipps[counter].isChecked, isBookmarked: self.$store2.rateTipps[counter].isBookmarked, tipp: store2.rateTipps[counter])
+                    if (!endReached && !rateTipps.isEmpty) {
+                        TippCard(isChecked: self.$rateTipps[counter].isChecked, isBookmarked: self.$rateTipps[counter].isBookmarked, tipp: rateTipps[counter])
                                 .animation(.spring())
                     }
-                    else if (!store2.rateTipps.isEmpty) {
+                    else if (!rateTipps.isEmpty) {
                         TippCard(isChecked: .constant(false), isBookmarked: .constant(false), tipp: Tipp(id: "123", title: "Vorerst keine weiteren Tipps mehr zum bewerten verfügbar", source: "", level: "", category: "Success Work", score: 0, postedBy: "123"))
                             .animation(.spring())
                     }
@@ -85,8 +91,10 @@ struct RateTippView: View {
                                     .scaleEffect(thumbUp ? 1.1 : 1)
                                     .gesture(
                                         LongPressGesture().onChanged{ value in
-                                            patchScore(id: self.store2.rateTipps[self.counter].id, thumb: "up")
-                                            if (self.counter < self.store2.rateTipps.count - 1){
+                                            self.levelEnv.level += 35
+                                            UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
+                                            patchScore(id: self.rateTipps[self.counter].id, thumb: "up")
+                                            if (self.counter < self.rateTipps.count - 1){
                                                 withAnimation(){self.counter += 1}
                                             }
                                             else {
@@ -114,8 +122,10 @@ struct RateTippView: View {
                                     .scaleEffect(thumbDown ? 1.1 : 1)
                                     .gesture(
                                         LongPressGesture().onChanged(){ value in
-                                            patchScore(id: self.store2.rateTipps[self.counter].id, thumb: "down")
-                                            if (self.counter < self.store2.rateTipps.count - 1){
+                                            self.levelEnv.level += 35
+                                            UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
+                                            patchScore(id: self.rateTipps[self.counter].id, thumb: "down")
+                                            if (self.counter < self.rateTipps.count - 1){
                                                 withAnimation(){self.counter += 1}
                                             }
                                             else {
@@ -147,8 +157,16 @@ struct RateTippView: View {
                 }
             }
         }))
-        .onAppear(){
+            .onAppear(){
                 impact(style: .medium)
+                print(self.rateTipps.count)
+//                if (self.counter > self.store2.rateTipps.count - 1){
+//                    self.endReached = true
+//                }
+                Api().fetchTipps { (rateTipps) in
+                    self.rateTipps = rateTipps
+                    print(self.rateTipps)
+                }
         }
     }
 }

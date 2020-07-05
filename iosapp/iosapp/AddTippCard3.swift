@@ -78,7 +78,7 @@ struct AddTippCard3: View {
                         }.padding(.horizontal)
                             .edgesIgnoringSafeArea(.bottom)
                             .animation(.easeInOut)
-                    }.offset(y: isFocused ? -140 : 0)
+                    }.offset(y: isFocused ? -150 : 0)
                         .animation(.easeInOut)
                     Spacer()
                     HStack {
@@ -103,7 +103,7 @@ struct AddTippCard3: View {
                                     .background(Color(!tippTitle.isEmpty ? "blue" : "blueDisabled"))
                                     .cornerRadius(15)
                         }.disabled(tippTitle.isEmpty)
-                    }.offset(y: isFocused ? -300 : 0)
+                    }.offset(y: isFocused ? -UIScreen.main.bounds.height / 2.7 : 0)
                         .animation(.easeInOut)
                         .padding(20)
                 }.accentColor(Color("black"))

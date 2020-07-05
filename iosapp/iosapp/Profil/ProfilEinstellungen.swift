@@ -10,10 +10,17 @@ import SwiftUI
 
 struct ProfilEinstellungen: View {
 
+    @State var logDate = ""
+    
+    @EnvironmentObject var levelEnv: UserLevel
+    @EnvironmentObject var overlay: Overlay
+    
     @Binding var isDark: Bool
     @Binding var appearenceDark: Bool
     @Binding var offsetChangeName: CGFloat
     @Binding var offsetLevel: CGFloat
+    
+    @State var userLevelLocal: NSNumber = 13452
     
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     
@@ -57,7 +64,8 @@ struct ProfilEinstellungen: View {
                         }.padding(10)
                     }
                     Button(action: {
-                        offsetChangeName = -UIScreen.main.bounds.height / 20
+                        self.overlay.overlay = true
+                        self.offsetChangeName = -UIScreen.main.bounds.height / 20
                         impact(style: .rigid)
                     }) {
                         HStack (spacing: 20){
@@ -72,9 +80,9 @@ struct ProfilEinstellungen: View {
                         }.padding(10)
                     }
                     Button(action: {
-                        isDark.toggle()
-                        appearenceDark.toggle()
-                        UserDefaults.standard.set(appearenceDark, forKey: "appearenceDark")
+                        self.isDark.toggle()
+                        self.appearenceDark.toggle()
+                        UserDefaults.standard.set(self.appearenceDark, forKey: "appearenceDark")
                         impact(style: .rigid)
                     }) {
                         HStack (spacing: 20){
@@ -88,22 +96,39 @@ struct ProfilEinstellungen: View {
                             Spacer()
                         }.padding(10)
                     }
-//                    Button(action: {
-//                        
-//                        impact(style: .rigid)
-//                    }) {
-//                        HStack (spacing: 20){
-//                            Image(systemName: "lightbulb")
-//                                .font(.system(size: 22))
-//                                .padding(.leading, 20)
-//                                .frame(width: 60, height: 20)
-//                            Text("Deine Tipps")
-//                                .font(.system(size: 22))
-//                                .fontWeight(.medium)
-//                            Spacer()
-//                        }.padding(10)
-//                    }
+                    
+                    Button(action: {
+                        self.levelEnv.level += 5
+                        UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
+                    }) {
+                        HStack (spacing: 20){
+                            Image(systemName: "arrow.up")
+                                .font(.system(size: 22))
+                                .padding(.leading, 20)
+                                .frame(width: 60, height: 20)
+                            Text("Level Up")
+                                .font(.system(size: 22))
+                                .fontWeight(.medium)
+                            Spacer()
+                        }.padding(10)
+                    }
+                    
                     Spacer()
+                    Button(action: {
+                        UserDefaults.standard.set(self.logDate, forKey: "logDate")
+                        impact(style: .rigid)
+                    }) {
+                        HStack (spacing: 20){
+                            Image(systemName: "delete.left")
+                                .font(.system(size: 16))
+                                .padding(.leading, 20)
+                                .frame(width: 60, height: 20)
+                            Text("Reset to First App Use")
+                                .font(.system(size: 16))
+                            Spacer()
+                        }.padding(10)
+                        .padding(.bottom, 20)
+                    }
                 }
                 
                 
@@ -126,6 +151,6 @@ struct ProfilEinstellungen: View {
 
 struct ProfilEinstellungen_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilEinstellungen(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000))
+        ProfilEinstellungen(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000)).environmentObject(UserLevel())
     }
 }

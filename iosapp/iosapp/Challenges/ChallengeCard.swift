@@ -1,5 +1,5 @@
 //
-//  TippCard.swift
+//  ChallengeCard.swift
 //  iosapp
 //
 //  Created by Bastian Schmalbach on 07.06.20.
@@ -8,14 +8,14 @@
 
 import SwiftUI
 
-struct TippCard: View {
+struct ChallengeCard: View {
     
     //    @ObservedObject var userStore = UserDataStore()
     
     @EnvironmentObject var levelEnv: UserLevel
     @Binding var isChecked: Bool
     @Binding var isBookmarked: Bool
-    var tipp: Tipp
+    var challenge: Challenge
     
     @State var userLevelLocal = 0
     
@@ -29,11 +29,11 @@ struct TippCard: View {
         ZStack {
             VStack{
                 Spacer()
-                Image("I"+tipp.category)
+                Image("I"+challenge.category)
                     .resizable()
                     .scaledToFit()
                     .frame(minHeight: 100, maxHeight: 200)
-                Text(tipp.title)
+                Text(challenge.title)
                     .font(.system(size: 24, weight: .medium))
                     .foregroundColor(Color("alwaysblack"))
                     .multilineTextAlignment(.center)
@@ -41,7 +41,7 @@ struct TippCard: View {
                 Button(action: {
                     // What to perform
                 }) {
-                    Text("Quelle")
+                    Text("\(challenge.participants) weitere nehmen Teil")
                         .foregroundColor(.gray)
                         .font(.footnote)
                         .multilineTextAlignment(.center)
@@ -50,7 +50,7 @@ struct TippCard: View {
                 HStack {
                     Button(action: {
                         self.isChecked.toggle()
-                        self.addToProfile(tippId: self.tipp.id, method: 0)
+                        self.addToProfile(challengeId: self.challenge.id, method: 0)
                         
                         self.levelEnv.level += 5
                         UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
@@ -69,7 +69,7 @@ struct TippCard: View {
                     Spacer()
                     Button(action: {
                         self.isBookmarked.toggle()
-                        self.addToProfile(tippId: self.tipp.id, method: 1)
+                        self.addToProfile(challengeId: self.challenge.id, method: 1)
                         
                         self.levelEnv.level += 5
                         UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
@@ -92,20 +92,20 @@ struct TippCard: View {
             .cornerRadius(15)
             VStack {
                 HStack(alignment: .top) {
-                    Image(tipp.category)
+                    Image(challenge.category)
                         .resizable()
                         .scaledToFit()
                         .frame(width: 30, height: 30)
                         .opacity(0.1)
                         .padding(.leading, 20)
                         .padding(.vertical)
-                    Image(tipp.level)
+                    Image(challenge.level)
                         .resizable()
                         .scaledToFit()
                         .frame(width: 30, height: 30)
                         .opacity(0.1)
                         .padding(.vertical)
-                    Image(tipp.official ?? "Community")
+                    Image(challenge.official ?? "Community")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 30, height: 30)
@@ -126,7 +126,7 @@ struct TippCard: View {
                 Spacer()
             }
             .frame(width: UIScreen.main.bounds.width - 30, height:
-                UIScreen.main.bounds.height / 2.1)
+                UIScreen.main.bounds.height / 2.3)
                 .opacity(options ? 0 : 1)
                 .animation(options ? .easeIn(duration: 0.15) : Animation.easeOut(duration: 0.15).delay(0.15))
             VStack {
@@ -151,7 +151,7 @@ struct TippCard: View {
                         Image(systemName: "flag")
                             .font(.system(size: 20, weight: Font.Weight.medium))
                             .opacity(0.8)
-                        Text("Diesen Tipp melden")
+                        Text("Diese Challenge melden")
                             .font(.system(size: 18))
                             .opacity(0.8)
                     }
@@ -163,7 +163,7 @@ struct TippCard: View {
                 }
                 Spacer()
             }.frame(width: UIScreen.main.bounds.width - 30, height:
-                UIScreen.main.bounds.height / 2.1)
+                UIScreen.main.bounds.height / 2.3)
                 .rotation3DEffect(Angle(degrees: 180), axis: (x: 0, y: 1, z: 0))
                 .opacity(options ? 1 : 0)
                 .animation(options ? Animation.easeOut(duration: 0.15).delay(0.15) : .easeIn(duration: 0.15))
@@ -172,19 +172,12 @@ struct TippCard: View {
         .rotation3DEffect(Angle(degrees: options ? 180 : 0), axis: (x: 0, y: 1, z: 0))
         .animation(.spring())
         .accentColor(.black)
-        .frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height/2.1)
+        .frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height/2.3)
         .onAppear(){
-            self.getUserTipps()
+            self.getUserChallenges()
         }
     }
-    func getUserTipps(){
-        //        if (userStore.user.checkedTipps.contains(self.tipp.id)) {
-        //            self.isChecked = true
-        //        }
-        //        if (userStore.user.savedTipps.contains(self.tipp.id)) {
-        //            self.isBookmarked = true
-        //        }
-        
+    func getUserChallenges(){
         if let uuid = UIDevice.current.identifierForVendor?.uuidString {
             guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + uuid) else { return }
             let request = URLRequest(url: url)
@@ -196,10 +189,10 @@ struct TippCard: View {
                 }
                 DispatchQueue.main.async {
                     if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
-                        if (decodedResponse.checkedTipps.contains(self.tipp.id) ) {
+                        if (decodedResponse.checkedChallenges.contains(self.challenge.id) ) {
                             self.isChecked = true
                         }
-                        if (decodedResponse.savedTipps.contains(self.tipp.id) ) {
+                        if (decodedResponse.savedChallenges.contains(self.challenge.id) ) {
                             self.isBookmarked = true
                         }
                     }
@@ -208,9 +201,9 @@ struct TippCard: View {
         }
     }
     
-    func addToProfile(tippId: String, method: Int) {
-        let patchData = TippPatchCheck(checkedTipps: tippId)
-        let patchData2 = TippPatchSave(savedTipps: tippId)
+    func addToProfile(challengeId: String, method: Int) {
+        let patchData = ChallengePatchCheck(checkedChallenges: challengeId)
+        let patchData2 = ChallengePatchSave(savedChallenges: challengeId)
         
         if let uuid = UIDevice.current.identifierForVendor?.uuidString {
             
@@ -234,15 +227,15 @@ struct TippCard: View {
     
 }
 
-struct TippPatchCheck : Encodable{
-    var checkedTipps: String
+struct ChallengePatchCheck : Encodable{
+    var checkedChallenges: String
 }
-struct TippPatchSave : Encodable{
-    var savedTipps: String
+struct ChallengePatchSave : Encodable{
+    var savedChallenges: String
 }
 
-struct TippCard_Previews: PreviewProvider {
+struct ChallengeCard_Previews: PreviewProvider {
     static var previews: some View {
-        TippCard(isChecked: .constant(false), isBookmarked: .constant(false), tipp: .init(id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", level: "Leicht", category: "Ernährung", score: 25, postedBy: "123"))
+        ChallengeCard(isChecked: .constant(false), isBookmarked: .constant(false), challenge: .init(id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", level: "Leicht", category: "Ernährung", score: 25, participants: 0, postedBy: "123"))
     }
 }

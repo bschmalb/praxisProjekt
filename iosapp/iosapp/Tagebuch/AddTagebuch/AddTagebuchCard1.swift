@@ -8,17 +8,13 @@
 
 import SwiftUI
 
-struct AddLog: Codable, Hashable, Identifiable {
-    let id: UUID
-    let category: String
-    let difficulty: String
-    var name: String
-    var quelle: String
-}
-
 struct AddTagebuchCard1: View {
     
     @Environment(\.presentationMode) private var presentationMode
+    
+    @State var selection: Int? = 0
+    
+    @Binding var tabViewSelected: Int
     
     @State var firstKilometer: Bool = false
     @State var secondKilometer: Bool = false
@@ -27,7 +23,7 @@ struct AddTagebuchCard1: View {
     @State var fifthKilometer: Bool = false
     @State var kilometerSelected: Bool = false
     
-    @State var kilometer: Int = 0
+    @State var kilometer: Int = -1
     
     var body: some View {
         
@@ -46,6 +42,7 @@ struct AddTagebuchCard1: View {
                     Image("Kilometer")
                         .resizable()
                         .scaledToFit()
+                        .shadow(radius: 2)
                         .frame(minHeight: 100, idealHeight: 200, maxHeight: 300)
                     Text("Wie viele Kilometer bist du gestern mit dem Auto gefahren?")
                         .font(.system(size: 20, weight: Font.Weight.medium))
@@ -218,7 +215,7 @@ struct AddTagebuchCard1: View {
                                     .cornerRadius(15)
                         }.opacity(0)
                         Spacer()
-                        NavigationLink (destination: AddTagebuchCard2(kilometer: kilometer).navigationBarBackButtonHidden(true)
+                        NavigationLink (destination: AddTagebuchCard2(tabViewSelected: $tabViewSelected, kilometer: kilometer).navigationBarBackButtonHidden(true)
                             .navigationBarTitle("")
                             .navigationBarHidden(true)){
                                 Text("Überspringen")
@@ -226,9 +223,14 @@ struct AddTagebuchCard1: View {
                                     .foregroundColor(.secondary)
                         }
                         Spacer()
-                        NavigationLink (destination: AddTagebuchCard2(kilometer: kilometer).navigationBarBackButtonHidden(true)
+                        NavigationLink (destination: AddTagebuchCard2(tabViewSelected: $tabViewSelected, kilometer: kilometer).navigationBarBackButtonHidden(true)
                             .navigationBarTitle("")
-                            .navigationBarHidden(true)){
+                            .navigationBarHidden(true)
+                        , tag: 1, selection: $selection) {
+                            Button(action: {
+                                impact(style: .medium)
+                                self.selection = 1
+                            }) {
                                 Image(systemName: "arrow.right")
                                     .font(.headline)
                                     .accentColor(Color(kilometerSelected ? "white" :"white"))
@@ -236,6 +238,7 @@ struct AddTagebuchCard1: View {
                                     .frame(width: 80, height: 40)
                                     .background(Color(kilometerSelected ? "blue" : "blueDisabled"))
                                     .cornerRadius(15)
+                            }
                         }.disabled(!kilometerSelected)
                     }
                     .padding(20)
@@ -250,6 +253,6 @@ struct AddTagebuchCard1: View {
 
 struct AddTagebuchCard1_Previews: PreviewProvider {
     static var previews: some View {
-        AddTagebuchCard1()
+        AddTagebuchCard1(tabViewSelected: .constant(2))
     }
 }

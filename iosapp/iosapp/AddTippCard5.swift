@@ -16,15 +16,20 @@ struct PostTipp: Codable {
     let level: String
     let score: Int16
     let postedBy: String
+    let official: String?
 }
 
 struct AddTippCard5: View {
     
     @State var isSuccess = false
+    @State var posted = false
     @Binding var showAddTipps: Bool
+    @State var userLevelLocal = 0
     
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     @Environment(\.presentationMode) private var presentationMode
+    @EnvironmentObject var levelEnv: UserLevel
+    @EnvironmentObject var overlay: Overlay
     
     @ObservedObject private var keyboard2 = KeyboardResponder()
     
@@ -64,11 +69,6 @@ struct AddTippCard5: View {
                     }
                     VStack {
                         Spacer()
-                        //                        Text("Vorschau deines Tipp:")
-                        //                            .font(.system(size: 20))
-                        //                            .foregroundColor(Color("black").opacity(0.5))
-                        //                            .padding(.horizontal, 20)
-                        //                            .animation(.spring())
                         
                         ZStack {
                             VStack{
@@ -82,12 +82,7 @@ struct AddTippCard5: View {
                                     .foregroundColor(Color("alwaysblack"))
                                     .multilineTextAlignment(.center)
                                     .padding(.horizontal)
-                                //                                    .onTapGesture {
-                                //                                        self.mode.wrappedValue.dismiss()
-                                //                                        self.mode.wrappedValue.dismiss()
-                                //                                }
                                 Button(action: {
-                                    //                                    self.mode.wrappedValue.dismiss()
                                 }) {
                                     Text(quelle)
                                         .font(.footnote)
@@ -151,17 +146,24 @@ struct AddTippCard5: View {
                             Spacer()
                             Button (action: {
                                 haptic(type: .success)
+                                self.levelEnv.level += 35
+                                self.overlay.overlay = true
+                                UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
+                                self.posted = true
                                 self.postTipp()
                             })
                             {
-                                Text("Posten!")
-                                    .font(.headline)
-                                    .accentColor(Color("white"))
-                                    .padding(5)
-                                    .frame(width: 100, height: 40)
+                                HStack {
+                                    Text("Posten")
+                                        .font(.headline)
+                                        .accentColor(Color("white"))
+                                    Image(systemName: "arrow.up.doc")
+                                        .font(.system(size: 16, weight: Font.Weight.medium))
+                                        .accentColor(Color("white"))
+                                }.frame(width: 120, height: 45)
                                     .background(Color("blue"))
                                     .cornerRadius(15)
-                            }
+                            }.disabled(posted)
                         }
                         .padding(.horizontal, 20)
                         .padding(.bottom, 20)
@@ -173,26 +175,30 @@ struct AddTippCard5: View {
                 impact(style: .medium)
             }
             .gesture(DragGesture()
-                        .onChanged({ (value) in
-                            if (value.translation.width > 0) {
-                                if (value.translation.width > 30) {
-                                    self.mode.wrappedValue.dismiss()
-                                }
-                            }
-                        }))
+            .onChanged({ (value) in
+                if (value.translation.width > 0) {
+                    if (value.translation.width > 30) {
+                        self.mode.wrappedValue.dismiss()
+                    }
+                }
+            }))
+                .blur(radius: overlay.overlay ? 2 : 0)
+                .edgesIgnoringSafeArea(.all)
+                .animation(.spring())
             if isSuccess {
                 SuccessView()
                     .onTapGesture {
                         self.showAddTipps = false
                         self.isSuccess = false
-                    }
+                        self.overlay.overlay = false
+                }
             }
         }
     }
     
     func postTipp(){
         if let uuid = UIDevice.current.identifierForVendor?.uuidString {
-            let tippData = PostTipp(id: UUID(), title: self.tippTitel, source: self.quelle, category: self.category, level: self.level, score: 0, postedBy: uuid)
+            let tippData = PostTipp(id: UUID(), title: self.tippTitel, source: self.quelle, category: self.category, level: self.level, score: 0, postedBy: uuid, official: "Community")
             
             guard let encoded = try? JSONEncoder().encode(tippData) else {
                 print("Failed to encode order")
@@ -215,6 +221,7 @@ struct AddTippCard5: View {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 7, execute: {
                     self.showAddTipps = false;
                     self.isSuccess = false
+                    self.overlay.overlay = false
                 })
             }.resume()
         }
@@ -223,6 +230,6 @@ struct AddTippCard5: View {
 
 struct AddTippCard5_Previews: PreviewProvider {
     static var previews: some View {
-        AddTippCard5(showAddTipps: .constant(true), category: "Nahrung", level: "Leicht", tippTitel: "Nutze waschbare Gemüsenetze anstatt Plastiktüten", quelle: "Quelle")
+        AddTippCard5(showAddTipps: .constant(true), category: "Nahrung", level: "Leicht", tippTitel: "Nutze waschbare Gemüsenetze anstatt Plastiktüten", quelle: "Quelle").environmentObject(UserLevel()).environmentObject(Overlay())
     }
 }

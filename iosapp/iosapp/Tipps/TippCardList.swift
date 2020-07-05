@@ -19,11 +19,9 @@ struct TippCardList: View {
     
     @State var filterString: String = ""
     
-    @State var filterCategory: [String] = []
     @State var filterCategory2: [String] = ["Ernährung", "Transport", "Recycling", "Ressourcen"]
-    @State var filterLevel: [String] = []
     @State var filterLevel2: [String] = ["Einfach", "Mittel", "Schwer"]
-    @State var filterPoster: [String] = []
+    @State var filterPoster: [String] = ["Offiziell", "Community"]
     
     //    var cardColors: [String]  = [
     //        "cardgreen", "cardblue", "cardyellow", "cardpurple", "cardorange"
@@ -55,12 +53,12 @@ struct TippCardList: View {
                     GeometryReader { proxy in
                         UIScrollViewWrapper {
                             HStack {
-                                ForEach(filteredTipps.indices, id: \.self) { index in
+                                ForEach(self.filteredTipps.indices, id: \.self) { index in
                                     HStack {
-                                        if(self.filterCategory2.contains(self.filteredTipps[index].category) && self.filterLevel2.contains(self.filteredTipps[index].level)) {
+                                        if(self.filterCategory2.contains(self.filteredTipps[index].category) && self.filterLevel2.contains(self.filteredTipps[index].level) && self.filterPoster.contains(self.filteredTipps[index].official ?? "Community")) {
                                             GeometryReader { geometry in
                                                 TippCard(isChecked: self.$filteredTipps[index].isChecked, isBookmarked: self.$filteredTipps[index].isBookmarked, tipp: self.filteredTipps[index])
-                                                    .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX) - 20 ) / -10), axis: (x: 0, y: 10.0, z:0))
+                                                    .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX) - 5 ) / -10), axis: (x: 0, y: 10.0, z:0))
                                                     .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
                                                     .padding(.vertical, 10)
                                             }
@@ -68,7 +66,8 @@ struct TippCardList: View {
                                         }
                                     }
                                 }
-                            }.padding(.horizontal, 15)
+                            }
+                            .padding(.horizontal, 5)
                             .frame(height: UIScreen.main.bounds.height/2.1 + 20)
                             .background(Color("background"))
                             .animation(.spring())
@@ -157,6 +156,13 @@ struct TippCardList: View {
                 filterLevel2.append(filterName)
             } else {
                 filterLevel2.removeAll(where: {$0 == filterName})
+            }
+        }
+        if (filterName == "Offiziell" || filterName == "Community") {
+            if (!filterPoster.contains(filterName)){
+                filterPoster.append(filterName)
+            } else {
+                filterPoster.removeAll(where: {$0 == filterName})
             }
         }
         

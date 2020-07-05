@@ -17,6 +17,9 @@ struct TippView: View {
     
     @ObservedObject var storeTipps = TippDataStore()
     
+    @EnvironmentObject var levelEnv: UserLevel
+    @EnvironmentObject var overlay: Overlay
+    
     var body: some View {
         NavigationView {
             ZStack {
@@ -34,9 +37,9 @@ struct TippView: View {
 
                         Spacer()
                         Button(action: {
-                            isDark.toggle()
-                            appearenceDark.toggle()
-                            UserDefaults.standard.set(appearenceDark, forKey: "appearenceDark")
+                            self.isDark.toggle()
+                            self.appearenceDark.toggle()
+                            UserDefaults.standard.set(self.appearenceDark, forKey: "appearenceDark")
                             impact(style: .medium)
                         }) {
                             Image(systemName: "moon.circle")
@@ -51,7 +54,7 @@ struct TippView: View {
                                 .font(.title)
                                 .padding(10)
                                 .padding(.trailing, 15)
-                        }.sheet(isPresented: $showAddTipps, content: { AddTippView(showAddTipps: self.$showAddTipps)})
+                        }.sheet(isPresented: $showAddTipps, content: { AddTippView(showAddTipps: self.$showAddTipps).environmentObject(self.levelEnv).environmentObject(self.overlay)})
                     }
                     .padding(.top, UIScreen.main.bounds.height / 81)
                     .offset(y: 10)
@@ -77,7 +80,7 @@ struct TippView: View {
                                     Spacer()
                                 }.frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height / 16)
                             }
-                            .sheet(isPresented: $showAddTipps, content: { AddTippView(showAddTipps: self.$showAddTipps) })
+                            .sheet(isPresented: $showAddTipps, content: { AddTippView(showAddTipps: self.$showAddTipps).environmentObject(self.levelEnv).environmentObject(self.overlay) })
                             .background(Color("buttonWhite"))
                             .cornerRadius(15)
                             .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
@@ -110,10 +113,10 @@ struct TippView: View {
             .navigationBarTitle("")
             .navigationBarHidden(true)
             .onAppear {
-                if appearenceDark {
-                    isDark = false
+                if self.appearenceDark {
+                    self.isDark = false
                 }else{
-                    isDark = true
+                    self.isDark = true
                 }
             }
         }

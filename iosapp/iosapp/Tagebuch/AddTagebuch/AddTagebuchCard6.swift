@@ -8,23 +8,27 @@
 
 import SwiftUI
 
-struct AddTagebuchCard2: View {
+struct AddTagebuchCard6: View {
     
     @Binding var tabViewSelected: Int
     
     var kilometer: Int
+    var meat: Int
+    var cooked: Int
+    var foodWaste: Int
+    var drinks: Int
     
     @Environment(\.presentationMode) private var presentationMode
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     
-    @State var firstMeat: Bool = false
-    @State var secondMeat: Bool = false
-    @State var thirdMeat: Bool = false
-    @State var fourthMeat: Bool = false
-    @State var fifthMeat: Bool = false
-    @State var kilometerSelected: Bool = false
+    @State var firstShower: Bool = false
+    @State var secondShower: Bool = false
+    @State var thirdShower: Bool = false
+    @State var fourthShower: Bool = false
+    @State var fifthShower: Bool = false
+    @State var showerSelected: Bool = false
     
-    @State var meat: Int = -1
+    @State var shower: Int = -1
     
     var body: some View {
         
@@ -35,17 +39,17 @@ struct AddTagebuchCard2: View {
                 VStack {
                     HStack {
                         Spacer()
-                        Text("2/7").bold().padding(20).foregroundColor(Color.secondary)
+                        Text("6/7").bold().padding(20).foregroundColor(Color.secondary)
                     }
                     Spacer()
                 }
                 VStack (spacing: 20){
-                    Image("IErnährung")
+                    Image("Person in the summer")
                         .resizable()
                         .scaledToFit()
-                        .shadow(radius: 2)
                         .frame(minHeight: 100, idealHeight: 200, maxHeight: 300)
-                    Text("Wie oft hast du gestern Fleisch gegessen?")
+                        .shadow(radius: 2)
+                    Text("Wie lange hast du gestern geduscht?")
                         .font(.system(size: 20, weight: Font.Weight.medium))
                         .fontWeight(.medium)
                         .multilineTextAlignment(.center)
@@ -55,150 +59,150 @@ struct AddTagebuchCard2: View {
                         
                         Button(action: {
                             impact(style: .medium)
-                            self.secondMeat = false
-                            self.thirdMeat = false
-                            self.fourthMeat = false
-                            self.fifthMeat = false
+                            self.secondShower = false
+                            self.thirdShower = false
+                            self.fourthShower = false
+                            self.fifthShower = false
                             
-                            self.kilometerSelected = true
-                            self.firstMeat = true
+                            self.showerSelected = true
+                            self.firstShower = true
                             
-                            self.meat = 0
+                            self.shower = 0
                             
                         }) {
                             VStack {
                                 Text("0")
                                     .font(.system(size: 18, weight: Font.Weight.medium))
-                                    .foregroundColor(Color(self.firstMeat ? "white" : "black"))
-                                Text("Mal")
+                                    .foregroundColor(Color(self.firstShower ? "white" : "black"))
+                                Text("Minuten")
                                     .font(.subheadline)
                                     .fixedSize()
-                                    .foregroundColor(Color(self.firstMeat ? "white" : "black"))
+                                    .foregroundColor(Color(self.firstShower ? "white" : "black"))
                                     .multilineTextAlignment(.center)
                                     .padding(5)
                             }.frame(height: 60)
                                 .padding(2)
-                                .padding(.horizontal, 13)
-                                .background(Color(firstMeat ? "blue" : "transparent"))
+                                .padding(.horizontal, 5)
+                                .background(Color(firstShower ? "blue" : "transparent"))
                                 .cornerRadius(15)
                             
                         }
                         Button(action: {
                             impact(style: .medium)
-                            self.firstMeat = false
-                            self.thirdMeat = false
-                            self.fourthMeat = false
-                            self.fifthMeat = false
+                            self.firstShower = false
+                            self.thirdShower = false
+                            self.fourthShower = false
+                            self.fifthShower = false
                             
-                            self.kilometerSelected = true
-                            self.secondMeat = true
+                            self.showerSelected = true
+                            self.secondShower = true
                             
-                            self.meat = 1
+                            self.shower = 1
                         }) {
                             VStack {
-                                Text("1")
+                                Text("5")
                                     .font(.system(size: 18, weight: Font.Weight.medium))
-                                    .foregroundColor(Color(self.secondMeat ? "white" : "black"))
-                                Text("Mal")
+                                    .foregroundColor(Color(self.secondShower ? "white" : "black"))
+                                Text("Minuten")
                                     .font(.footnote)
                                     .fixedSize()
-                                    .foregroundColor(Color(self.secondMeat ? "white" : "black"))
+                                    .foregroundColor(Color(self.secondShower ? "white" : "black"))
                                     .multilineTextAlignment(.center)
                                     .padding(5)
                             }.frame(height: 60)
                                 .padding(2)
-                                .padding(.horizontal, 13)
-                                .background(Color(secondMeat ? "blue" : "transparent"))
+                                .padding(.horizontal, 5)
+                                .background(Color(secondShower ? "blue" : "transparent"))
                                 .cornerRadius(15)
                             
                         }
                         Button(action: {
                             impact(style: .medium)
-                            self.firstMeat = false
-                            self.secondMeat = false
-                            self.fourthMeat = false
-                            self.fifthMeat = false
+                            self.firstShower = false
+                            self.secondShower = false
+                            self.fourthShower = false
+                            self.fifthShower = false
                             
-                            self.kilometerSelected = true
-                            self.thirdMeat = true
+                            self.showerSelected = true
+                            self.thirdShower = true
                             
-                            self.meat = 2
+                            self.shower = 2
                         }) {
                             VStack {
-                                Text("2")
+                                Text("10")
                                     .font(.system(size: 18, weight: Font.Weight.medium))
-                                    .foregroundColor(Color(self.thirdMeat ? "white" : "black"))
-                                Text("Mal")
+                                    .foregroundColor(Color(self.thirdShower ? "white" : "black"))
+                                Text("Minuten")
                                     .font(.footnote)
                                     .fixedSize()
-                                    .foregroundColor(Color(self.thirdMeat ? "white" : "black"))
+                                    .foregroundColor(Color(self.thirdShower ? "white" : "black"))
                                     .multilineTextAlignment(.center)
                                     .padding(5)
                             }.frame(height: 60)
                                 .padding(2)
-                                .padding(.horizontal, 13)
-                                .background(Color(thirdMeat ? "blue" : "transparent"))
+                                .padding(.horizontal, 5)
+                                .background(Color(thirdShower ? "blue" : "transparent"))
                                 .cornerRadius(15)
                         }
                     }.padding(.bottom, 10)
                     HStack (spacing: 40) {
                         Button(action: {
                             impact(style: .medium)
-                            self.firstMeat = false
-                            self.secondMeat = false
-                            self.thirdMeat = false
-                            self.fifthMeat = false
+                            self.firstShower = false
+                            self.secondShower = false
+                            self.thirdShower = false
+                            self.fifthShower = false
                             
-                            self.kilometerSelected = true
-                            self.fourthMeat = true
+                            self.showerSelected = true
+                            self.fourthShower = true
                             
-                            self.meat = 3
+                            self.shower = 3
                         }) {
                             VStack {
                                 VStack {
-                                    Text("3")
+                                    Text("15")
                                         .font(.system(size: 18, weight: Font.Weight.medium))
-                                        .foregroundColor(Color(self.fourthMeat ? "white" : "black"))
-                                    Text("Mal")
+                                        .foregroundColor(Color(self.fourthShower ? "white" : "black"))
+                                    Text("Minuten")
                                         .font(.footnote)
                                         .fixedSize()
-                                        .foregroundColor(Color(self.fourthMeat ? "white" : "black"))
+                                        .foregroundColor(Color(self.fourthShower ? "white" : "black"))
                                         .multilineTextAlignment(.center)
                                         .padding(5)
                                 }.frame(height: 60)
                                     .padding(2)
-                                    .padding(.horizontal, 13)
-                                    .background(Color(fourthMeat ? "blue" : "transparent"))
+                                    .padding(.horizontal, 5)
+                                    .background(Color(fourthShower ? "blue" : "transparent"))
                                     .cornerRadius(15)
                             }
                         }
                         Button(action: {
                             impact(style: .medium)
-                            self.firstMeat = false
-                            self.secondMeat = false
-                            self.thirdMeat = false
-                            self.fourthMeat = false
+                            self.firstShower = false
+                            self.secondShower = false
+                            self.thirdShower = false
+                            self.fourthShower = false
                             
-                            self.kilometerSelected = true
-                            self.fifthMeat = true
+                            self.showerSelected = true
+                            self.fifthShower = true
                             
-                            self.meat = 4
+                            self.shower = 4
                         }) {
                             VStack {
                                 VStack {
-                                    Text("4+")
+                                    Text("20+")
                                         .font(.system(size: 18, weight: Font.Weight.medium))
-                                        .foregroundColor(Color(self.fifthMeat ? "white" : "black"))
-                                    Text("Mal")
+                                        .foregroundColor(Color(self.fifthShower ? "white" : "black"))
+                                    Text("Minuten")
                                         .font(.footnote)
                                         .fixedSize()
-                                        .foregroundColor(Color(self.fifthMeat ? "white" : "black"))
+                                        .foregroundColor(Color(self.fifthShower ? "white" : "black"))
                                         .multilineTextAlignment(.center)
                                         .padding(5)
                                 }.frame(height: 60)
                                     .padding(2)
-                                    .padding(.horizontal, 13)
-                                    .background(Color(fifthMeat ? "blue" : "transparent"))
+                                    .padding(.horizontal, 5)
+                                    .background(Color(fifthShower ? "blue" : "transparent"))
                                     .cornerRadius(15)
                             }
                         }
@@ -213,7 +217,7 @@ struct AddTagebuchCard2: View {
                                 .frame(width: 80, height: 40)
                         }
                         Spacer()
-                        NavigationLink (destination: AddTagebuchCard3(tabViewSelected: $tabViewSelected, kilometer: kilometer, meat: meat).navigationBarBackButtonHidden(true)
+                        NavigationLink (destination: AddTagebuchCard7(tabViewSelected: $tabViewSelected, kilometer: kilometer, meat: meat, cooked: cooked, foodWaste: foodWaste, drinks: drinks, shower: shower).navigationBarBackButtonHidden(true)
                             .navigationBarTitle("")
                             .navigationBarHidden(true)){
                                 Text("Überspringen")
@@ -221,17 +225,17 @@ struct AddTagebuchCard2: View {
                                     .foregroundColor(.secondary)
                         }
                         Spacer()
-                        NavigationLink (destination: AddTagebuchCard3(tabViewSelected: $tabViewSelected, kilometer: kilometer, meat: meat).navigationBarBackButtonHidden(true)
+                        NavigationLink (destination: AddTagebuchCard7(tabViewSelected: $tabViewSelected, kilometer: kilometer, meat: meat, cooked: cooked, foodWaste: foodWaste, drinks: drinks, shower: shower).navigationBarBackButtonHidden(true)
                             .navigationBarTitle("")
                             .navigationBarHidden(true)){
                                 Image(systemName: "arrow.right")
                                     .font(.headline)
-                                    .accentColor(Color(kilometerSelected ? "white" :"white"))
+                                    .accentColor(Color(showerSelected ? "white" :"white"))
                                     .padding(5)
                                     .frame(width: 80, height: 40)
-                                    .background(Color(kilometerSelected ? "blue" : "blueDisabled"))
+                                    .background(Color(showerSelected ? "blue" : "blueDisabled"))
                                     .cornerRadius(15)
-                        }.disabled(!kilometerSelected)
+                        }.disabled(!showerSelected)
                     }
                     .padding(20)
                 }
@@ -243,8 +247,8 @@ struct AddTagebuchCard2: View {
     }
 }
 
-struct AddTagebuchCard2_Previews: PreviewProvider {
+struct AddTagebuchCard6_Previews: PreviewProvider {
     static var previews: some View {
-        AddTagebuchCard2(tabViewSelected: .constant(2), kilometer: 0)
+        AddTagebuchCard6(tabViewSelected: .constant(2), kilometer: 0, meat: 0, cooked: 0, foodWaste: 0, drinks: 0)
     }
 }

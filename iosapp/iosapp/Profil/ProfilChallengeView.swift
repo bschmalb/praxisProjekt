@@ -8,13 +8,13 @@
 
 import SwiftUI
 
-struct ProfilTippView: View {
+struct ProfilChallengeView: View {
     
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     
     let uuid = UIDevice.current.identifierForVendor?.uuidString
     
-    @State var filteredTipps3: [Tipp] = []
+    @State var filteredChallenges: [Challenge] = []
     
     @State var checkedSelected: Bool = true
     @State var savedSelected: Bool = false
@@ -37,7 +37,7 @@ struct ProfilTippView: View {
                         Image(systemName: "arrow.left.circle")
                             .font(.system(size: 24))
                             .foregroundColor(Color("black"))
-                        Text("Deine Tipps")
+                        Text("Deine Challenges")
                             .font(.system(size: 22))
                             .fontWeight(.medium)
                             .foregroundColor(Color("black"))
@@ -125,17 +125,18 @@ struct ProfilTippView: View {
                     }.padding(.horizontal, 10)
                     .padding(.bottom, 10)
                 }
+                
                 ZStack {
                     VStack {
-                        if (!self.filteredTipps3.isEmpty) {
+                        if (!self.filteredChallenges.isEmpty) {
                             GeometryReader { proxy in
                                 UIScrollViewWrapper {
                                     HStack {
-                                        ForEach(self.filteredTipps3.indices, id: \.self) { index in
+                                        ForEach(self.filteredChallenges.indices, id: \.self) { index in
                                             HStack {
-                                                if(self.filteredTipps3[index].isChecked) {
+                                                if(self.filteredChallenges[index].isChecked) {
                                                     GeometryReader { geometry in
-                                                        TippCard(isChecked: self.$filteredTipps3[index].isChecked, isBookmarked: self.$filteredTipps3[index].isBookmarked, tipp: self.filteredTipps3[index])
+                                                        ChallengeCard(isChecked: self.$filteredChallenges[index].isChecked, isBookmarked: self.$filteredChallenges[index].isBookmarked, challenge: self.filteredChallenges[index])
                                                             .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX) - 5 ) / -8), axis: (x: 0, y: 10.0, z:0))
                                                             .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
                                                             .padding(.vertical, 10)
@@ -174,7 +175,7 @@ struct ProfilTippView: View {
                         }
                     }.offset(x: self.checkedSelected ? 0 : -UIScreen.main.bounds.width)
                     VStack {
-                        if (!self.filteredTipps3.isEmpty) {
+                        if (!self.filteredChallenges.isEmpty) {
                             //                            GeometryReader { proxy in
                             //                                UIScrollViewWrapper {
                             //                                    HStack {
@@ -201,15 +202,15 @@ struct ProfilTippView: View {
                             
                             ScrollView (.horizontal, showsIndicators: false) {
                                 HStack (spacing: -2){
-                                    ForEach(filteredTipps3.indices, id: \.self) { index in
+                                    ForEach(filteredChallenges.indices, id: \.self) { index in
                                         VStack {
                                             GeometryReader { geometry in
-                                                TippCard(isChecked: self.$filteredTipps3[index].isChecked, isBookmarked: self.$filteredTipps3[index].isBookmarked, tipp: self.filteredTipps3[index])
+                                                ChallengeCard(isChecked: self.$filteredChallenges[index].isChecked, isBookmarked: self.$filteredChallenges[index].isBookmarked, challenge: self.filteredChallenges[index])
                                                     .padding(.vertical, UIScreen.main.bounds.height / 81)
                                                     .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX) - 20 ) / -20), axis: (x: 0, y: 10.0, z:0))
                                                     .shadow(color: Color(.black).opacity(0.1), radius: 5, x: 4, y: 3)
                                             }
-                                            .frame(width: self.filteredTipps3[index].isBookmarked ? UIScreen.main.bounds.width - 30 : 0, height: UIScreen.main.bounds.height/2.1 + 20)
+                                            .frame(width: self.filteredChallenges[index].isBookmarked ? UIScreen.main.bounds.width - 30 : 0, height: UIScreen.main.bounds.height/2.1 + 20)
                                         }
                                     }
                                 }
@@ -221,15 +222,15 @@ struct ProfilTippView: View {
                     }.offset(x: self.checkedSelected ? UIScreen.main.bounds.width : 0)
                     .offset(x: self.ownSelected ? -UIScreen.main.bounds.width : 0)
                     VStack {
-                        if (!self.filteredTipps3.isEmpty) {
+                        if (!self.filteredChallenges.isEmpty) {
                             GeometryReader { proxy in
                                 UIScrollViewWrapper {
                                     HStack {
-                                        ForEach(self.filteredTipps3.indices, id: \.self) { index in
+                                        ForEach(self.filteredChallenges.indices, id: \.self) { index in
                                             HStack {
-                                                if(self.filteredTipps3[index].postedBy == self.uuid) {
+                                                if(self.filteredChallenges[index].postedBy == self.uuid) {
                                                     GeometryReader { geometry in
-                                                        TippCard(isChecked: self.$filteredTipps3[index].isChecked, isBookmarked: self.$filteredTipps3[index].isBookmarked, tipp: self.filteredTipps3[index])
+                                                        ChallengeCard(isChecked: self.$filteredChallenges[index].isChecked, isBookmarked: self.$filteredChallenges[index].isBookmarked, challenge: self.filteredChallenges[index])
                                                             .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX) - 5 ) / -8), axis: (x: 0, y: 10.0, z:0))
                                                             .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
                                                             .padding(.vertical, 10)
@@ -251,8 +252,8 @@ struct ProfilTippView: View {
                 Spacer()
             }
             .onAppear{
-                AllApi().fetchAllTipps { (filteredTipps3) in
-                    self.filteredTipps3 = filteredTipps3
+                ChallengeApi().fetchChallenges { (filteredChallenges) in
+                    self.filteredChallenges = filteredChallenges
                 }
                 impact(style: .medium)
             }
@@ -268,8 +269,8 @@ struct ProfilTippView: View {
 }
 
 
-struct ProfilTippView_Previews: PreviewProvider {
+struct ProfilChallengeView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilTippView()
+        ProfilChallengeView()
     }
 }

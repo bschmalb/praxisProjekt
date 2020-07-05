@@ -48,7 +48,7 @@ struct ProfilHomeView: View {
                             }.padding(10)
                         }.navigationBarTitle("Navigation")
                     
-                    NavigationLink(destination: ProfilTippView()
+                    NavigationLink(destination: ProfilChallengeView()
                                         .navigationBarTitle("")
                                         .navigationBarHidden(true)
                                         .navigationBarBackButtonHidden(true)

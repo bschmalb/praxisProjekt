@@ -10,24 +10,26 @@ import SwiftUI
 
 struct User: Encodable, Decodable {
     var id: String
-    var name: String
+    var level: Int16
     var checkedTipps: [String]
     var savedTipps: [String]
     var checkedChallenges: [String]
     var savedChallenges: [String]
 //    var seenTipps: [String]?
 //    var seenChallenges: [String]?
-//    var tagebuch: [Eintrag]?
+    var log: [Log]
 }
 
-struct Eintrag: Encodable, Decodable {
-    var kilometer: Int8
-    var meat: Int8
-    var cooked: Int8
-    var foodWaste: Int8
-    var drinks: Int8
-    var shower: Int8
-    var binWaste: Int8
+struct Log: Encodable, Decodable {
+    var id: String
+    var kilometer: Int
+    var meat: Int
+    var cooked: Int
+    var foodWaste: Int
+    var drinks: Int
+    var shower: Int
+    var binWaste: Int
+    var date: String
 }
 
 class UserApi {

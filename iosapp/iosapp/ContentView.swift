@@ -7,7 +7,6 @@
 //
 
 import CoreHaptics
-//import SwiftUIPager
 import SwiftUI
 
 func haptic(type: UINotificationFeedbackGenerator.FeedbackType) {
@@ -24,15 +23,26 @@ struct ToggleModel {
     }
 }
 
+class UserLevel: ObservableObject {
+    @Published var level = UserDefaults.standard.integer(forKey: "userLevel")
+}
+
+class Overlay: ObservableObject {
+    @Published var overlay = UserDefaults.standard.bool(forKey: "overlay")
+}
+
 struct ContentView: View {
     
     @State var model = ToggleModel()
     
     @State private var appearenceDark = UserDefaults.standard.bool(forKey: "appearenceDark")
-    @State private var isUser = UserDefaults.standard.bool(forKey: "isUser")
+    @State private var isUser2 = UserDefaults.standard.bool(forKey: "isUser2")
     @State private var seenTipps = UserDefaults.standard.stringArray(forKey: "seenTipps")
+    @State private var userLevel = UserDefaults.standard.integer(forKey: "userLevel")
     
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
+    @EnvironmentObject var overlay: Overlay
+    @EnvironmentObject var levelEnv: UserLevel
     
     @State var tabTippSelected = true
     @State var tabChallSelected = false
@@ -47,6 +57,7 @@ struct ContentView: View {
     
     @State var offsetCapsule: CGFloat = -UIScreen.main.bounds.width / 3.08
     @State var widthCapsule: CGFloat = 25
+    @State var screenWidth = UIScreen.main.bounds.width
     
     var body: some View {
         ZStack {
@@ -55,271 +66,159 @@ struct ContentView: View {
             VStack {
                 ZStack {
                     TippView(isDark: $model.isDark, appearenceDark: $appearenceDark).offset(x: tippOffset).opacity(tabTippSelected ? 1 : 0)
+                        .padding(.top, 1)
+                        .padding(.bottom, UIScreen.main.bounds.height / 12)
                     ChallengeView().offset(x: challengeOffset).opacity(tabChallSelected ? 1 : 0)
-                    TagebuchView().offset(x: logOffset).opacity(tabLogSelected ? 1 : 0)
+                        .padding(.top, 1)
+                        .padding(.bottom, UIScreen.main.bounds.height / 12)
+                    TagebuchView(tabViewSelected: $tabViewSelected).offset(x: logOffset).opacity(tabLogSelected ? 1 : 0)
+                        .padding(.bottom, UIScreen.main.bounds.height / 12)
                     ProfilView(isDark: $model.isDark, appearenceDark: $appearenceDark).offset(x: profileOffset).opacity(tabProfileSelected ? 1 : 0)
                 }
             }
-            .padding(.top, 1)
-            .padding(.bottom, UIScreen.main.bounds.height / 12)
             VStack {
                 Spacer()
-                ZStack {
-                    HStack (spacing: UIScreen.main.bounds.width / 7) {
-                        Button(action: {
-                            self.offsetCapsule = -UIScreen.main.bounds.width / 3.08
-                            self.widthCapsule = 25
-                            self.tabTippSelected = true
-                            self.tabChallSelected = false
-                            self.tabLogSelected = false
-                            self.tabProfileSelected = false
-                            
-                            self.tippOffset = 0
-                            self.challengeOffset = UIScreen.main.bounds.width
-                            self.logOffset = UIScreen.main.bounds.width
-                            self.profileOffset = UIScreen.main.bounds.width
-                            
-                            
-                            self.tabViewSelected = 0
-                            
-                            impact(style: .medium)
-                        }) {
-                            VStack {
-                                Image(systemName: "lightbulb")
-                                    .font(.system(size: 22, weight: Font.Weight.medium))
-                                    .opacity(tabTippSelected ? 1 : 0.5)
-                            }
-                        }
-                        Button(action: {
-                            self.offsetCapsule = -UIScreen.main.bounds.width / 9.5
-                            self.widthCapsule = 50
-                            self.tabTippSelected = false
-                            self.tabChallSelected = true
-                            self.tabLogSelected = false
-                            self.tabProfileSelected = false
-                            
-                            self.tippOffset = -UIScreen.main.bounds.width
-                            self.challengeOffset = 0
-                            self.logOffset = UIScreen.main.bounds.width
-                            self.profileOffset = UIScreen.main.bounds.width
-                            
-                            self.tabViewSelected = 1
-                            
-                            impact(style: .medium)
-                        }) {
-                            VStack {
-                                Image(systemName: "person.3")
-                                    .font(.system(size: 22, weight: Font.Weight.medium))
-                                    .opacity(tabChallSelected ? 1 : 0.5)
-                            }
-                        }
-                        Button(action: {
-                            self.offsetCapsule = UIScreen.main.bounds.width / 8
-                            self.widthCapsule = 30
-                            self.tabTippSelected = false
-                            self.tabChallSelected = false
-                            self.tabLogSelected = true
-                            self.tabProfileSelected = false
-                            
-                            self.tippOffset = -UIScreen.main.bounds.width
-                            self.challengeOffset = -UIScreen.main.bounds.width
-                            self.logOffset = 0
-                            self.profileOffset = UIScreen.main.bounds.width
-                            
-                            self.tabViewSelected = 2
-                            
-                            impact(style: .medium)
-                        }) {
-                            VStack {
-                                Image(systemName: "book")
-                                    .font(.system(size: 22, weight: Font.Weight.medium))
-                                    .opacity(tabLogSelected ? 1 : 0.5)
-                            }
-                        }
-                        Button(action: {
-                            self.offsetCapsule = UIScreen.main.bounds.width / 3.1
-                            self.widthCapsule = 20
-                            self.tabTippSelected = false
-                            self.tabChallSelected = false
-                            self.tabLogSelected = false
-                            self.tabProfileSelected = true
-                            
-                            self.tippOffset = -UIScreen.main.bounds.width
-                            self.challengeOffset = -UIScreen.main.bounds.width
-                            self.logOffset = -UIScreen.main.bounds.width
-                            self.profileOffset = 0
-                            
-                            self.tabViewSelected = 3
-                            
-                            impact(style: .medium)
-                        }) {
-                            VStack {
-                                Image(systemName: "person")
-                                    .font(.system(size: 22, weight: Font.Weight.medium))
-                                    .opacity(tabProfileSelected ? 1 : 0.5)
-                            }
-                        }
-                    }
-                    .accentColor(Color("black"))
-                    .offset(y: -2)
-                    Capsule()
-                        .fill(Color("black"))
-                        .frame(width: widthCapsule, height: 2)
-                        .offset(x: offsetCapsule, y: 17)
-                }
-                .frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height / 14, alignment: .center)
-                .background(Color("buttonWhite"))
-                .cornerRadius(20)
-                .shadow(color: Color(.black).opacity(0.2), radius: 5, x: 0, y: 4)
-                .gesture(DragGesture()
-                            .onChanged({ value in
-                                if (value.translation.width > 0) {
-                                    if (value.translation.width > 20 && tabViewSelected == 0) {
-                                        self.offsetCapsule = -UIScreen.main.bounds.width / 9.5
-                                        self.widthCapsule = 50
-                                        self.tabTippSelected = false
-                                        self.tabChallSelected = true
-                                        self.tabLogSelected = false
-                                        self.tabProfileSelected = false
-                                        
-                                        self.tippOffset = -UIScreen.main.bounds.width
-                                        self.challengeOffset = 0
-                                        self.logOffset = UIScreen.main.bounds.width
-                                        self.profileOffset = UIScreen.main.bounds.width
-                                        
-                                        self.tabViewSelected = 1
-                                        
-                                        impact(style: .medium)
-                                    }
-                                    if (value.translation.width > 20 && tabViewSelected == 1) {
-                                        self.offsetCapsule = UIScreen.main.bounds.width / 8
-                                        self.widthCapsule = 30
-                                        self.tabTippSelected = false
-                                        self.tabChallSelected = false
-                                        self.tabLogSelected = true
-                                        self.tabProfileSelected = false
-                                        
-                                        self.tippOffset = -UIScreen.main.bounds.width
-                                        self.challengeOffset = -UIScreen.main.bounds.width
-                                        self.logOffset = 0
-                                        self.profileOffset = UIScreen.main.bounds.width
-                                        
-                                        self.tabViewSelected = 2
-                                        
-                                        impact(style: .medium)
-                                    }
-                                    if (value.translation.width > 20 && tabViewSelected == 2) {
-                                        self.offsetCapsule = UIScreen.main.bounds.width / 3.1
-                                        self.widthCapsule = 20
-                                        self.tabTippSelected = false
-                                        self.tabChallSelected = false
-                                        self.tabLogSelected = false
-                                        self.tabProfileSelected = true
-                                        
-                                        self.tippOffset = -UIScreen.main.bounds.width
-                                        self.challengeOffset = -UIScreen.main.bounds.width
-                                        self.logOffset = -UIScreen.main.bounds.width
-                                        self.profileOffset = 0
-                                        
-                                        self.tabViewSelected = 3
-                                        
-                                        impact(style: .medium)
-                                    }
+                
+//                    .onChange(of: tabViewSelected) { value in
+//                        selectTab(tabViewSelected: tabViewSelected)
+//                    }
+
+                    ZStack {
+                        HStack (spacing: screenWidth / 7) {
+                            Button(action: {
+                                self.tabViewSelected = 0
+                                self.selectTab(tabViewSelected: self.tabViewSelected)
+                                
+                                impact(style: .medium)
+                            }) {
+                                VStack {
+                                    Image(systemName: "lightbulb")
+                                        .font(.system(size: 22, weight: Font.Weight.medium))
+                                        .opacity(tabTippSelected ? 1 : 0.5)
                                 }
-                                //                                if (value.translation.width < 0) {
-                                //                                    if (value.translation.width < 20 && tabViewSelected == 3) {
-                                //                                        self.offsetCapsule = UIScreen.main.bounds.width / 8
-                                //                                        self.widthCapsule = 30
-                                //                                        self.tabTippSelected = false
-                                //                                        self.tabChallSelected = false
-                                //                                        self.tabLogSelected = true
-                                //                                        self.tabProfileSelected = false
-                                //
-                                //                                        self.tippOffset = -UIScreen.main.bounds.width
-                                //                                        self.challengeOffset = -UIScreen.main.bounds.width
-                                //                                        self.logOffset = 0
-                                //                                        self.profileOffset = UIScreen.main.bounds.width
-                                //
-                                //                                        self.tabViewSelected = 2
-                                //
-                                //                                        impact(style: .medium)
-                                //                                    }
-                                //                                    if (value.translation.width < 20 && tabViewSelected == 2) {
-                                //                                        self.offsetCapsule = -UIScreen.main.bounds.width / 9.5
-                                //                                        self.widthCapsule = 50
-                                //                                        self.tabTippSelected = false
-                                //                                        self.tabChallSelected = true
-                                //                                        self.tabLogSelected = false
-                                //                                        self.tabProfileSelected = false
-                                //
-                                //                                        self.tippOffset = -UIScreen.main.bounds.width
-                                //                                        self.challengeOffset = 0
-                                //                                        self.logOffset = UIScreen.main.bounds.width
-                                //                                        self.profileOffset = UIScreen.main.bounds.width
-                                //
-                                //                                        self.tabViewSelected = 1
-                                //
-                                //                                        impact(style: .medium)
-                                //                                    }
-                                //                                    if (value.translation.width < 20 && tabViewSelected == 1) {
-                                //                                        self.offsetCapsule = -UIScreen.main.bounds.width / 3.08
-                                //                                        self.widthCapsule = 25
-                                //                                        self.tabTippSelected = true
-                                //                                        self.tabChallSelected = false
-                                //                                        self.tabLogSelected = false
-                                //                                        self.tabProfileSelected = false
-                                //
-                                //                                        self.tippOffset = 0
-                                //                                        self.challengeOffset = UIScreen.main.bounds.width
-                                //                                        self.logOffset = UIScreen.main.bounds.width
-                                //                                        self.profileOffset = UIScreen.main.bounds.width
-                                //
-                                //
-                                //                                        self.tabViewSelected = 0
-                                //
-                                //                                        impact(style: .medium)
-                                //                                    }
-                                //                                }
-                            })
-                )
+                            }
+                            Button(action: {
+                                self.tabViewSelected = 1
+                                self.selectTab(tabViewSelected: self.tabViewSelected)
+                                
+                                impact(style: .medium)
+                            }) {
+                                VStack {
+                                    Image(systemName: "person.3")
+                                        .font(.system(size: 22, weight: Font.Weight.medium))
+                                        .opacity(tabChallSelected ? 1 : 0.5)
+                                }
+                            }
+                            Button(action: {
+                                self.tabViewSelected = 2
+                                self.selectTab(tabViewSelected: self.tabViewSelected)
+                                
+                                impact(style: .medium)
+                            }) {
+                                VStack {
+                                    Image(systemName: "book")
+                                        .font(.system(size: 22, weight: Font.Weight.medium))
+                                        .opacity(tabLogSelected ? 1 : 0.5)
+                                }
+                            }
+                            Button(action: {
+                                self.tabViewSelected = 3
+                                self.selectTab(tabViewSelected: self.tabViewSelected)
+                                
+                                impact(style: .medium)
+                            }) {
+                                VStack {
+                                    Image(systemName: "person")
+                                        .font(.system(size: 22, weight: Font.Weight.medium))
+                                        .opacity(tabProfileSelected ? 1 : 0.5)
+                                }
+                            }
+                        }
+                        .accentColor(Color("black"))
+                        .offset(y: -2)
+                        Capsule()
+                            .fill(Color("black"))
+                            .frame(width: widthCapsule, height: 2)
+                            .offset(x: offsetCapsule, y: 17)
+                    }
+                    .frame(width: screenWidth - 30, height: UIScreen.main.bounds.height / 14, alignment: .center)
+                    .background(Color("buttonWhite"))
+                    .cornerRadius(20)
+                    .shadow(color: Color(.black).opacity(0.2), radius: 5, x: 0, y: 4)
+//                }
             }.animation(.spring())
             .padding(.bottom, UIScreen.main.bounds.height / 40)
         }.edgesIgnoringSafeArea(.bottom)
         .animation(.spring())
-        //        TabView {
-        //            TippView()
-        //                .tabItem {
-        //                    Image(systemName: "lightbulb")
-        //                    Text("Tipps")
-        //            }
-        //            VStack {
-        //                Text("Hallo")
-        //            }.tabItem {
-        //                Image(systemName: "person.3")
-        //                Text("Challenges")
-        //            }
-        //            VStack {
-        //                TagebuchView()
-        //            }.tabItem {
-        //                Image(systemName: "book")
-        //                Text("Tagebuch")
-        //            }
-        //            VStack {
-        //                ProfilView()
-        //            }.tabItem {
-        //                Image(systemName: "person")
-        //                Text("Profil")
-        //            }
-        //        }.accentColor(.primary)
         .onAppear(){
-            if (!isUser) {
+            if (!self.isUser2) {
                 self.createUser()
             }
         }
     }
+    
+    func selectTab(tabViewSelected: Int) {
+        
+        if (tabViewSelected == 0) {
+            self.offsetCapsule = -screenWidth / 3.05
+            self.widthCapsule = 25
+            self.tabTippSelected = true
+            self.tabChallSelected = false
+            self.tabLogSelected = false
+            self.tabProfileSelected = false
+            
+            self.tippOffset = 0
+            self.challengeOffset = screenWidth
+            self.logOffset = screenWidth
+            self.profileOffset = screenWidth
+        }
+        
+        if (tabViewSelected == 1) {
+            self.offsetCapsule = -screenWidth / 9.5
+            self.widthCapsule = 50
+            self.tabTippSelected = false
+            self.tabChallSelected = true
+            self.tabLogSelected = false
+            self.tabProfileSelected = false
+            
+            self.tippOffset = -screenWidth
+            self.challengeOffset = 0
+            self.logOffset = screenWidth
+            self.profileOffset = screenWidth
+        }
+        
+        if (tabViewSelected == 2) {
+            self.offsetCapsule = screenWidth / 8
+            self.widthCapsule = 30
+            self.tabTippSelected = false
+            self.tabChallSelected = false
+            self.tabLogSelected = true
+            self.tabProfileSelected = false
+            
+            self.tippOffset = -screenWidth
+            self.challengeOffset = -screenWidth
+            self.logOffset = 0
+            self.profileOffset = screenWidth
+        }
+        
+        if (tabViewSelected == 3) {
+            self.offsetCapsule = screenWidth / 3.08
+            self.widthCapsule = 20
+            self.tabTippSelected = false
+            self.tabChallSelected = false
+            self.tabLogSelected = false
+            self.tabProfileSelected = true
+            
+            self.tippOffset = -screenWidth
+            self.challengeOffset = -screenWidth
+            self.logOffset = -screenWidth
+            self.profileOffset = 0
+        }
+    }
+    
     func createUser(){
         if let uuid = UIDevice.current.identifierForVendor?.uuidString {
-            let userData = User(id: uuid, name: "", checkedTipps: [], savedTipps: [], checkedChallenges: [], savedChallenges: [])
+            let userData = User(id: uuid, level: 0, checkedTipps: [], savedTipps: [], checkedChallenges: [], savedChallenges: [], log: [])
             
             guard let encoded = try? JSONEncoder().encode(userData) else {
                 print("Failed to encode order")
@@ -337,8 +236,8 @@ struct ContentView: View {
                     return
                 }
                 print(data)
-                self.isUser = true
-                UserDefaults.standard.set(self.isUser, forKey: "isUser")
+                self.isUser2 = true
+                UserDefaults.standard.set(self.isUser2, forKey: "isUser2")
             }.resume()
         }
     }
@@ -346,6 +245,6 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        ContentView().environmentObject(UserLevel()).environmentObject(Overlay())
     }
 }

@@ -17,6 +17,8 @@ struct ProfilView: View {
     @Binding var isDark: Bool
     @Binding var appearenceDark: Bool
     
+    @EnvironmentObject var overlay: Overlay
+    
     
     @State private var userName: String = UserDefaults.standard.string(forKey: "userName") ?? "Nutzer"
     
@@ -24,11 +26,6 @@ struct ProfilView: View {
         ZStack {
             NavigationView {
                 ZStack {
-                    ProfileLevelView(offsetLevel: $offsetLevel)
-                        .onTapGesture {
-                            offsetLevel = -UIScreen.main.bounds.height / 1.2
-                        }
-                    
                     ZStack {
                         Color("background")
                             .edgesIgnoringSafeArea(.all)
@@ -38,7 +35,8 @@ struct ProfilView: View {
                         HStack {
                             Spacer()
                             Button(action: {
-                                offsetLevel = -UIScreen.main.bounds.height / 20
+                                self.offsetLevel = -UIScreen.main.bounds.height / 20
+                                self.overlay.overlay = true
                             })
                             {
                             LevelView(frameWidth: 60, frameHeight: 60)
@@ -52,7 +50,8 @@ struct ProfilView: View {
                     VStack {
                         HStack {
                             Button(action: {
-                                offsetChangeName = -UIScreen.main.bounds.height / 20
+                                self.offsetChangeName = -UIScreen.main.bounds.height / 20
+                                self.overlay.overlay = true
                             })
                             {
                                 VStack (alignment: .leading){
@@ -60,7 +59,7 @@ struct ProfilView: View {
                                         .font(.title)
                                         .fontWeight(.bold)
                                         .padding(.leading, 20)
-                                        .padding(.bottom, 5)
+                                        .padding(.vertical, 5)
                                         .frame(width: UIScreen.main.bounds.width / 1.4, height: 40, alignment: .leading)
                                     Text("Wilkommen in deinem Profil")
                                         .font(.callout)
@@ -82,12 +81,19 @@ struct ProfilView: View {
                     .navigationBarHidden(true)
                 }
             }
+            .padding(.top, 1)
+            .padding(.bottom, UIScreen.main.bounds.height / 12)
+//            .overlay(Color("black").opacity(overlay.overlay ? 0.4 : 0))
+            .blur(radius: overlay.overlay ? 2 : 0)
+            .edgesIgnoringSafeArea(.all)
+            .animation(.spring())
+            
             
             ChangeNameView(offsetChangeName: $offsetChangeName, userName: $userName)
             
             ProfileLevelView(offsetLevel: $offsetLevel)
                 .onTapGesture {
-                    offsetLevel = -UIScreen.main.bounds.height / 1.5
+                    self.offsetLevel = -UIScreen.main.bounds.height / 1.5
                 }
             
             
@@ -96,14 +102,16 @@ struct ProfilView: View {
                     .onChanged({ value in
                         if (value.translation.height < 0) {
                             if (value.translation.height < 20) {
-                                UserDefaults.standard.set(userName, forKey: "userName")
-                                offsetChangeName = -UIScreen.main.bounds.height / 1.5
-                                offsetLevel = -UIScreen.main.bounds.height / 1
+                                UserDefaults.standard.set(self.userName, forKey: "userName")
+                                self.offsetChangeName = -UIScreen.main.bounds.height / 1.5
+                                self.offsetLevel = -UIScreen.main.bounds.height / 1
+                                self.overlay.overlay = false
                                 self.hideKeyboard()
                             }
                         }
                     })
         )
+        .padding(.top, 1)
     }
     
     func hideKeyboard() {
@@ -113,7 +121,7 @@ struct ProfilView: View {
 
 struct ProfilView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilView(isDark: .constant(false), appearenceDark: .constant(false))
+        ProfilView(isDark: .constant(false), appearenceDark: .constant(false)).environmentObject(UserLevel()).environmentObject(Overlay())
     }
 }
 
@@ -122,6 +130,8 @@ struct ChangeNameView: View {
     @Binding var offsetChangeName : CGFloat
     @Binding var userName: String
     
+    @EnvironmentObject var overlay: Overlay
+    
     var body: some View {
         VStack {
             HStack {
@@ -129,9 +139,10 @@ struct ChangeNameView: View {
                     .padding(.leading, 50)
                     .frame(width: UIScreen.main.bounds.width * 0.8, height: 50)
                 Button(action: {
-                    UserDefaults.standard.set(userName, forKey: "userName")
-                    offsetChangeName = -UIScreen.main.bounds.height / 1.5
+                    UserDefaults.standard.set(self.userName, forKey: "userName")
+                    self.offsetChangeName = -UIScreen.main.bounds.height / 1.5
                     self.hideKeyboard()
+                    self.overlay.overlay = false
                 })
                 {
                     Image(systemName: "xmark.circle")
@@ -145,9 +156,11 @@ struct ChangeNameView: View {
             .padding(.horizontal, /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
             .frame(width: UIScreen.main.bounds.width * 0.9)
             Button(action: {
-                UserDefaults.standard.set(userName, forKey: "userName")
-                offsetChangeName = -UIScreen.main.bounds.height / 1.5
+                UserDefaults.standard.set(self.userName, forKey: "userName")
+                self.offsetChangeName = -UIScreen.main.bounds.height / 1.5
+                self.overlay.overlay = true
                 self.hideKeyboard()
+                self.overlay.overlay = false
             })
             {
                 Text("Ändern")
@@ -176,16 +189,26 @@ struct ChangeNameView: View {
 struct ProfileLevelView: View {
     
     @Binding var offsetLevel: CGFloat
+    
+    @EnvironmentObject var levelEnv: UserLevel
+    @EnvironmentObject var overlay: Overlay
+    @State var userLevelLocal = UserDefaults.standard.integer(forKey: "userLevel")
+    
     var color1 = Color("blue")
     var color2 = Color(.blue).opacity(0.7)
     var frameWidth: CGFloat = 100
     var frameHeight: CGFloat = 100
-    var percent: CGFloat = 88
+    var percent: CGFloat = 10
     
     var body: some View {
-        VStack (spacing: 30) {
+        let numberFormatter = NumberFormatter()
+        numberFormatter.maximumIntegerDigits = 2
+        
+        let progress = 1 - CGFloat(Int(numberFormatter.string(for: levelEnv.level) ?? "2") ?? 10) / 100
+        
+        return VStack (spacing: 30) {
             HStack {
-                Text("Level 12")
+                Text("Level \((levelEnv.level/100)+1)")
                     .font(.system(size: 28))
                     .bold()
                     .foregroundColor(Color("black"))
@@ -195,7 +218,7 @@ struct ProfileLevelView: View {
                         .stroke(Color(.black).opacity(0.1), style: StrokeStyle(lineWidth: 8))
                         .frame(width: frameWidth, height: frameHeight)
                     Circle()
-                        .trim(from: 0.2, to: 1)
+                        .trim(from: progress, to: 1)
                         .stroke(
                             LinearGradient(gradient: Gradient(colors: [color1, color2]), startPoint: .topTrailing, endPoint: .bottomLeading),
                             style: StrokeStyle(lineWidth: 10, lineCap: .round, lineJoin: .round, miterLimit: .infinity, dash: [20, 0], dashPhase: 0
@@ -206,9 +229,9 @@ struct ProfileLevelView: View {
                         .frame(width: frameWidth, height: frameHeight)
                         .shadow(color: Color("blue").opacity(0.1), radius: 3, x: 0, y: 3)
                     VStack (spacing: -5){
-                        Text("125/ 250")
+                        Text("\(numberFormatter.string(for: levelEnv.level) ?? "0")/100")
                             .multilineTextAlignment(.center)
-                            .font(.system(size: 20))
+                            .font(.system(size: 16))
                             .frame(width: 60)
                             .foregroundColor(Color("black").opacity(0.8))
                     }.offset(y: 2)
@@ -224,7 +247,8 @@ struct ProfileLevelView: View {
         .shadow(radius: 10)
         .offset(y: offsetLevel)
         .onTapGesture {
-            offsetLevel = -UIScreen.main.bounds.height / 1.5
+            self.offsetLevel = -UIScreen.main.bounds.height / 1.2
+            self.overlay.overlay = false
         }
     }
 }

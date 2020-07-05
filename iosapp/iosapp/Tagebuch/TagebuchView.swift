@@ -10,10 +10,25 @@ import SwiftUI
 
 struct TagebuchView: View {
     
-    @State var tbSelected = true
+    static let taskDateFormat: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .short
+            return formatter
+        }()
+    
+//    @State var tbSelected = false
+    @Binding var tabViewSelected: Int
+    
+    
+    @State private var logDate = UserDefaults.standard.string(forKey: "logDate")
     
     var body: some View {
-        NavigationView {
+        let today = Date()
+        let formatter1 = DateFormatter()
+        formatter1.dateStyle = .short
+        let dateToday = formatter1.string(from: today)
+        
+        return NavigationView {
             ZStack {
                 ZStack {
                     Color("background")
@@ -32,7 +47,11 @@ struct TagebuchView: View {
                     .padding(.top, 30.0)
                     
                     VStack {
-                        AddTagebuchCard1()
+                        if (dateToday == logDate) {
+                            AddTagebuchSuccess(tabViewSelected: $tabViewSelected)
+                        } else {
+                            AddTagebuchCard1(tabViewSelected: $tabViewSelected)
+                        }
 //                        HStack (spacing: 40) {
 //                            Button(action: {
 //                                self.tbSelected = true
@@ -90,6 +109,6 @@ struct TagebuchView: View {
 
 struct TagebuchView_Previews: PreviewProvider {
     static var previews: some View {
-        TagebuchView()
+        TagebuchView(tabViewSelected: .constant(2))
     }
 }

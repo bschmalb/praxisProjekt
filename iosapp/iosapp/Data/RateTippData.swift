@@ -15,13 +15,14 @@ class RateApi {
         URLSession.shared.dataTask(with: url) { (data, _, _) in
             guard let data = data else { return }
             
-            let rateTipps = try! JSONDecoder().decode([Tipp].self, from: data)
-            
-            DispatchQueue.main.async {
-                completion(rateTipps)
+            if let rateTipps = try? JSONDecoder().decode([Tipp].self, from: data) {
+                DispatchQueue.main.async {
+                    completion(rateTipps)
+                }
+                return
             }
         }
-    .resume()
+        .resume()
     }
 }
 

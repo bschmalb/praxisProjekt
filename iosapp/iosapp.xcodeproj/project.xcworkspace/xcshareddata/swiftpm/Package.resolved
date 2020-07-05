@@ -2,30 +2,12 @@
   "object": {
     "pins": [
       {
-        "package": "SwiftUICharts",
-        "repositoryURL": "https://github.com/AppPear/ChartView",
-        "state": {
-          "branch": null,
-          "revision": "27e7e0dd1d58076e2d10e74995468c08ba2751a0",
-          "version": "1.5.1"
-        }
-      },
-      {
         "package": "Lottie",
         "repositoryURL": "https://github.com/airbnb/lottie-ios.git",
         "state": {
           "branch": null,
           "revision": "4e5877425dae5c10792fc9d22d53dc6bf6824dc1",
           "version": "3.1.8"
-        }
-      },
-      {
-        "package": "Neumorphic",
-        "repositoryURL": "https://github.com/costachung/neumorphic/",
-        "state": {
-          "branch": null,
-          "revision": "76705e201bb8ed768d6052d78ca90f0582ff08c5",
-          "version": "1.1.0"
         }
       },
       {

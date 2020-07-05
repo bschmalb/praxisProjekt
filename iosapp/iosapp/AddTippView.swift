@@ -19,6 +19,8 @@ struct AddTipp: Codable, Hashable, Identifiable {
 struct AddTippView: View {
     
     @Environment(\.presentationMode) private var presentationMode
+    @EnvironmentObject var levelEnv: UserLevel
+    
     
     @Binding var showAddTipps: Bool
     

@@ -22,13 +22,13 @@ struct ProfilFilter: View {
                         .font(.title)
                     ForEach(filter.indices, id: \.self) { index in
                         HStack (spacing: 10){
-                            Toggle("", isOn: $isSelected)
+                            Toggle("", isOn: self.$isSelected)
                                 .frame(width: 100, height: 30)
-                            Image(filter[index].icon)
+                            Image(self.filter[index].icon)
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 50, height: 30, alignment: .center)
-                            Text(filter[index].name)
+                            Text(self.filter[index].name)
                             
 //                            FilterView(isSelected: self.$filter[index].isSelected, filter: self.filter[index])
 //                                .onTapGesture {
