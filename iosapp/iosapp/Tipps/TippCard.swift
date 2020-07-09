@@ -105,7 +105,7 @@ struct TippCard: View {
                         .frame(width: 30, height: 30)
                         .opacity(0.1)
                         .padding(.vertical)
-                    Image(tipp.official ?? "Community")
+                    Image(tipp.official)
                         .resizable()
                         .scaledToFit()
                         .frame(width: 30, height: 30)
@@ -144,6 +144,40 @@ struct TippCard: View {
                     }
                 }
                 Spacer()
+                Button(action: {
+                    impact(style: .medium)
+                }) {
+                    HStack (spacing: 20){
+                        Image(systemName: "hand.thumbsup")
+                            .font(.system(size: 20, weight: Font.Weight.medium))
+                            .opacity(0.8)
+                        Text("Positiv bewerten")
+                            .font(.system(size: 18))
+                            .opacity(0.8)
+                    }
+                    .padding()
+                    .padding(.horizontal, 20)
+                    .frame(width: UIScreen.main.bounds.width - 50, height: 55)
+                    .background(Color(.white).opacity(0.2))
+                    .cornerRadius(15)
+                }
+                Button(action: {
+                    impact(style: .medium)
+                }) {
+                    HStack (spacing: 20){
+                        Image(systemName: "hand.thumbsdown")
+                            .font(.system(size: 20, weight: Font.Weight.medium))
+                            .opacity(0.8)
+                        Text("Negativ bewerten")
+                            .font(.system(size: 18))
+                            .opacity(0.8)
+                    }
+                    .padding()
+                    .padding(.horizontal, 20)
+                    .frame(width: UIScreen.main.bounds.width - 50, height: 55)
+                    .background(Color(.white).opacity(0.2))
+                    .cornerRadius(15)
+                }
                 Button(action: {
                     impact(style: .medium)
                 }) {
@@ -243,6 +277,6 @@ struct TippPatchSave : Encodable{
 
 struct TippCard_Previews: PreviewProvider {
     static var previews: some View {
-        TippCard(isChecked: .constant(false), isBookmarked: .constant(false), tipp: .init(id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", level: "Leicht", category: "Ernährung", score: 25, postedBy: "123"))
+        TippCard(isChecked: .constant(false), isBookmarked: .constant(false), tipp: .init(id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", level: "Leicht", category: "Ernährung", score: 25, postedBy: "123", official: "Community"))
     }
 }

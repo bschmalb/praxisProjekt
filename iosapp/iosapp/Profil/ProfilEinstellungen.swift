@@ -33,13 +33,13 @@ struct ProfilEinstellungen: View {
                     self.mode.wrappedValue.dismiss()
                     impact(style: .medium)
                 }) {
-                    HStack (spacing: 20){
+                    HStack (spacing: 15){
                         Image(systemName: "arrow.left.circle")
-                            .font(.system(size: 24))
+                            .font(.system(size: 24, weight: Font.Weight.medium))
                             .foregroundColor(Color("black"))
                         Text("Einstellungen")
-                            .font(.system(size: 22))
-                            .fontWeight(.medium)
+                            .font(.system(size: 26, weight: Font.Weight.medium))
+                            .fontWeight(.semibold)
                             .foregroundColor(Color("black"))
                         Spacer()
                     }
@@ -64,7 +64,7 @@ struct ProfilEinstellungen: View {
                         }.padding(10)
                     }
                     Button(action: {
-                        self.overlay.overlay = true
+                        self.overlay.overlayLog = true
                         self.offsetChangeName = -UIScreen.main.bounds.height / 20
                         impact(style: .rigid)
                     }) {
@@ -97,25 +97,25 @@ struct ProfilEinstellungen: View {
                         }.padding(10)
                     }
                     
+                    Spacer()
                     Button(action: {
                         self.levelEnv.level += 5
                         UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
                     }) {
                         HStack (spacing: 20){
                             Image(systemName: "arrow.up")
-                                .font(.system(size: 22))
+                                .font(.system(size: 16))
                                 .padding(.leading, 20)
                                 .frame(width: 60, height: 20)
                             Text("Level Up")
-                                .font(.system(size: 22))
-                                .fontWeight(.medium)
+                            .font(.system(size: 16))
                             Spacer()
                         }.padding(10)
                     }
-                    
-                    Spacer()
                     Button(action: {
                         UserDefaults.standard.set(self.logDate, forKey: "logDate")
+                        UserDefaults.standard.set(false, forKey: "firstUseTipp")
+                        UserDefaults.standard.set(false, forKey: "firstUseLog")
                         impact(style: .rigid)
                     }) {
                         HStack (spacing: 20){
@@ -130,6 +130,8 @@ struct ProfilEinstellungen: View {
                         .padding(.bottom, 20)
                     }
                 }
+                .padding(.top, 10)
+                .padding(.leading, 15)
                 
                 
                 Spacer()

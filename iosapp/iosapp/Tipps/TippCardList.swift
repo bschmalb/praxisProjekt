@@ -14,13 +14,12 @@ struct TippCardList: View {
     
     @State var filter = filterData
     
-    @State var unfilteredTipps: [Tipp] = []
     @State var filteredTipps: [Tipp] = []
     
     @State var filterString: String = ""
     
     @State var filterCategory2: [String] = ["Ernährung", "Transport", "Recycling", "Ressourcen"]
-    @State var filterLevel2: [String] = ["Einfach", "Mittel", "Schwer"]
+    @State var filterLevel2: [String] = ["Leicht", "Mittel", "Schwer"]
     @State var filterPoster: [String] = ["Offiziell", "Community"]
     
     //    var cardColors: [String]  = [
@@ -55,7 +54,7 @@ struct TippCardList: View {
                             HStack {
                                 ForEach(self.filteredTipps.indices, id: \.self) { index in
                                     HStack {
-                                        if(self.filterCategory2.contains(self.filteredTipps[index].category) && self.filterLevel2.contains(self.filteredTipps[index].level) && self.filterPoster.contains(self.filteredTipps[index].official ?? "Community")) {
+                                        if(self.filterCategory2.contains(self.filteredTipps[index].category) && self.filterLevel2.contains(self.filteredTipps[index].level) && self.filterPoster.contains(self.filteredTipps[index].official)) {
                                             GeometryReader { geometry in
                                                 TippCard(isChecked: self.$filteredTipps[index].isChecked, isBookmarked: self.$filteredTipps[index].isBookmarked, tipp: self.filteredTipps[index])
                                                     .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX) - 5 ) / -10), axis: (x: 0, y: 10.0, z:0))
@@ -129,16 +128,17 @@ struct TippCardList: View {
                     .animation(.spring())
                 }
                 else {
-                    NoConnectionCard()
-                        .padding(15)
+                    CustomCard(image: "Fix website (man)", text: "Stelle sicher, dass du mit dem Internet verbunden bist", color: "buttonWhite")
+                        .padding(.horizontal, 15)
+                        .padding(.vertical, 5)
                 }
             }
             .offset(y: -UIScreen.main.bounds.height / 81)
             .animation(.spring())
         }.onAppear{
-            Api().fetchTipps { (unfilteredTipps) in
-                self.unfilteredTipps = unfilteredTipps
-                self.filteredTipps = self.unfilteredTipps
+            Api().fetchTipps { (filteredTipps) in
+                self.filteredTipps = filteredTipps
+                print(self.filteredTipps)
             }
         }
     }
@@ -151,7 +151,7 @@ struct TippCardList: View {
                 filterCategory2.removeAll(where: {$0 == filterName})
             }
         }
-        if (filterName == "Einfach" || filterName == "Mittel" || filterName == "Schwer") {
+        if (filterName == "Leicht" || filterName == "Mittel" || filterName == "Schwer") {
             if (!filterLevel2.contains(filterName)){
                 filterLevel2.append(filterName)
             } else {
@@ -275,7 +275,7 @@ var filterData = [
     Filter(id: UUID(), icon: "blackTransport", name: "Transport", isSelected: true),
     Filter(id: UUID(), icon: "blackRecycle", name: "Recycling", isSelected: true),
     Filter(id: UUID(), icon: "blackRessourcen", name: "Ressourcen", isSelected: true),
-    Filter(id: UUID(), icon: "blackStar", name: "Einfach", isSelected: true),
+    Filter(id: UUID(), icon: "blackStar", name: "Leicht", isSelected: true),
     Filter(id: UUID(), icon: "blackHalfStar", name: "Mittel", isSelected: true),
     Filter(id: UUID(), icon: "blackStarFilled", name: "Schwer", isSelected: true),
     Filter(id: UUID(), icon: "blackVerified", name: "Offiziell", isSelected: true),
@@ -288,21 +288,27 @@ struct TippCardList_Previews: PreviewProvider {
     }
 }
 
-struct NoConnectionCard: View {
+struct CustomCard: View {
+    
+    var image: String
+    var text: String
+    var color: String
+    
     var body: some View {
         ZStack {
             VStack{
                 Spacer()
-                Image("Fix website (man)")
+                Image(image)
                     .resizable()
                     .scaledToFit()
-                Text("Stelle sicher, dass du mit dem Internet verbunden bist")
-                    .font(.system(size: 16))
+                Text(text)
+                    .font(.system(size: 20, weight: Font.Weight.medium))
+                    .foregroundColor(.black)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
                 Spacer()
             }
-            .background(Color("buttonWhite"))
+            .background(Color(color))
             .cornerRadius(15)
             .shadow(color: Color(.black).opacity(0.1), radius: 10, x: 8, y: 6)
         }.frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height/2.1)

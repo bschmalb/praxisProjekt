@@ -16,10 +16,11 @@ struct TagebuchView: View {
             return formatter
         }()
     
-//    @State var tbSelected = false
     @Binding var tabViewSelected: Int
+    @State var show: Bool = false
+    @EnvironmentObject var overlayLog: OverlayLog
     
-    
+    @State var firstUseLog = UserDefaults.standard.bool(forKey: "firstUseLog")
     @State private var logDate = UserDefaults.standard.string(forKey: "logDate")
     
     var body: some View {
@@ -52,56 +53,78 @@ struct TagebuchView: View {
                         } else {
                             AddTagebuchCard1(tabViewSelected: $tabViewSelected)
                         }
-//                        HStack (spacing: 40) {
-//                            Button(action: {
-//                                self.tbSelected = true
-//
-//                                impact(style: .soft)
-//                            }){
-//                                Text("Tagebuch")
-//                                    .font(.headline)
-//                                    .foregroundColor(tbSelected ? Color("black") : .secondary)
-//                                    .multilineTextAlignment(.center)
-//                                    .frame(width: 150)
-//                            }
-//                            Button(action: {
-//                                self.tbSelected = false
-//
-//                                impact(style: .soft)
-//                            }){
-//                                Text("Deine Entwicklung")
-//                                    .font(.headline)
-//                                    .foregroundColor(tbSelected ? .secondary : Color("black"))
-//                                    .multilineTextAlignment(.center)
-//                                    .frame(width: 150)
-//                            }
-//                        }.padding(.top)
-//                        Capsule()
-//                            .fill(Color("black"))
-//                            .frame(width: tbSelected ? 80 : 150, height: 2)
-//                            .offset(x: tbSelected ? -95 : 94, y: -8)
-//                        ZStack {
-//                            AddTagebuchCard1()
-//                                .offset(x: tbSelected ? 0 : -UIScreen.main.bounds.width)
-//                                .gesture(DragGesture()
-//                                    .onEnded({ (value) in
-//                                        self.tbSelected.toggle()
-//                                    }))
-//                                .animation(.spring())
-//                            EntwicklungTabView()
-//                                .offset(x: tbSelected ? UIScreen.main.bounds.width : 0)
-//                                .gesture(DragGesture()
-//                                    .onEnded({ (value) in
-//                                        self.tbSelected.toggle()
-//                                    }))
-//                        }
-                    }
+                    }.blur(radius: overlayLog.overlayLog ? 2 : 0)
                     
                     Spacer()
                 }
-                .animation(.spring())
-                .navigationBarTitle("")
-                .navigationBarHidden(true)
+                if (!firstUseLog) {
+                    VStack (spacing: 10) {
+                        Image("Team")
+                            .resizable()
+                            .scaledToFit()
+                        Text("Trage täglich deinen Fortschritt ein um diesen nachher in deiner Entwicklung anzusehen. Dadurch behälst du den Überblick wie nachhaltig du lebst.")
+                            .font(.subheadline)
+                        .lineSpacing(4)
+                            .multilineTextAlignment(.center)
+                            .padding(.bottom, 15)
+                        Button(action: {
+                            withAnimation {
+                                self.show = false
+                                self.overlayLog.overlayLog = false
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: {
+                                UserDefaults.standard.set(true, forKey: "firstUseLog")
+                            })
+                        }) {
+                            Text("Dann los!")
+                                .font(.headline)
+                                .accentColor(Color("white"))
+                                .padding(20)
+                                .frame(width: UIScreen.main.bounds.width - 90, height: 50)
+                                .background(Color("blue"))
+                                .cornerRadius(15)
+                        }
+                    }
+                    .padding()
+                    .frame(width: UIScreen.main.bounds.width - 60)
+                    .background(Color("white"))
+                    .cornerRadius(20)
+                    .shadow(radius: 20)
+                    .opacity(show ? 1 : 0)
+                    .scaleEffect(show ? 1 : 0.5)
+                    .onTapGesture {
+                        withAnimation {
+                            self.show = false
+                            self.overlayLog.overlayLog = false
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: {
+                            UserDefaults.standard.set(true, forKey: "firstUseLog")
+                        })
+                    }
+                    .animation(.spring())
+                }
+            }
+            .animation(.spring())
+            .navigationBarTitle("")
+            .navigationBarHidden(true)
+            .onAppear(){
+                if (!self.firstUseLog) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
+                        self.show = true
+                        self.overlayLog.overlayLog = true
+                    })
+                }
+            }
+            .onTapGesture {
+                if (!self.firstUseLog) {
+                withAnimation {
+                    self.show = false
+                    self.overlayLog.overlayLog = false
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: {
+                    UserDefaults.standard.set(true, forKey: "firstUseLog")
+                })
+                }
             }
         }
     }

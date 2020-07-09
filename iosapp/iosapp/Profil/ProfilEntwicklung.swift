@@ -22,13 +22,13 @@ struct ProfilEntwicklung: View {
                         self.mode.wrappedValue.dismiss()
                         impact(style: .medium)
                     }) {
-                        HStack (spacing: 20){
+                        HStack (spacing: 15){
                             Image(systemName: "arrow.left.circle")
-                                .font(.system(size: 24))
+                                .font(.system(size: 24, weight: Font.Weight.medium))
                                 .foregroundColor(Color("black"))
                             Text("Deine Entwicklung")
-                                .font(.system(size: 22))
-                                .fontWeight(.medium)
+                                .font(.system(size: 26, weight: Font.Weight.medium))
+                                .fontWeight(.semibold)
                                 .foregroundColor(Color("black"))
                             Spacer()
                         }

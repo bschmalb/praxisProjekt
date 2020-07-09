@@ -19,7 +19,6 @@ class AllApi {
                 DispatchQueue.main.async {
                     completion(allTipps)
                 }
-                print(allTipps)
                 return
             }
         }

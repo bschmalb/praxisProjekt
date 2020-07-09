@@ -20,7 +20,7 @@ struct ChallengeCardList: View {
     @State var filterString: String = ""
     
     @State var filterCategory2: [String] = ["Ernährung", "Transport", "Recycling", "Ressourcen"]
-    @State var filterLevel2: [String] = ["Einfach", "Mittel", "Schwer"]
+    @State var filterLevel2: [String] = ["Leicht", "Mittel", "Schwer"]
     @State var filterPoster: [String] = ["Offiziell", "Community"]
     
     //    var cardColors: [String]  = [
@@ -77,8 +77,9 @@ struct ChallengeCardList: View {
                     .animation(.spring())
                 }
                 else {
-                    NoConnectionCard()
-                        .padding(15)
+                    CustomCard(image: "Fix website (man)", text: "Stelle sicher, dass du mit dem Internet verbunden bist", color: "buttonWhite")
+                        .padding(.horizontal, 15)
+                        .padding(.vertical, 5)
                 }
             }
             .offset(y: -UIScreen.main.bounds.height / 81)
@@ -100,7 +101,7 @@ struct ChallengeCardList: View {
                 filterCategory2.removeAll(where: {$0 == filterName})
             }
         }
-        if (filterName == "Einfach" || filterName == "Mittel" || filterName == "Schwer") {
+        if (filterName == "Leicht" || filterName == "Mittel" || filterName == "Schwer") {
             if (!filterLevel2.contains(filterName)){
                 filterLevel2.append(filterName)
             } else {

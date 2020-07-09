@@ -24,24 +24,13 @@ struct ChallengeView: View {
                             Color("background")
                                 .edgesIgnoringSafeArea(.all)
                         }
-                        
                         VStack {
                             HStack {
-                                Text("Challenges")
+                                Text("Challenges für dich")
                                     .font(.title)
                                     .fontWeight(.bold)
                                     .padding(.leading, 20)
-
                                 Spacer()
-                                Button(action: {
-                                    self.model.isDark.toggle()
-                                    UserDefaults.standard.set(self.model.isDark, forKey: "isDark")
-                                    impact(style: .medium)
-                                }) {
-                                    Image(systemName: "moon.circle")
-                                        .font(.title)
-                                        .padding(10)
-                                }
                                 Button(action: {
                                     self.showAddChallenge.toggle()
                                 }) {
@@ -66,7 +55,7 @@ struct ChallengeView: View {
                                             HStack {
                                                 Image(systemName: "plus.circle")
                                                     .font(.system(size: 22))
-                                                Text("Eigenen Tipp hinzufügen")
+                                                Text("Eigene Challenge hinzufügen")
                                                     .font(.headline)
                                                     .fontWeight(.medium)
                                             }
@@ -89,7 +78,7 @@ struct ChallengeView: View {
                                             HStack {
                                                 Image(systemName: "hand.thumbsup")
                                                     .font(.system(size: 20, weight: .medium))
-                                                Text("Tipps von Nutzern bewerten")
+                                                Text("Challenges von Nutzern bewerten")
                                                     .font(.headline)
                                                     .fontWeight(.medium)
                                             }

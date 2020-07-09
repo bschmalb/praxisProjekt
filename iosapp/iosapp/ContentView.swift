@@ -28,7 +28,11 @@ class UserLevel: ObservableObject {
 }
 
 class Overlay: ObservableObject {
-    @Published var overlay = UserDefaults.standard.bool(forKey: "overlay")
+    @Published var overlayLog = UserDefaults.standard.bool(forKey: "overlay")
+}
+
+class OverlayLog: ObservableObject {
+    @Published var overlayLog = UserDefaults.standard.bool(forKey: "overlayLog")
 }
 
 struct ContentView: View {
@@ -39,6 +43,10 @@ struct ContentView: View {
     @State private var isUser2 = UserDefaults.standard.bool(forKey: "isUser2")
     @State private var seenTipps = UserDefaults.standard.stringArray(forKey: "seenTipps")
     @State private var userLevel = UserDefaults.standard.integer(forKey: "userLevel")
+    @State private var firstUseTipp = UserDefaults.standard.bool(forKey: "firstUseTipp")
+//    @State private var firstUseChallenge = UserDefaults.standard.bool(forKey: "firstUseChallenge")
+    @State private var firstUseLog = UserDefaults.standard.bool(forKey: "firstUseLog")
+    @State private var firstUseEntw = UserDefaults.standard.bool(forKey: "firstUseEntw")
     
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     @EnvironmentObject var overlay: Overlay
@@ -245,6 +253,6 @@ struct ContentView: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView().environmentObject(UserLevel()).environmentObject(Overlay())
+        ContentView().environmentObject(UserLevel()).environmentObject(Overlay()).environmentObject(OverlayLog())
     }
 }

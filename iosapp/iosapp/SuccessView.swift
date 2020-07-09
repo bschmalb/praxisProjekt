@@ -14,7 +14,7 @@ struct SuccessView: View {
     var body: some View {
         ZStack {
             VStack {
-                LottieView(filename: "success")
+                LottieView(filename: "success", loop: false)
                     .frame(width: 300, height: 300)
                     .offset(y: -30 )
                     .opacity(self.show ? 1 : 0)

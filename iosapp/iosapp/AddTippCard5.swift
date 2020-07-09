@@ -22,6 +22,9 @@ struct PostTipp: Codable {
 struct AddTippCard5: View {
     
     @State var isSuccess = false
+    @State var isLoading = false
+    @State var isError = false
+    @State var show = false
     @State var posted = false
     @Binding var showAddTipps: Bool
     @State var userLevelLocal = 0
@@ -145,11 +148,10 @@ struct AddTippCard5: View {
                             }
                             Spacer()
                             Button (action: {
-                                haptic(type: .success)
-                                self.levelEnv.level += 35
-                                self.overlay.overlay = true
-                                UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
                                 self.posted = true
+                                self.overlay.overlayLog = true
+                                self.isLoading = true
+                                self.show = true
                                 self.postTipp()
                             })
                             {
@@ -182,15 +184,55 @@ struct AddTippCard5: View {
                     }
                 }
             }))
-                .blur(radius: overlay.overlay ? 2 : 0)
+                .blur(radius: overlay.overlayLog ? 2 : 0)
                 .edgesIgnoringSafeArea(.all)
                 .animation(.spring())
+            if isLoading {
+                ZStack {
+                    VStack {
+                        LottieView(filename: "loading2", loop: true)
+                            .frame(width: 200, height: 200)
+                            .offset(y: -15)
+                    }
+                    Text("Loading")
+                        .font(.headline)
+                        .offset(y: 20)
+                }.frame(width: 200, height: 130)
+                    .background(Color("white"))
+                    .cornerRadius(20)
+                    .shadow(radius: 20)
+                    .offset(x: show ? 0 : -UIScreen.main.bounds.width, y: -50)
+                    .opacity(show ? 1 : 0)
+                    .scaleEffect(show ? 1 : 0)
+                .animation(.spring())
+            }
+            
+            if isError {
+                ZStack {
+                    VStack {
+                        LottieView(filename: "loading2", loop: true)
+                            .frame(width: 200, height: 200)
+                            .offset(y: -15)
+                    }
+                    Text("Loading")
+                        .font(.headline)
+                        .offset(y: 20)
+                }.frame(width: 200, height: 130)
+                    .background(Color("white"))
+                    .cornerRadius(20)
+                    .shadow(radius: 20)
+                    .offset(x: show ? 0 : -UIScreen.main.bounds.width, y: -50)
+                    .opacity(show ? 1 : 0)
+                    .scaleEffect(show ? 1 : 0)
+                .animation(.spring())
+            }
+            
             if isSuccess {
                 SuccessView()
                     .onTapGesture {
                         self.showAddTipps = false
                         self.isSuccess = false
-                        self.overlay.overlay = false
+                        self.overlay.overlayLog = false
                 }
             }
         }
@@ -213,15 +255,25 @@ struct AddTippCard5: View {
             URLSession.shared.dataTask(with: request) { data, response, error in
                 guard let data = data else {
                     print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 6, execute: {
+                        self.isLoading = false
+                        self.overlay.overlayLog = false
+//                        self.isError = true
+                    })
                     return
                 }
-                print(data)
-                
-                self.isSuccess = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    print(data)
+                    haptic(type: .success)
+                    self.levelEnv.level += 35
+                    UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
+                    self.isLoading = false
+                    self.isSuccess = true
+                }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 7, execute: {
                     self.showAddTipps = false;
                     self.isSuccess = false
-                    self.overlay.overlay = false
+                    self.overlay.overlayLog = false
                 })
             }.resume()
         }

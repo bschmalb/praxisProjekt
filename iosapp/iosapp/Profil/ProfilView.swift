@@ -36,7 +36,7 @@ struct ProfilView: View {
                             Spacer()
                             Button(action: {
                                 self.offsetLevel = -UIScreen.main.bounds.height / 20
-                                self.overlay.overlay = true
+                                self.overlay.overlayLog = true
                             })
                             {
                             LevelView(frameWidth: 60, frameHeight: 60)
@@ -51,7 +51,7 @@ struct ProfilView: View {
                         HStack {
                             Button(action: {
                                 self.offsetChangeName = -UIScreen.main.bounds.height / 20
-                                self.overlay.overlay = true
+                                self.overlay.overlayLog = true
                             })
                             {
                                 VStack (alignment: .leading){
@@ -84,7 +84,7 @@ struct ProfilView: View {
             .padding(.top, 1)
             .padding(.bottom, UIScreen.main.bounds.height / 12)
 //            .overlay(Color("black").opacity(overlay.overlay ? 0.4 : 0))
-            .blur(radius: overlay.overlay ? 2 : 0)
+            .blur(radius: overlay.overlayLog ? 2 : 0)
             .edgesIgnoringSafeArea(.all)
             .animation(.spring())
             
@@ -105,7 +105,7 @@ struct ProfilView: View {
                                 UserDefaults.standard.set(self.userName, forKey: "userName")
                                 self.offsetChangeName = -UIScreen.main.bounds.height / 1.5
                                 self.offsetLevel = -UIScreen.main.bounds.height / 1
-                                self.overlay.overlay = false
+                                self.overlay.overlayLog = false
                                 self.hideKeyboard()
                             }
                         }
@@ -142,7 +142,7 @@ struct ChangeNameView: View {
                     UserDefaults.standard.set(self.userName, forKey: "userName")
                     self.offsetChangeName = -UIScreen.main.bounds.height / 1.5
                     self.hideKeyboard()
-                    self.overlay.overlay = false
+                    self.overlay.overlayLog = false
                 })
                 {
                     Image(systemName: "xmark.circle")
@@ -158,9 +158,9 @@ struct ChangeNameView: View {
             Button(action: {
                 UserDefaults.standard.set(self.userName, forKey: "userName")
                 self.offsetChangeName = -UIScreen.main.bounds.height / 1.5
-                self.overlay.overlay = true
+                self.overlay.overlayLog = true
                 self.hideKeyboard()
-                self.overlay.overlay = false
+                self.overlay.overlayLog = false
             })
             {
                 Text("Ändern")
@@ -248,7 +248,7 @@ struct ProfileLevelView: View {
         .offset(y: offsetLevel)
         .onTapGesture {
             self.offsetLevel = -UIScreen.main.bounds.height / 1.2
-            self.overlay.overlay = false
+            self.overlay.overlayLog = false
         }
     }
 }

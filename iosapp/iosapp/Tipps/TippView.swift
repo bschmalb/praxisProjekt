@@ -10,6 +10,8 @@ import SwiftUI
 
 struct TippView: View {
     
+    
+    @State var show: Bool = false
     @State var tipps: [Tipp] = []
     @State var showAddTipps = false
     @Binding var isDark: Bool
@@ -19,6 +21,8 @@ struct TippView: View {
     
     @EnvironmentObject var levelEnv: UserLevel
     @EnvironmentObject var overlay: Overlay
+    
+    @State var firstUseTipp = UserDefaults.standard.bool(forKey: "firstUseTipp")
     
     var body: some View {
         NavigationView {
@@ -36,16 +40,16 @@ struct TippView: View {
                             .padding(.leading, 20)
 
                         Spacer()
-                        Button(action: {
-                            self.isDark.toggle()
-                            self.appearenceDark.toggle()
-                            UserDefaults.standard.set(self.appearenceDark, forKey: "appearenceDark")
-                            impact(style: .medium)
-                        }) {
-                            Image(systemName: "moon.circle")
-                                .font(.title)
-                                .padding(10)
-                        }
+//                        Button(action: {
+//                            self.isDark.toggle()
+//                            self.appearenceDark.toggle()
+//                            UserDefaults.standard.set(self.appearenceDark, forKey: "appearenceDark")
+//                            impact(style: .medium)
+//                        }) {
+//                            Image(systemName: "moon.circle")
+//                                .font(.title)
+//                                .padding(10)
+//                        }
                         Button(action: {
                             self.showAddTipps.toggle()
                             impact(style: .medium)
@@ -109,15 +113,46 @@ struct TippView: View {
                     }.offset(y: -UIScreen.main.bounds.height / 81)
                     Spacer()
                 }
+                if (!firstUseTipp) {
+                    VStack {
+                        LottieView(filename: "swipe", loop: true)
+                            .frame(width: 200, height: 200)
+                            .background(Color("white"))
+                            .cornerRadius(20)
+                            .shadow(radius: 20)
+                            .offset(x: show ? 0 : -UIScreen.main.bounds.width, y: -50)
+                            .opacity(show ? 1 : 0)
+                            .scaleEffect(show ? 1 : 0)
+                            .onTapGesture {
+                                withAnimation { self.show = false }
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: {
+                                    UserDefaults.standard.set(true, forKey: "firstUseTipp")
+                                })
+                        }
+                        .animation(.spring())
+                    }
+                }
             }.accentColor(.primary)
-            .navigationBarTitle("")
-            .navigationBarHidden(true)
-            .onAppear {
-                if self.appearenceDark {
+                .navigationBarTitle("")
+                .navigationBarHidden(true)
+                .gesture(DragGesture()
+                    .onChanged({ (value) in
+                        if (value.translation.width < 30) {
+                            self.show = false
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: {
+                                UserDefaults.standard.set(true, forKey: "firstUseTipp")
+                            })
+                        }
+                    }))
+                .onAppear {
+                    if self.appearenceDark {
                     self.isDark = false
                 }else{
                     self.isDark = true
                 }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: {
+                     self.show = true
+                })
             }
         }
     }

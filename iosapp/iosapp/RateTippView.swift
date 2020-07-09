@@ -63,16 +63,17 @@ struct RateTippView: View {
                         Text("Wenn ein Tipp von der Community gutes Feedback bekommt, wird dieser für alle Nutzer angezeigt")
                     }.padding()
                     
-                    if (!endReached && !rateTipps.isEmpty) {
+                    if (!endReached && rateTipps.count > 0) {
                         TippCard(isChecked: self.$rateTipps[counter].isChecked, isBookmarked: self.$rateTipps[counter].isBookmarked, tipp: rateTipps[counter])
                                 .animation(.spring())
                     }
-                    else if (!rateTipps.isEmpty) {
-                        TippCard(isChecked: .constant(false), isBookmarked: .constant(false), tipp: Tipp(id: "123", title: "Vorerst keine weiteren Tipps mehr zum bewerten verfügbar", source: "", level: "", category: "Success Work", score: 0, postedBy: "123"))
+                    else if (endReached) {
+                        CustomCard(image: "ISuccess Work", text: "Vorerst keine weiteren Tipps mehr zum bewerten verfügbar", color: "cardgreen2")
                             .animation(.spring())
                     }
                     else {
-                        NoConnectionCard()
+                        CustomCard(image: "Fix website (man)", text: "Stelle sicher, dass du mit dem Internet verbunden bist", color: "buttonWhite")
+                        .animation(.spring())
                     }
                         
                     if !endReached {
@@ -159,13 +160,11 @@ struct RateTippView: View {
         }))
             .onAppear(){
                 impact(style: .medium)
-                print(self.rateTipps.count)
-//                if (self.counter > self.store2.rateTipps.count - 1){
-//                    self.endReached = true
-//                }
-                Api().fetchTipps { (rateTipps) in
+                RateApi().fetchRateTipps { (rateTipps) in
                     self.rateTipps = rateTipps
-                    print(self.rateTipps)
+                    if (self.counter > self.rateTipps.count - 1){
+                        self.endReached = true
+                    }
                 }
         }
     }

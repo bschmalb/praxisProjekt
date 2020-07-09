@@ -62,6 +62,10 @@
 		B7C2285924AD24E20075360D /* AddTagebuchCard6.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7C2285824AD24E20075360D /* AddTagebuchCard6.swift */; };
 		B7C2285B24AD26510075360D /* AddTagebuchCard7.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7C2285A24AD26510075360D /* AddTagebuchCard7.swift */; };
 		B7C2285D24AE05AD0075360D /* AddTagebuchSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7C2285C24AE05AC0075360D /* AddTagebuchSuccess.swift */; };
+		B7C655CC24B3491000A79DBE /* loadingWorld.json in Resources */ = {isa = PBXBuildFile; fileRef = B7C655CB24B3491000A79DBE /* loadingWorld.json */; };
+		B7C655CE24B349F400A79DBE /* swipe.json in Resources */ = {isa = PBXBuildFile; fileRef = B7C655CD24B349F300A79DBE /* swipe.json */; };
+		B7C655D024B3509200A79DBE /* loading.json in Resources */ = {isa = PBXBuildFile; fileRef = B7C655CF24B3509200A79DBE /* loading.json */; };
+		B7C655D224B3515800A79DBE /* loading2.json in Resources */ = {isa = PBXBuildFile; fileRef = B7C655D124B3515700A79DBE /* loading2.json */; };
 		B7CB3F28243A6D6600E4A0C7 /* TippData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7CB3F27243A6D6600E4A0C7 /* TippData.swift */; };
 		B7CF0F6D2497C02C00595EB2 /* RateTippData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7CF0F6C2497C02C00595EB2 /* RateTippData.swift */; };
 		B7CF0F6F2497C0C300595EB2 /* RateTippDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7CF0F6E2497C0C300595EB2 /* RateTippDataStore.swift */; };
@@ -148,6 +152,10 @@
 		B7C2285824AD24E20075360D /* AddTagebuchCard6.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagebuchCard6.swift; sourceTree = "<group>"; };
 		B7C2285A24AD26510075360D /* AddTagebuchCard7.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagebuchCard7.swift; sourceTree = "<group>"; };
 		B7C2285C24AE05AC0075360D /* AddTagebuchSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagebuchSuccess.swift; sourceTree = "<group>"; };
+		B7C655CB24B3491000A79DBE /* loadingWorld.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loadingWorld.json; sourceTree = "<group>"; };
+		B7C655CD24B349F300A79DBE /* swipe.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = swipe.json; sourceTree = "<group>"; };
+		B7C655CF24B3509200A79DBE /* loading.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading.json; sourceTree = "<group>"; };
+		B7C655D124B3515700A79DBE /* loading2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading2.json; sourceTree = "<group>"; };
 		B7CB3F27243A6D6600E4A0C7 /* TippData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippData.swift; sourceTree = "<group>"; };
 		B7CF0F6C2497C02C00595EB2 /* RateTippData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateTippData.swift; sourceTree = "<group>"; };
 		B7CF0F6E2497C0C300595EB2 /* RateTippDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RateTippDataStore.swift; sourceTree = "<group>"; };
@@ -247,6 +255,10 @@
 		B7919AED24981BBC00014240 /* Lottie */ = {
 			isa = PBXGroup;
 			children = (
+				B7C655D124B3515700A79DBE /* loading2.json */,
+				B7C655CF24B3509200A79DBE /* loading.json */,
+				B7C655CD24B349F300A79DBE /* swipe.json */,
+				B7C655CB24B3491000A79DBE /* loadingWorld.json */,
 				B7919AEE24981BBD00014240 /* success.json */,
 			);
 			path = Lottie;
@@ -472,8 +484,12 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B7C655CE24B349F400A79DBE /* swipe.json in Resources */,
+				B7C655CC24B3491000A79DBE /* loadingWorld.json in Resources */,
 				B7A8CBE8242C10C80036FD6E /* LaunchScreen.storyboard in Resources */,
 				B7919AEF24981BBD00014240 /* success.json in Resources */,
+				B7C655D024B3509200A79DBE /* loading.json in Resources */,
+				B7C655D224B3515800A79DBE /* loading2.json in Resources */,
 				B7A8CBE5242C10C80036FD6E /* Preview Assets.xcassets in Resources */,
 				B7A8CBE2242C10C80036FD6E /* Assets.xcassets in Resources */,
 			);
