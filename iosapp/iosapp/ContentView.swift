@@ -44,7 +44,7 @@ struct ContentView: View {
     @State private var seenTipps = UserDefaults.standard.stringArray(forKey: "seenTipps")
     @State private var userLevel = UserDefaults.standard.integer(forKey: "userLevel")
     @State private var firstUseTipp = UserDefaults.standard.bool(forKey: "firstUseTipp")
-//    @State private var firstUseChallenge = UserDefaults.standard.bool(forKey: "firstUseChallenge")
+    //    @State private var firstUseChallenge = UserDefaults.standard.bool(forKey: "firstUseChallenge")
     @State private var firstUseLog = UserDefaults.standard.bool(forKey: "firstUseLog")
     @State private var firstUseEntw = UserDefaults.standard.bool(forKey: "firstUseEntw")
     
@@ -52,10 +52,7 @@ struct ContentView: View {
     @EnvironmentObject var overlay: Overlay
     @EnvironmentObject var levelEnv: UserLevel
     
-    @State var tabTippSelected = true
-    @State var tabChallSelected = false
-    @State var tabLogSelected = false
-    @State var tabProfileSelected = false
+    @State var launchScreen: Bool = true
     @State var tabViewSelected = 0
     
     @State var tippOffset: CGFloat = 0
@@ -63,7 +60,7 @@ struct ContentView: View {
     @State var logOffset: CGFloat = UIScreen.main.bounds.width
     @State var profileOffset: CGFloat = UIScreen.main.bounds.width
     
-    @State var offsetCapsule: CGFloat = -UIScreen.main.bounds.width / 3.08
+    @State var offsetCapsule: CGFloat = 0
     @State var widthCapsule: CGFloat = 25
     @State var screenWidth = UIScreen.main.bounds.width
     
@@ -73,107 +70,148 @@ struct ContentView: View {
                 .edgesIgnoringSafeArea(.all)
             VStack {
                 ZStack {
-                    TippView(isDark: $model.isDark, appearenceDark: $appearenceDark).offset(x: tippOffset).opacity(tabTippSelected ? 1 : 0)
+                    TippView(isDark: $model.isDark, appearenceDark: $appearenceDark).offset(x: tippOffset).opacity(tabViewSelected == 0 ? 1 : 0)
                         .padding(.top, 1)
                         .padding(.bottom, UIScreen.main.bounds.height / 12)
-                    ChallengeView().offset(x: challengeOffset).opacity(tabChallSelected ? 1 : 0)
+                    ChallengeView().offset(x: challengeOffset).opacity(tabViewSelected == 1 ? 1 : 0)
                         .padding(.top, 1)
                         .padding(.bottom, UIScreen.main.bounds.height / 12)
-                    TagebuchView(tabViewSelected: $tabViewSelected).offset(x: logOffset).opacity(tabLogSelected ? 1 : 0)
+                    TagebuchView(tabViewSelected: $tabViewSelected).offset(x: logOffset).opacity(tabViewSelected == 2 ? 1 : 0)
                         .padding(.bottom, UIScreen.main.bounds.height / 12)
-                    ProfilView(isDark: $model.isDark, appearenceDark: $appearenceDark).offset(x: profileOffset).opacity(tabProfileSelected ? 1 : 0)
+                    ProfilView(isDark: $model.isDark, appearenceDark: $appearenceDark).offset(x: profileOffset).opacity(tabViewSelected == 3 ? 1 : 0)
                 }
             }
             VStack {
                 Spacer()
-                
-//                    .onChange(of: tabViewSelected) { value in
-//                        selectTab(tabViewSelected: tabViewSelected)
-//                    }
-
-                    ZStack {
-                        HStack (spacing: screenWidth / 7) {
+                //                    .onChange(of: tabViewSelected) { value in
+                //                        selectTab(tabViewSelected: tabViewSelected)
+                //                    }
+                ZStack {
+                    HStack (spacing: screenWidth / 14) {
+                        GeometryReader { g in
                             Button(action: {
                                 self.tabViewSelected = 0
                                 self.selectTab(tabViewSelected: self.tabViewSelected)
+                                
+                                self.offsetCapsule = g.frame(in: .global).midX
                                 
                                 impact(style: .medium)
                             }) {
                                 VStack {
                                     Image(systemName: "lightbulb")
                                         .font(.system(size: 22, weight: Font.Weight.medium))
-                                        .opacity(tabTippSelected ? 1 : 0.5)
+                                        .opacity(self.tabViewSelected == 0 ? 1 : 0.5)
+                                }
+                            .padding()
+                            }
+                            .onAppear(){
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                                    self.offsetCapsule = g.frame(in: .global).midX
                                 }
                             }
+                        }
+                        .frame(width: 60)
+                        GeometryReader { g in
                             Button(action: {
                                 self.tabViewSelected = 1
                                 self.selectTab(tabViewSelected: self.tabViewSelected)
+                                
+                                self.offsetCapsule = g.frame(in: .global).midX
                                 
                                 impact(style: .medium)
                             }) {
                                 VStack {
                                     Image(systemName: "person.3")
                                         .font(.system(size: 22, weight: Font.Weight.medium))
-                                        .opacity(tabChallSelected ? 1 : 0.5)
+                                        .opacity(self.tabViewSelected == 1 ? 1 : 0.5)
                                 }
+                                .padding()
                             }
+                        }
+                        .frame(width: 60)
+                        GeometryReader { g in
                             Button(action: {
                                 self.tabViewSelected = 2
                                 self.selectTab(tabViewSelected: self.tabViewSelected)
+                                
+                                self.offsetCapsule = g.frame(in: .global).midX
                                 
                                 impact(style: .medium)
                             }) {
                                 VStack {
                                     Image(systemName: "book")
                                         .font(.system(size: 22, weight: Font.Weight.medium))
-                                        .opacity(tabLogSelected ? 1 : 0.5)
+                                        .opacity(self.tabViewSelected == 2 ? 1 : 0.5)
                                 }
+                                .padding()
                             }
+                        }
+                        .frame(width: 60)
+                        GeometryReader { g in
                             Button(action: {
                                 self.tabViewSelected = 3
                                 self.selectTab(tabViewSelected: self.tabViewSelected)
+                                
+                                self.offsetCapsule = g.frame(in: .global).midX
                                 
                                 impact(style: .medium)
                             }) {
                                 VStack {
                                     Image(systemName: "person")
                                         .font(.system(size: 22, weight: Font.Weight.medium))
-                                        .opacity(tabProfileSelected ? 1 : 0.5)
+                                        .opacity(self.tabViewSelected == 3 ? 1 : 0.5)
                                 }
+                                .padding()
                             }
                         }
-                        .accentColor(Color("black"))
-                        .offset(y: -2)
-                        Capsule()
-                            .fill(Color("black"))
-                            .frame(width: widthCapsule, height: 2)
-                            .offset(x: offsetCapsule, y: 17)
+                        .frame(width: 60)
                     }
-                    .frame(width: screenWidth - 30, height: UIScreen.main.bounds.height / 14, alignment: .center)
-                    .background(Color("buttonWhite"))
-                    .cornerRadius(20)
-                    .shadow(color: Color(.black).opacity(0.2), radius: 5, x: 0, y: 4)
-//                }
-            }.animation(.spring())
-            .padding(.bottom, UIScreen.main.bounds.height / 40)
-        }.edgesIgnoringSafeArea(.bottom)
-        .animation(.spring())
-        .onAppear(){
-            if (!self.isUser2) {
-                self.createUser()
+                    .accentColor(Color("black"))
+                    .offset(y: -2)
+                    Capsule()
+                        .fill(Color("black"))
+                        .frame(width: widthCapsule, height: 2)
+                        .offset(x: offsetCapsule - (screenWidth/2), y: 17)
+                }
+                .frame(width: screenWidth - 30, height: UIScreen.main.bounds.height / 14, alignment: .center)
+                .background(Color("buttonWhite"))
+                .cornerRadius(20)
+                .shadow(color: Color(.black).opacity(0.2), radius: 5, x: 0, y: 4)
+                //                }
             }
+            .padding(.bottom, UIScreen.main.bounds.height / 40)
+            .animation(.spring())
+            ZStack {
+                Color("cardgreen2")
+                    .edgesIgnoringSafeArea(.all)
+                Image("JustLogo")
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundColor(.white)
+                    .frame(width: 130, height: 130)
+                    .offset(y: -23.0)
+            }
+            .opacity(launchScreen ? 1 : 0)
+//            .scaleEffect(launchScreen ? 1 : 2)
+                .animation(Animation.easeOut(duration: 0.5).delay(0.5))
+        }.edgesIgnoringSafeArea(.bottom)
+            .animation(.spring())
+            .onAppear(){
+                if (!self.isUser2) {
+                    self.createUser()
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    withAnimation() {
+                        self.launchScreen = false
+                    }
+                }
         }
     }
     
     func selectTab(tabViewSelected: Int) {
         
         if (tabViewSelected == 0) {
-            self.offsetCapsule = -screenWidth / 3.05
             self.widthCapsule = 25
-            self.tabTippSelected = true
-            self.tabChallSelected = false
-            self.tabLogSelected = false
-            self.tabProfileSelected = false
             
             self.tippOffset = 0
             self.challengeOffset = screenWidth
@@ -182,12 +220,7 @@ struct ContentView: View {
         }
         
         if (tabViewSelected == 1) {
-            self.offsetCapsule = -screenWidth / 9.5
             self.widthCapsule = 50
-            self.tabTippSelected = false
-            self.tabChallSelected = true
-            self.tabLogSelected = false
-            self.tabProfileSelected = false
             
             self.tippOffset = -screenWidth
             self.challengeOffset = 0
@@ -196,12 +229,7 @@ struct ContentView: View {
         }
         
         if (tabViewSelected == 2) {
-            self.offsetCapsule = screenWidth / 8
             self.widthCapsule = 30
-            self.tabTippSelected = false
-            self.tabChallSelected = false
-            self.tabLogSelected = true
-            self.tabProfileSelected = false
             
             self.tippOffset = -screenWidth
             self.challengeOffset = -screenWidth
@@ -210,12 +238,7 @@ struct ContentView: View {
         }
         
         if (tabViewSelected == 3) {
-            self.offsetCapsule = screenWidth / 3.08
-            self.widthCapsule = 20
-            self.tabTippSelected = false
-            self.tabChallSelected = false
-            self.tabLogSelected = false
-            self.tabProfileSelected = true
+            self.widthCapsule = 25
             
             self.tippOffset = -screenWidth
             self.challengeOffset = -screenWidth
@@ -243,7 +266,7 @@ struct ContentView: View {
                     print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
                     return
                 }
-                print(data)
+                //                print(data)
                 self.isUser2 = true
                 UserDefaults.standard.set(self.isUser2, forKey: "isUser2")
             }.resume()

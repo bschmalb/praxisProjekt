@@ -117,7 +117,7 @@ struct TippView: View {
                     VStack {
                         LottieView(filename: "swipe", loop: true)
                             .frame(width: 200, height: 200)
-                            .background(Color("white"))
+                            .background(Color("background"))
                             .cornerRadius(20)
                             .shadow(radius: 20)
                             .offset(x: show ? 0 : -UIScreen.main.bounds.width, y: -50)

@@ -131,6 +131,7 @@ struct TippCardList: View {
                     CustomCard(image: "Fix website (man)", text: "Stelle sicher, dass du mit dem Internet verbunden bist", color: "buttonWhite")
                         .padding(.horizontal, 15)
                         .padding(.vertical, 5)
+                        .padding(.bottom, 5)
                 }
             }
             .offset(y: -UIScreen.main.bounds.height / 81)
@@ -138,7 +139,6 @@ struct TippCardList: View {
         }.onAppear{
             Api().fetchTipps { (filteredTipps) in
                 self.filteredTipps = filteredTipps
-                print(self.filteredTipps)
             }
         }
     }

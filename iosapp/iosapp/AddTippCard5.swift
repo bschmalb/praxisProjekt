@@ -263,7 +263,7 @@ struct AddTippCard5: View {
                     return
                 }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    print(data)
+//                    print(data)
                     haptic(type: .success)
                     self.levelEnv.level += 35
                     UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")

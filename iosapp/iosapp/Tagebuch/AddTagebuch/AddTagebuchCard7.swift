@@ -218,7 +218,7 @@ struct AddTagebuchCard7: View {
                     print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
                     return
                 }
-                print(data)
+//                print(data)
                 
                 UserDefaults.standard.set(date, forKey: "logDate")
 //                self.isSuccess = true
