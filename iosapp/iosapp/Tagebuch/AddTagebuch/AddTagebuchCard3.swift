@@ -46,7 +46,7 @@ struct AddTagebuchCard3: View {
                         .scaledToFit()
                         .shadow(radius: 2)
                         .frame(minHeight: 100, idealHeight: 200, maxHeight: 300)
-                    Text("Wie viele Mahlzeiten hast du gestern selbst zubereitet?")
+                    Text("Wie viele Mahlzeiten hast du gestern gekauft?")
                         .font(.system(size: 20, weight: Font.Weight.medium))
                         .fontWeight(.medium)
                         .multilineTextAlignment(.center)

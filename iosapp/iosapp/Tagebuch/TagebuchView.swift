@@ -62,7 +62,7 @@ struct TagebuchView: View {
                         Image("Team")
                             .resizable()
                             .scaledToFit()
-                        Text("Trage täglich deinen Fortschritt ein um diesen nachher in deiner Entwicklung anzusehen. Dadurch behälst du den Überblick wie nachhaltig du lebst.")
+                        Text("Trage täglich deinen Fortschritt ein um diesen nachher in deiner Entwicklung anzusehen. Dadurch behältst du den Überblick wie nachhaltig du lebst.")
                             .font(.subheadline)
                         .lineSpacing(4)
                             .multilineTextAlignment(.center)

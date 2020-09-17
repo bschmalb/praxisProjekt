@@ -35,7 +35,7 @@ struct TagebuchEntwicklung: View {
                     VStack (spacing: 30) {
                         EntwicklungGraphView(graphColor: "cardgreen2", graphTitle: "Gefahrene Kilometer", graphCategory: 0)
                         EntwicklungGraphView(graphColor: "cardblue2", graphTitle: "Fleischkonsum", graphCategory: 1)
-                        EntwicklungGraphView(graphColor: "cardgreen2", graphTitle: "Selbst zubereitet", graphCategory: 2)
+                        EntwicklungGraphView(graphColor: "cardgreen2", graphTitle: "Essen gekauft", graphCategory: 2)
                         EntwicklungGraphView(graphColor: "cardpurple2", graphTitle: "Essen weggeschmissen", graphCategory: 3)
                         EntwicklungGraphView(graphColor: "cardyellow2", graphTitle: "Getränke gekauft", graphCategory: 4)
                         EntwicklungGraphView(graphColor: "cardturqouise2", graphTitle: "Duschzeit", graphCategory: 5)

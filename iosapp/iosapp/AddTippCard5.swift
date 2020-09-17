@@ -162,13 +162,14 @@ struct AddTippCard5: View {
                                     Image(systemName: "arrow.up.doc")
                                         .font(.system(size: 16, weight: Font.Weight.medium))
                                         .accentColor(Color("white"))
-                                }.frame(width: 120, height: 45)
-                                    .background(Color("blue"))
-                                    .cornerRadius(15)
+                                }
+                                .frame(width: 120, height: 45)
+                                .background(Color("blue"))
+                                .cornerRadius(15)
                             }.disabled(posted)
                         }
                         .padding(.horizontal, 20)
-                        .padding(.bottom, 20)
+                        .padding(.bottom, 40)
                     }.accentColor(Color("black"))
                 }.modifier(DismissingKeyboard())
             }

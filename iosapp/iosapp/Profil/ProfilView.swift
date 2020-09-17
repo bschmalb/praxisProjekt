@@ -58,6 +58,7 @@ struct ProfilView: View {
                                     Text("Hallo \(userName)")
                                         .font(.title)
                                         .fontWeight(.bold)
+                                        .lineLimit(1)
                                         .padding(.leading, 20)
                                         .padding(.vertical, 5)
                                         .frame(width: UIScreen.main.bounds.width / 1.4, height: 40, alignment: .leading)
@@ -140,6 +141,7 @@ struct ChangeNameView: View {
                     .frame(width: UIScreen.main.bounds.width * 0.8, height: 50)
                 Button(action: {
                     UserDefaults.standard.set(self.userName, forKey: "userName")
+                    self.patchName(name: self.userName)
                     self.offsetChangeName = -UIScreen.main.bounds.height / 1.5
                     self.hideKeyboard()
                     self.overlay.overlayLog = false
@@ -157,6 +159,7 @@ struct ChangeNameView: View {
             .frame(width: UIScreen.main.bounds.width * 0.9)
             Button(action: {
                 UserDefaults.standard.set(self.userName, forKey: "userName")
+                self.patchName(name: self.userName)
                 self.offsetChangeName = -UIScreen.main.bounds.height / 1.5
                 self.overlay.overlayLog = true
                 self.hideKeyboard()
@@ -184,6 +187,31 @@ struct ChangeNameView: View {
     func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
+    
+    func patchName(name: String) {
+        if let uuid = UIDevice.current.identifierForVendor?.uuidString {
+            let patchUserName = Name(name: name)
+            
+            guard let encoded = try? JSONEncoder().encode(patchUserName) else {
+                print("Failed to encode order")
+                return
+            }
+            
+            guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + uuid) else { return }
+            var request = URLRequest(url: url)
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpMethod = "PATCH"
+            request.httpBody = encoded
+            
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                
+            }.resume()
+        }
+    }
+}
+
+struct Name: Encodable, Decodable {
+    var name: String
 }
 
 struct ProfileLevelView: View {
@@ -215,7 +243,7 @@ struct ProfileLevelView: View {
                 Spacer()
                 ZStack {
                     Circle()
-                        .stroke(Color(.black).opacity(0.1), style: StrokeStyle(lineWidth: 8))
+                        .stroke(Color(.gray).opacity(0.3), style: StrokeStyle(lineWidth: 8))
                         .frame(width: frameWidth, height: frameHeight)
                     Circle()
                         .trim(from: progress, to: 1)

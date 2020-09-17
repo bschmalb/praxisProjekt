@@ -1,33 +1,25 @@
 //
-//  TippCard.swift
+//  FactCard.swift
 //  iosapp
 //
-//  Created by Bastian Schmalbach on 07.06.20.
+//  Created by Bastian Schmalbach on 11.09.20.
 //  Copyright © 2020 Bastian Schmalbach. All rights reserved.
 //
 
 import SwiftUI
 
-struct TippCard: View {
+struct FactCard: View {
     
     @EnvironmentObject var levelEnv: UserLevel
     @Binding var isChecked: Bool
     @Binding var isBookmarked: Bool
-    @State var isClicked: Bool = false
-    @State var isClicked2: Bool = false
-    var tipp: Tipp
-    
-    @State var user2: User = User(id: "", level: 2, checkedTipps: [], savedTipps: [], checkedChallenges: [], savedChallenges: [], checkedFacts: [], savedFacts: [], log: [])
+    var fact: Fact
     
     @State var userLevelLocal = 0
     
     @State var quelleShowing = false
     
     @State var options: Bool = false
-    
-    @State var reportClicked: Bool = false
-    @State var likeClicked: Bool = false
-    @State var dislikeClicked: Bool = false
     
     var cardColors2: [String]  = [
         "cardgreen2", "cardblue2", "cardyellow2", "cardpurple2", "cardorange2", "cardred2", "cardturqouise2", "cardyelgre2", "cardpink2"
@@ -37,11 +29,11 @@ struct TippCard: View {
         ZStack {
             VStack{
                 Spacer()
-                Image("I"+tipp.category)
+                Image("I"+fact.category)
                     .resizable()
                     .scaledToFit()
                     .frame(minHeight: 100, maxHeight: 200)
-                Text(tipp.title)
+                Text(fact.title)
                     .font(.system(size: 24, weight: .medium))
                     .foregroundColor(Color("alwaysblack"))
                     .multilineTextAlignment(.center)
@@ -52,64 +44,69 @@ struct TippCard: View {
                     .multilineTextAlignment(.center)
                     .padding(.top, 5)
                     .onLongPressGesture {
-                        if (self.verifyUrl(urlString: self.tipp.source)){
+                        if (self.verifyUrl(urlString: self.fact.source)){
                             
                         }
-                        print(self.tipp.source)
+                        print(self.fact.source)
                         self.quelleShowing = true
                 }
                 .sheet(isPresented: $quelleShowing) {
-                    WebLinkView(url: self.tipp.source)
+                    WebLinkView(url: self.fact.source)
                 }
                 HStack {
                     Button(action: {
                         self.isChecked.toggle()
-                        self.addToProfile(tippId: self.tipp.id, method: 0)
-                        self.patchScore(thumb: "up")
-                        self.isClicked = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            self.isClicked = false
-                        }
+                        self.addToProfile(factId: self.fact.id, method: 0)
                         
                         self.levelEnv.level += 5
                         UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
                         
                         impact(style: .medium)
                     }) {
-                        Image(systemName: isChecked ? "checkmark" : "plus")
-                            .font(Font.system(size: 25, weight: isChecked ? .medium : .regular))
+                        Text("😍")
+                            .font(Font.system(size: 30, weight: isChecked ? .medium : .regular))
                             .foregroundColor(Color(isChecked ? .white : .black))
-                            .rotationEffect(Angle(degrees: isChecked ? 0 : 180))
-                            .scaleEffect(isClicked ? 2 : 1)
-                            .animation(.spring())
-                            .padding(20)
+                            .scaleEffect(isBookmarked ? 1.3 : 1)
+//                            .opacity(isChecked ? 1 : 0.5)
+                            .padding(10)
                             .padding(.bottom, 10)
-                            .padding(.leading, 50)
+                            .padding(.leading, 40)
                         
                     }
                     Spacer()
                     Button(action: {
                         self.isBookmarked.toggle()
-                        self.addToProfile(tippId: self.tipp.id, method: 1)
-                        
-                        self.isClicked2 = true
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                            self.isClicked2 = false
-                        }
+                        self.addToProfile(factId: self.fact.id, method: 1)
                         
                         self.levelEnv.level += 5
                         UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
                         
                         impact(style: .medium)
                     }) {
-                        Image(systemName: "bookmark")
-                            .font(Font.system(size: 25, weight: isBookmarked ? .medium : .regular))
+                        Text("🤯")
+                            .font(Font.system(size: 30, weight: isBookmarked ? .medium : .regular))
                             .foregroundColor(Color(isBookmarked ? .white : .black))
-                            .scaleEffect(isClicked2 ? 2 : 1)
-                            .animation(.spring())
                             .padding(20)
                             .padding(.bottom, 10)
-                            .padding(.trailing, 50)
+                    }
+                    Spacer()
+                    Button(action: {
+                        self.isBookmarked.toggle()
+                        self.addToProfile(factId: self.fact.id, method: 1)
+                        
+                        self.levelEnv.level += 5
+                        UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
+                        
+                        impact(style: .medium)
+                    }) {
+                        Text("😠")
+                            .font(Font.system(size: 30, weight: isBookmarked ? .medium : .regular))
+                            .foregroundColor(Color(isBookmarked ? .white : .black))
+//                            .opacity(isBookmarked ? 1 : 0.5)
+                            .scaleEffect(isBookmarked ? 1.3 : 1)
+                            .padding(10)
+                            .padding(.bottom, 10)
+                            .padding(.trailing, 40)
                     }
                 }
                 
@@ -120,20 +117,20 @@ struct TippCard: View {
             .cornerRadius(15)
             VStack {
                 HStack(alignment: .top) {
-                    Image(tipp.category)
+                    Image(fact.category)
                         .resizable()
                         .scaledToFit()
                         .frame(width: 30, height: 30)
                         .opacity(0.1)
                         .padding(.leading, 20)
                         .padding(.vertical)
-                    Image(tipp.level)
+                    Image(fact.level)
                         .resizable()
                         .scaledToFit()
                         .frame(width: 30, height: 30)
                         .opacity(0.1)
                         .padding(.vertical)
-                    Image(tipp.official)
+                    Image(fact.official)
                         .resizable()
                         .scaledToFit()
                         .frame(width: 30, height: 30)
@@ -165,33 +162,18 @@ struct TippCard: View {
                         self.options.toggle()
                     }) {
                         Image(systemName: "xmark")
-                            .font(.system(size: 20, weight: Font.Weight.medium))
+                            .font(.system(size: 24, weight: Font.Weight.medium))
                             .opacity(0.1)
-                            .padding(25)
+                            .padding(20)
+                            .padding(.trailing, 5)
                     }
-                }
-                Spacer()
-                
-                Text("Geposted von: \(user2.level)")
-                    .font(.headline)
-                    .multilineTextAlignment(.center)
-                    .padding()
-                    .onAppear(){
-                        self.getPoster()
                 }
                 Spacer()
                 Button(action: {
                     impact(style: .medium)
-                    
-                    if (self.likeClicked) {
-                        self.patchScore(thumb: "down")
-                    } else {
-                        self.patchScore(thumb: "up")
-                    }
-                    self.likeClicked.toggle()
                 }) {
-                    HStack (spacing: 15){
-                        Image(systemName: likeClicked ? "hand.thumbsup.fill" : "hand.thumbsup")
+                    HStack (spacing: 20){
+                        Image(systemName: "hand.thumbsup")
                             .font(.system(size: 20, weight: Font.Weight.medium))
                             .opacity(0.8)
                         Text("Positiv bewerten")
@@ -200,21 +182,15 @@ struct TippCard: View {
                     }
                     .padding()
                     .padding(.horizontal, 20)
-                    .frame(width: UIScreen.main.bounds.width - 50, height: 45)
+                    .frame(width: UIScreen.main.bounds.width - 50, height: 55)
+                    .background(Color(.white).opacity(0.2))
                     .cornerRadius(15)
                 }
                 Button(action: {
                     impact(style: .medium)
-                    
-                    if (self.dislikeClicked) {
-                        self.patchScore(thumb: "up")
-                    } else {
-                        self.patchScore(thumb: "down")
-                    }
-                    self.dislikeClicked.toggle()
                 }) {
                     HStack (spacing: 20){
-                        Image(systemName: dislikeClicked ? "hand.thumbsdown.fill" : "hand.thumbsdown")
+                        Image(systemName: "hand.thumbsdown")
                             .font(.system(size: 20, weight: Font.Weight.medium))
                             .opacity(0.8)
                         Text("Negativ bewerten")
@@ -223,31 +199,26 @@ struct TippCard: View {
                     }
                     .padding()
                     .padding(.horizontal, 20)
-                    .frame(width: UIScreen.main.bounds.width - 50, height: 45)
+                    .frame(width: UIScreen.main.bounds.width - 50, height: 55)
+                    .background(Color(.white).opacity(0.2))
                     .cornerRadius(15)
                 }
                 Button(action: {
                     impact(style: .medium)
-                    if (self.reportClicked) {
-                        self.patchScore(thumb: "unreport")
-                    } else {
-                        self.patchScore(thumb: "report")
-                    }
-                    self.reportClicked.toggle()
                 }) {
                     HStack (spacing: 20){
-                        Image(systemName: reportClicked ? "flag.fill" : "flag")
+                        Image(systemName: "flag")
                             .font(.system(size: 20, weight: Font.Weight.medium))
                             .opacity(0.8)
-                        Text("Diesen Tipp melden")
+                        Text("Diesen Fakt melden")
                             .font(.system(size: 18))
                             .opacity(0.8)
                     }
                     .padding()
                     .padding(.horizontal, 20)
-                    .frame(width: UIScreen.main.bounds.width - 50, height: 45)
+                    .frame(width: UIScreen.main.bounds.width - 50, height: 55)
+                    .background(Color(.white).opacity(0.2))
                     .cornerRadius(15)
-                    .animation(.spring())
                 }
                 Spacer()
             }.frame(width: UIScreen.main.bounds.width - 30, height:
@@ -262,11 +233,12 @@ struct TippCard: View {
         .accentColor(.black)
         .frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height/2.1)
         .onAppear(){
-            self.getUserTipps()
+            self.getUserFacts()
         }
     }
-    func getUserTipps(){
-       if let uuid = UIDevice.current.identifierForVendor?.uuidString {
+    func getUserFacts(){
+        
+        if let uuid = UIDevice.current.identifierForVendor?.uuidString {
             guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + uuid) else { return }
             let request = URLRequest(url: url)
             
@@ -277,57 +249,16 @@ struct TippCard: View {
                 }
                 DispatchQueue.main.async {
                     if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
-                        if (decodedResponse.checkedTipps.contains(self.tipp.id) ) {
+                        if ((decodedResponse.checkedFacts?.contains(self.fact.id) ) != nil) {
                             self.isChecked = true
                         }
-                        if (decodedResponse.savedTipps.contains(self.tipp.id) ) {
+                        if ((decodedResponse.savedFacts?.contains(self.fact.id) ) != nil) {
                             self.isBookmarked = true
                         }
                     }
                 }
             }.resume()
         }
-    }
-    
-    func patchScore(thumb: String) {
-        
-        let rating = Rate(thumb: thumb)
-        
-        guard let encoded = try? JSONEncoder().encode(rating) else {
-            print("Failed to encode order")
-            return
-        }
-        
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/tipps/" + tipp.id) else { return }
-        var request = URLRequest(url: url)
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpMethod = "PATCH"
-        request.httpBody = encoded
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            
-        }.resume()
-    }
-    
-    func getPoster() {
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + tipp.postedBy) else { return }
-            
-            URLSession.shared.dataTask(with: url) { (data, _, _) in
-                
-                if let data = data {
-                    if let user = try? JSONDecoder().decode(User.self, from: data) {
-                        // we have good data – go back to the main thread
-                        DispatchQueue.main.async {
-                            // update our UI
-                            self.user2 = user
-                        }
-
-                        // everything is good, so we can exit
-                        return
-                    }
-                }
-            }
-            .resume()
     }
     
     func verifyUrl (urlString: String?) -> Bool {
@@ -339,9 +270,9 @@ struct TippCard: View {
         return false
     }
     
-    func addToProfile(tippId: String, method: Int) {
-        let patchData = TippPatchCheck(checkedTipps: tippId)
-        let patchData2 = TippPatchSave(savedTipps: tippId)
+    func addToProfile(factId: String, method: Int) {
+        let patchData = FactPatchCheck(checkedFacts: factId)
+        let patchData2 = FactPatchSave(savedFacts: factId)
         
         if let uuid = UIDevice.current.identifierForVendor?.uuidString {
             
@@ -365,15 +296,15 @@ struct TippCard: View {
     
 }
 
-struct TippPatchCheck : Encodable{
-    var checkedTipps: String
+struct FactPatchCheck : Encodable{
+    var checkedFacts: String
 }
-struct TippPatchSave : Encodable{
-    var savedTipps: String
+struct FactPatchSave : Encodable{
+    var savedFacts: String
 }
 
-struct TippCard_Previews: PreviewProvider {
+struct FactCard_Previews: PreviewProvider {
     static var previews: some View {
-        TippCard(isChecked: .constant(false), isBookmarked: .constant(false), tipp: .init(id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", level: "Leicht", category: "Ernährung", score: 25, postedBy: "123", official: "Community"))
+        FactCard(isChecked: .constant(false), isBookmarked: .constant(false), fact: .init(id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", level: "Leicht", category: "Ernährung", score: 25, postedBy: "123", official: "Community"))
     }
 }

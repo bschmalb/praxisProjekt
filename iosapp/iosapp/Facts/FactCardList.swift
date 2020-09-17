@@ -1,21 +1,19 @@
 //
-//  TippCardList.swift
+//  FactsCardList.swift
 //  iosapp
 //
-//  Created by Bastian Schmalbach on 09.06.20.
+//  Created by Bastian Schmalbach on 11.09.20.
 //  Copyright © 2020 Bastian Schmalbach. All rights reserved.
 //
 
 import SwiftUI
 
-struct ChallengeCardList: View {
-    
-    @ObservedObject var store = ChallengeDataStore()
+struct FactCardList: View {
+    //    @ObservedObject var store = TippDataStore()
     
     @State var filter = filterData
     
-    @State var unfilteredChallenges: [Challenge] = []
-    @State var filteredChallenges: [Challenge] = []
+    @State var filteredFacts: [Fact] = [Fact(id: "asdas", title: "asdsad", source: "https://www.google.com", level: "Leicht", category: "Ernährung", score: 0, postedBy: "", isChecked: true, isBookmarked: true, official: "Offiziell")]
     
     @State var filterString: String = ""
     
@@ -24,10 +22,6 @@ struct ChallengeCardList: View {
     @State var filterCategory2: [String] = ["Ernährung", "Transport", "Recycling", "Ressourcen"]
     @State var filterLevel2: [String] = ["Leicht", "Mittel", "Schwer"]
     @State var filterPoster: [String] = ["Offiziell", "Community"]
-    
-    //    var cardColors: [String]  = [
-    //        "cardgreen", "cardblue", "cardyellow", "cardpurple", "cardorange"
-    //    ]
     
     var body: some View {
         VStack {
@@ -38,7 +32,7 @@ struct ChallengeCardList: View {
                         .padding(.leading, 20)
                     ForEach(filter.indices, id: \.self) { index in
                         HStack {
-                            ChallengeFilterView(isSelected: self.$filter[index].isSelected, filter: self.filter[index])
+                            FilterView(isSelected: self.$filter[index].isSelected, filter: self.filter[index])
                                 .onTapGesture {
                                     self.filter[index].isSelected.toggle()
                                     self.filterTipps(filterName: self.filter[index].name)
@@ -56,52 +50,52 @@ struct ChallengeCardList: View {
             
             ZStack {
                 VStack {
-                    if (!self.filteredChallenges.isEmpty) {
+                    if (!self.filteredFacts.isEmpty) {
                         GeometryReader { proxy in
                             UIScrollViewWrapper {
                                 HStack {
-                                    ForEach(self.filteredChallenges.indices, id: \.self) { index in
+                                    ForEach(self.filteredFacts.indices, id: \.self) { index in
                                         HStack {
-                                            if(self.filterCategory2.contains(self.filteredChallenges[index].category) && self.filterLevel2.contains(self.filteredChallenges[index].level) && self.filterPoster.contains(self.filteredChallenges[index].official ?? "Community")) {
+                                            if(self.filterCategory2.contains(self.filteredFacts[index].category) && self.filterLevel2.contains(self.filteredFacts[index].level) && self.filterPoster.contains(self.filteredFacts[index].official)) {
                                                 GeometryReader { geometry in
-                                                    ChallengeCard(isChecked: self.$filteredChallenges[index].isChecked, isBookmarked: self.$filteredChallenges[index].isBookmarked, challenge: self.filteredChallenges[index])
+                                                    FactCard(isChecked: self.$filteredFacts[index].isChecked, isBookmarked: self.$filteredFacts[index].isBookmarked, fact: self.filteredFacts[index])
                                                         .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX) - 5 ) / -10), axis: (x: 0, y: 10.0, z:0))
                                                         .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
                                                         .padding(.vertical, 10)
                                                 }
-                                                .frame(width: UIScreen.main.bounds.width - 7.5, height: UIScreen.main.bounds.height/2.3 + 20)
+                                                .frame(width: UIScreen.main.bounds.width - 7.5, height: UIScreen.main.bounds.height/2.1 + 20)
                                             }
                                         }
                                     }
                                 }
                                 .padding(.horizontal, 5)
-                                .frame(height: UIScreen.main.bounds.height/2.3 + 20)
+                                .frame(height: UIScreen.main.bounds.height/2.1 + 20)
                                 .background(Color("background"))
                                 .animation(.spring())
                             }
                         }
-                        .frame(height: UIScreen.main.bounds.height/2.3 + 20)
+                        .frame(height: UIScreen.main.bounds.height/2.1 + 20)
                         .offset(x: loading ? 300 : 0)
                         .animation(.spring())
                     }
                     else {
                         CustomCard(image: "Fix website (man)", text: "Stelle sicher, dass du mit dem Internet verbunden bist", color: "buttonWhite")
                             .padding(.horizontal, 15)
-                            .padding(.vertical, 5)
+                            .padding(.bottom, 5)
                     }
                 }
                 .offset(y: -UIScreen.main.bounds.height / 81)
                 .animation(.spring())
                 if (loading) {
                     LottieView(filename: "loadingCircle", loop: true)
+                        .shadow(color: Color(.white), radius: 1, x: 0, y: 0)
                         .frame(width: 100, height: 100)
                 }
             }
         }
         .onAppear{
-            ChallengeApi().fetchChallenges { (unfilteredChallenges) in
-                self.unfilteredChallenges = unfilteredChallenges
-                self.filteredChallenges = self.unfilteredChallenges
+            FactApi().fetchFacts { (filteredFacts) in
+                self.filteredFacts = filteredFacts
             }
         }
     }
@@ -131,37 +125,8 @@ struct ChallengeCardList: View {
     }
 }
 
-
-struct ChallengeFilterView: View {
-    @Binding var isSelected: Bool
-    var filter: Filter
-    
-    var body: some View {
-        HStack {
-            HStack {
-                Image("\(filter.icon)")
-                    .resizable()
-                    .scaledToFit()
-                    .font(.title)
-                    .frame(width: 30, height: 30)
-                    .opacity(isSelected ? 1 : 0.3)
-                Text(filter.name)
-                    .font(.headline)
-                    .fontWeight(.medium)
-                    .accentColor(Color("black"))
-                    .opacity(isSelected ? 1 : 0.3)
-            }.padding(.horizontal, 10)
-                .padding(.vertical, 6)
-        }
-        .background(Color(isSelected ? "buttonWhite" : "transparent"))
-        .cornerRadius(15)
-        .shadow(color: isSelected ?Color("black").opacity(0.1) : Color("transparent"), radius: 5, x: 4, y: 4)
-    }
-}
-
-
-struct ChallengeCardList_Previews: PreviewProvider {
+struct FactsCardList_Previews: PreviewProvider {
     static var previews: some View {
-        ChallengeCardList()
+        FactCardList()
     }
 }

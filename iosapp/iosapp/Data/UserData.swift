@@ -10,11 +10,16 @@ import SwiftUI
 
 struct User: Encodable, Decodable {
     var id: String
+    var name: String?
+    var gender: String?
+    var age: String?
     var level: Int16
     var checkedTipps: [String]
     var savedTipps: [String]
     var checkedChallenges: [String]
     var savedChallenges: [String]
+    var checkedFacts: [String]?
+    var savedFacts: [String]?
 //    var seenTipps: [String]?
 //    var seenChallenges: [String]?
     var log: [Log]

@@ -53,6 +53,7 @@ struct ContentView: View {
     @EnvironmentObject var levelEnv: UserLevel
     
     @State var launchScreen: Bool = true
+    @State var launchScale: CGFloat = 1
     @State var tabViewSelected = 0
     
     @State var tippOffset: CGFloat = 0
@@ -73,7 +74,7 @@ struct ContentView: View {
                     TippView(isDark: $model.isDark, appearenceDark: $appearenceDark).offset(x: tippOffset).opacity(tabViewSelected == 0 ? 1 : 0)
                         .padding(.top, 1)
                         .padding(.bottom, UIScreen.main.bounds.height / 12)
-                    ChallengeView().offset(x: challengeOffset).opacity(tabViewSelected == 1 ? 1 : 0)
+                    FactView().offset(x: challengeOffset).opacity(tabViewSelected == 1 ? 1 : 0)
                         .padding(.top, 1)
                         .padding(.bottom, UIScreen.main.bounds.height / 12)
                     TagebuchView(tabViewSelected: $tabViewSelected).offset(x: logOffset).opacity(tabViewSelected == 2 ? 1 : 0)
@@ -81,6 +82,8 @@ struct ContentView: View {
                     ProfilView(isDark: $model.isDark, appearenceDark: $appearenceDark).offset(x: profileOffset).opacity(tabViewSelected == 3 ? 1 : 0)
                 }
             }
+            .scaleEffect(launchScreen ? 0.8 : 1)
+            .animation(.spring())
             VStack {
                 Spacer()
                 //                    .onChange(of: tabViewSelected) { value in
@@ -97,20 +100,18 @@ struct ContentView: View {
                                 
                                 impact(style: .medium)
                             }) {
-                                VStack {
-                                    Image(systemName: "lightbulb")
-                                        .font(.system(size: 22, weight: Font.Weight.medium))
-                                        .opacity(self.tabViewSelected == 0 ? 1 : 0.5)
-                                }
-                            .padding()
+                                Image(systemName: "lightbulb")
+                                    .font(.system(size: 22, weight: Font.Weight.medium))
+                                    .opacity(self.tabViewSelected == 0 ? 1 : 0.5)
+                                    .frame(width: 60, height: 60)
                             }
                             .onAppear(){
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) {
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.4) {
                                     self.offsetCapsule = g.frame(in: .global).midX
                                 }
                             }
                         }
-                        .frame(width: 60)
+                        .frame(width: 60, height: 60)
                         GeometryReader { g in
                             Button(action: {
                                 self.tabViewSelected = 1
@@ -120,15 +121,13 @@ struct ContentView: View {
                                 
                                 impact(style: .medium)
                             }) {
-                                VStack {
-                                    Image(systemName: "person.3")
-                                        .font(.system(size: 22, weight: Font.Weight.medium))
-                                        .opacity(self.tabViewSelected == 1 ? 1 : 0.5)
-                                }
-                                .padding()
+                                Image(systemName: "doc.plaintext")
+                                    .font(.system(size: 22, weight: Font.Weight.medium))
+                                    .opacity(self.tabViewSelected == 1 ? 1 : 0.5)
+                                    .frame(width: 60, height: 60)
                             }
                         }
-                        .frame(width: 60)
+                        .frame(width: 60, height: 60)
                         GeometryReader { g in
                             Button(action: {
                                 self.tabViewSelected = 2
@@ -138,15 +137,13 @@ struct ContentView: View {
                                 
                                 impact(style: .medium)
                             }) {
-                                VStack {
-                                    Image(systemName: "book")
-                                        .font(.system(size: 22, weight: Font.Weight.medium))
-                                        .opacity(self.tabViewSelected == 2 ? 1 : 0.5)
-                                }
-                                .padding()
+                                Image(systemName: "book")
+                                    .font(.system(size: 22, weight: Font.Weight.medium))
+                                    .opacity(self.tabViewSelected == 2 ? 1 : 0.5)
+                                    .frame(width: 60, height: 60)
                             }
                         }
-                        .frame(width: 60)
+                        .frame(width: 60, height: 60)
                         GeometryReader { g in
                             Button(action: {
                                 self.tabViewSelected = 3
@@ -156,15 +153,13 @@ struct ContentView: View {
                                 
                                 impact(style: .medium)
                             }) {
-                                VStack {
-                                    Image(systemName: "person")
-                                        .font(.system(size: 22, weight: Font.Weight.medium))
-                                        .opacity(self.tabViewSelected == 3 ? 1 : 0.5)
-                                }
-                                .padding()
+                                Image(systemName: "person")
+                                    .font(.system(size: 22, weight: Font.Weight.medium))
+                                    .opacity(self.tabViewSelected == 3 ? 1 : 0.5)
+                                    .frame(width: 60, height: 60)
                             }
                         }
-                        .frame(width: 60)
+                        .frame(width: 60, height: 60)
                     }
                     .accentColor(Color("black"))
                     .offset(y: -2)
@@ -180,30 +175,40 @@ struct ContentView: View {
                 //                }
             }
             .padding(.bottom, UIScreen.main.bounds.height / 40)
+            .scaleEffect(launchScreen ? 0.8 : 1)
             .animation(.spring())
             ZStack {
-                Color("cardgreen2")
+                Color("greenLaunch")
                     .edgesIgnoringSafeArea(.all)
+                    .opacity(launchScreen ? 1 : 0)
+                    .animation(.spring())
                 Image("JustLogo")
                     .resizable()
                     .scaledToFit()
                     .foregroundColor(.white)
-                    .frame(width: 130, height: 130)
-                    .offset(y: -23.0)
+                    .frame(width: launchScreen ? 130 : screenWidth, height: launchScreen ? 130 : screenWidth)
+                    .offset(y: launchScreen ? -23.0 : 0)
+                    .scaleEffect(1 * launchScale)
+                    .animation(.spring())
             }
             .opacity(launchScreen ? 1 : 0)
-//            .scaleEffect(launchScreen ? 1 : 2)
-                .animation(Animation.easeOut(duration: 0.5).delay(0.5))
+            .animation(Animation.easeOut(duration: 0.5).delay(0))
         }.edgesIgnoringSafeArea(.bottom)
             .animation(.spring())
             .onAppear(){
                 if (!self.isUser2) {
                     self.createUser()
                 }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                     withAnimation() {
                         self.launchScreen = false
                     }
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                    self.launchScale = 0.8
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    self.launchScale = 80
                 }
         }
     }
@@ -220,7 +225,7 @@ struct ContentView: View {
         }
         
         if (tabViewSelected == 1) {
-            self.widthCapsule = 50
+            self.widthCapsule = 25
             
             self.tippOffset = -screenWidth
             self.challengeOffset = 0

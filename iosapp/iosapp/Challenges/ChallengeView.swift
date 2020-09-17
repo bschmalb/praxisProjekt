@@ -14,6 +14,8 @@ struct ChallengeView: View {
     @State var showAddChallenge = false
     @State var model = ToggleModel()
     
+    @State var showRateTipps: Bool = false
+    
     @EnvironmentObject var levelEnv: UserLevel
     @EnvironmentObject var overlay: Overlay
     
@@ -26,7 +28,7 @@ struct ChallengeView: View {
                         }
                         VStack {
                             HStack {
-                                Text("Challenges für dich")
+                                Text("Challenges für Dich")
                                     .font(.title)
                                     .fontWeight(.bold)
                                     .padding(.leading, 20)
@@ -70,7 +72,7 @@ struct ChallengeView: View {
                                     .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
                                 }
                                 HStack {
-                                    NavigationLink (destination: RateTippView()
+                                    NavigationLink (destination: RateTippView(showRateTipps: $showRateTipps)
                                         .navigationBarBackButtonHidden(false)
                                         .navigationBarTitle("")
                                         .navigationBarHidden(true)

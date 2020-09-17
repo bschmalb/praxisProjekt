@@ -28,7 +28,7 @@
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" name="cardgreen2"/>
+                        <color key="backgroundColor" name="greenLaunch"/>
                         <color key="tintColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="V4O-Bq-pLf" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="8EE-8w-B4I"/>
@@ -43,8 +43,8 @@
     </scenes>
     <resources>
         <image name="JustLogo" width="862" height="861"/>
-        <namedColor name="cardgreen2">
-            <color red="0.87800002098083496" green="1" blue="0.80400002002716064" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        <namedColor name="greenLaunch">
+            <color red="0.68627450980392157" green="0.8666666666666667" blue="0.57647058823529407" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

@@ -45,7 +45,7 @@ struct EntwicklungGraphView: View {
         switch graphCategory {
         case 0: return AnyView(
             HStack {
-            GraphLegende()
+            GraphLegendeKilometer()
             HStack (spacing: 20) {
                 ForEach(0..<7) { index in
                     HStack {
@@ -221,17 +221,23 @@ struct BarView : View {
 
 struct GraphLegende: View {
     var body: some View {
-        VStack (spacing: 30){
+        VStack {
             Text("4+")
                 .font(.system(size: 12, weight: Font.Weight.semibold))
+                .padding(.top, 10)
+            Spacer()
             Text("3")
                 .font(.system(size: 12, weight: Font.Weight.semibold))
+            Spacer()
             Text("2")
                 .font(.system(size: 12, weight: Font.Weight.semibold))
+            Spacer()
             Text("1")
                 .font(.system(size: 12, weight: Font.Weight.semibold))
+            Spacer()
             Text("0")
                 .font(.system(size: 12, weight: Font.Weight.semibold))
+                .padding(.bottom, 10)
         }
         .offset(x: 0, y: -10)
     }
@@ -239,17 +245,48 @@ struct GraphLegende: View {
 
 struct GraphLegendeShower: View {
     var body: some View {
-        VStack (spacing: 30){
+        VStack {
             Text("20+")
                 .font(.system(size: 12, weight: Font.Weight.semibold))
+                .padding(.top, 10)
+            Spacer()
             Text("15")
                 .font(.system(size: 12, weight: Font.Weight.semibold))
+            Spacer()
             Text("10")
                 .font(.system(size: 12, weight: Font.Weight.semibold))
+            Spacer()
             Text("5")
                 .font(.system(size: 12, weight: Font.Weight.semibold))
+            Spacer()
             Text("0")
                 .font(.system(size: 12, weight: Font.Weight.semibold))
+                .padding(.bottom, 10)
+            
+        }
+        .offset(x: 0, y: -10)
+    }
+}
+
+struct GraphLegendeKilometer: View {
+    var body: some View {
+        VStack {
+            Text("50+")
+                .font(.system(size: 12, weight: Font.Weight.semibold))
+                .padding(.top, 10)
+            Spacer()
+            Text("35")
+                .font(.system(size: 12, weight: Font.Weight.semibold))
+            Spacer()
+            Text("20")
+                .font(.system(size: 12, weight: Font.Weight.semibold))
+            Spacer()
+            Text("10")
+                .font(.system(size: 12, weight: Font.Weight.semibold))
+            Spacer()
+            Text("0")
+                .font(.system(size: 12, weight: Font.Weight.semibold))
+                .padding(.bottom, 10)
         }
         .offset(x: 0, y: -10)
     }
@@ -257,13 +294,14 @@ struct GraphLegendeShower: View {
 
 struct GraphLegendeBinWaste: View {
     var body: some View {
-        VStack (spacing: 70){
+        VStack {
             Text("Nein")
                 .font(.system(size: 12, weight: Font.Weight.semibold))
-            Text("Teilweise")
-                .font(.system(size: 12, weight: Font.Weight.semibold))
+                .padding(.top, 10)
+            Spacer()
             Text("Ja")
                 .font(.system(size: 12, weight: Font.Weight.semibold))
+                .padding(.bottom, 10)
         }
         .offset(x: 0, y: -10)
     }

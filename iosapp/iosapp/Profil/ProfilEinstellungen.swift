@@ -34,11 +34,11 @@ struct ProfilEinstellungen: View {
                     impact(style: .medium)
                 }) {
                     HStack (spacing: 15){
-                        Image(systemName: "arrow.left.circle")
-                            .font(.system(size: 24, weight: Font.Weight.medium))
+                        Image(systemName: "arrow.left")
+                            .font(.system(size: 20, weight: Font.Weight.medium))
                             .foregroundColor(Color("black"))
                         Text("Einstellungen")
-                            .font(.system(size: 26, weight: Font.Weight.medium))
+                            .font(.system(size: 20, weight: Font.Weight.medium))
                             .fontWeight(.semibold)
                             .foregroundColor(Color("black"))
                         Spacer()

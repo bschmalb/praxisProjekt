@@ -15,6 +15,7 @@ struct ProfilChallengeView: View {
     let uuid = UIDevice.current.identifierForVendor?.uuidString
     
     @State var filteredChallenges: [Challenge] = []
+    @State var filteredTipps: [Tipp] = []
     
     @State var checkedSelected: Bool = true
     @State var savedSelected: Bool = false
@@ -37,17 +38,17 @@ struct ProfilChallengeView: View {
                     impact(style: .medium)
                 }) {
                     HStack (spacing: 15){
-                        Image(systemName: "arrow.left.circle")
-                            .font(.system(size: 24, weight: Font.Weight.medium))
+                        Image(systemName: "arrow.left")
+                            .font(.system(size: 20, weight: Font.Weight.medium))
                             .foregroundColor(Color("black"))
-                        Text("Deine Challenges")
-                            .font(.system(size: 26, weight: Font.Weight.medium))
+                        Text("Deine Fakten")
+                            .font(.system(size: 20, weight: Font.Weight.medium))
                             .fontWeight(.semibold)
                             .foregroundColor(Color("black"))
                         Spacer()
                     }
                     .padding(.horizontal, 20)
-                    .padding(.vertical, 5)
+                    .padding(.top, 5)
                     .padding(.top, UIScreen.main.bounds.height / 40)
                 }
                 ZStack {
@@ -86,7 +87,7 @@ struct ProfilChallengeView: View {
                                 self.tippOffset = g.frame(in: .global).midX
                                 self.selectWidth = 120
                                 
-                                self.slidingText = "Gepseicherte"
+                                self.slidingText = "Gespeicherte"
                                 
                                 impact(style: .medium)
                             }){
@@ -127,7 +128,7 @@ struct ProfilChallengeView: View {
                     }.padding(.horizontal, 10)
                         .padding(.bottom, 10)
                 }
-                .offset(y: -5)
+                .offset(y: -10)
                 
                 ZStack {
                     VStack {
@@ -135,28 +136,50 @@ struct ProfilChallengeView: View {
                             GeometryReader { proxy in
                                 UIScrollViewWrapper {
                                     HStack {
-                                        ForEach(self.filteredChallenges.indices, id: \.self) { index in
+                                        ForEach(self.filteredTipps.indices, id: \.self) { index in
                                             HStack {
-                                                if(self.filteredChallenges[index].isChecked) {
-                                                    GeometryReader { geometry in
-                                                        ChallengeCard(isChecked: self.$filteredChallenges[index].isChecked, isBookmarked: self.$filteredChallenges[index].isBookmarked, challenge: self.filteredChallenges[index])
-                                                            .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX) - 5 ) / -8), axis: (x: 0, y: 10.0, z:0))
+                                                GeometryReader { geometry in
+                                                        TippCard2(isChecked: self.$filteredTipps[index].isChecked, isBookmarked: self.$filteredTipps[index].isBookmarked, tipp: self.filteredTipps[index])
+                                                            .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX) - 5 ) / -10), axis: (x: 0, y: 10.0, z:0))
                                                             .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
                                                             .padding(.vertical, 10)
                                                     }
                                                     .frame(width: UIScreen.main.bounds.width - 7.5, height: UIScreen.main.bounds.height/2.1 + 20)
-                                                }
                                             }
                                         }
-                                    }.padding(.horizontal, 5)
-                                        .frame(height: UIScreen.main.bounds.height/2.1 + 20)
-                                        .background(Color("background"))
-                                        .animation(.spring())
+                                    }
+                                    .padding(.horizontal, 5)
+                                    .frame(height: UIScreen.main.bounds.height/2.1 + 20)
+                                    .background(Color("background"))
+                                    .animation(.spring())
                                 }
                             }
                             .frame(height: UIScreen.main.bounds.height/2.1 + 20)
+//                            GeometryReader { proxy in
+//                                UIScrollViewWrapper {
+//                                    HStack {
+//                                        ForEach(self.filteredChallenges.indices, id: \.self) { index in
+//                                            HStack {
+//                                                if(self.filteredChallenges[index].isChecked) {
+//                                                    GeometryReader { geometry in
+//                                                        ChallengeCard(isChecked: self.$filteredChallenges[index].isChecked, isBookmarked: self.$filteredChallenges[index].isBookmarked, challenge: self.filteredChallenges[index])
+//                                                            .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX) - 5 ) / -8), axis: (x: 0, y: 10.0, z:0))
+//                                                            .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
+//                                                            .padding(.vertical, 10)
+//                                                    }
+//                                                    .frame(width: UIScreen.main.bounds.width - 7.5, height: UIScreen.main.bounds.height/2.1 + 20)
+//                                                }
+//                                            }
+//                                        }
+//                                    }.padding(.horizontal, 5)
+//                                        .frame(height: UIScreen.main.bounds.height/2.1 + 20)
+//                                        .background(Color("background"))
+//                                        .animation(.spring())
+//                                }
+//                            }
+//                            .frame(height: UIScreen.main.bounds.height/2.1 + 20)
                         }
-                    }.offset(x: self.checkedSelected ? 0 : -UIScreen.main.bounds.width)
+                    }.offset(x: self.tabSelected == 0 ? 0 : -UIScreen.main.bounds.width)
                     VStack {
                         if (!self.filteredChallenges.isEmpty) {
                             //                            GeometryReader { proxy in
@@ -204,8 +227,8 @@ struct ProfilChallengeView: View {
                                 .animation(.spring())
                             }
                         }
-                    }.offset(x: self.checkedSelected ? UIScreen.main.bounds.width : 0)
-                        .offset(x: self.ownSelected ? -UIScreen.main.bounds.width : 0)
+                    }.offset(x: self.tabSelected == 0 ? UIScreen.main.bounds.width : 0)
+                        .offset(x: self.tabSelected == 2 ? -UIScreen.main.bounds.width : 0)
                     VStack {
                         if (!self.filteredChallenges.isEmpty) {
                             GeometryReader { proxy in
@@ -232,13 +255,16 @@ struct ProfilChallengeView: View {
                             }
                             .frame(height: UIScreen.main.bounds.height/2.1 + 20)
                         }
-                    }.offset(x: self.ownSelected ? 0 : UIScreen.main.bounds.width)
+                    }.offset(x: self.tabSelected == 2 ? 0 : UIScreen.main.bounds.width)
                 }.animation(.spring())
                 Spacer()
             }
             .onAppear{
                 ChallengeApi().fetchChallenges { (filteredChallenges) in
                     self.filteredChallenges = filteredChallenges
+                }
+                Api().fetchTipps { (filteredTipps) in
+                    self.filteredTipps = filteredTipps
                 }
                 impact(style: .medium)
             }

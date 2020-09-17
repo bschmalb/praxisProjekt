@@ -13,6 +13,8 @@ struct RateTippView: View {
 //    @ObservedObject var store2 = RateTippDataStore()
     @State var rateTipps: [Tipp] = []
     
+    @Binding var showRateTipps: Bool
+    
     @State private var showAddTipps2 = false
     
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
@@ -22,6 +24,7 @@ struct RateTippView: View {
     @State var thumbUp = false
     @State var thumbDown = false
     @State var endReached = false
+    @State var loading = true
     
     @State var userLevelLocal = 0
     
@@ -32,39 +35,58 @@ struct RateTippView: View {
                 Color("background").edgesIgnoringSafeArea(.all)
                 
                 VStack {
+                    
                     HStack {
-                        Button (action: {
-                            self.mode.wrappedValue.dismiss()
-                        }) {
-                            Image(systemName: "arrow.left.circle")
-                                .accentColor(.primary)
-                                .font(.title)
-                                .padding(10)
-                                .padding(.leading, 15)
-                        }
-                        Spacer()
                         Text("Tipps bewerten")
                             .font(.title)
                             .fontWeight(.bold)
+                            .padding(.leading, 20)
+                        
                         Spacer()
                         Button(action: {
-                            self.showAddTipps2.toggle()
+                            self.showRateTipps = false
+                            impact(style: .medium)
                         }) {
-                            Image(systemName: "plus.circle")
-                                .accentColor(.primary)
-                                .font(.title)
-                                .padding(10)
-                                .padding(.trailing, 15)
-                        }.sheet(isPresented: $showAddTipps2, content: { AddTippView(showAddTipps: self.$showAddTipps2)})
+                            Image(systemName: "xmark")
+                            .font(.system(size: 24, weight: Font.Weight.medium))
+                            .padding(25)
+                        }
                     }
-                    .padding(.top, 20.0)
+                    .padding(.top, 20)
+                    
+//                    HStack {
+//                        Button (action: {
+//                            self.mode.wrappedValue.dismiss()
+//                        }) {
+//                            Image(systemName: "arrow.left.circle")
+//                                .accentColor(.primary)
+//                                .font(.title)
+//                                .padding(10)
+//                                .padding(.leading, 15)
+//                        }
+//                        Spacer()
+//                        Text("Tipps bewerten")
+//                            .font(.title)
+//                            .fontWeight(.bold)
+//                        Spacer()
+//                        Button(action: {
+//                            self.showAddTipps2.toggle()
+//                        }) {
+//                            Image(systemName: "plus.circle")
+//                                .accentColor(.primary)
+//                                .font(.title)
+//                                .padding(10)
+//                                .padding(.trailing, 15)
+//                        }.sheet(isPresented: $showAddTipps2, content: { AddTippView(showAddTipps: self.$showAddTipps2)})
+//                    }
+//                    .padding(.top, 20.0)
                     
                     HStack {
                         Text("Wenn ein Tipp von der Community gutes Feedback bekommt, wird dieser für alle Nutzer angezeigt")
-                    }.padding()
+                    }.padding(.horizontal)
                     
                     if (!endReached && rateTipps.count > 0) {
-                        TippCard(isChecked: self.$rateTipps[counter].isChecked, isBookmarked: self.$rateTipps[counter].isBookmarked, tipp: rateTipps[counter])
+                        TippCard2(isChecked: self.$rateTipps[counter].isChecked, isBookmarked: self.$rateTipps[counter].isBookmarked, tipp: rateTipps[counter])
                                 .animation(.spring())
                     }
                     else if (endReached) {
@@ -76,7 +98,7 @@ struct RateTippView: View {
                         .animation(.spring())
                     }
                         
-                    if !endReached {
+                    if (!endReached && !loading){
                         HStack {
                             Button(action: {
                                 
@@ -143,21 +165,21 @@ struct RateTippView: View {
                         }.padding(.top, 10)
                         .animation(.spring())
                     }
-                    
                     Spacer()
+                    Button(action: {
+                        self.showRateTipps = false
+                    }) {
+                        Text("Fertig")
+                            .fontWeight(Font.Weight.medium)
+                            .padding(25)
+                            .opacity(0.8)
+                    }
                 }
                     .navigationBarTitle("")
                 .navigationBarHidden(true)
             }
         }
-        .gesture(DragGesture()
-        .onChanged({ (value) in
-            if (value.translation.width > 0) {
-                if (value.translation.width > 50) {
-                    self.mode.wrappedValue.dismiss()
-                }
-            }
-        }))
+        .accentColor(.primary)
             .onAppear(){
                 impact(style: .medium)
                 RateApi().fetchRateTipps { (rateTipps) in
@@ -165,23 +187,40 @@ struct RateTippView: View {
                     if (self.counter > self.rateTipps.count - 1){
                         self.endReached = true
                     }
+                    if (self.rateTipps.count > 0) {
+                        self.loading = false
+                    }
                 }
         }
     }
 }
 
 func patchScore(id: String, thumb: String) {
-    guard let url = URL(string: "http://bastianschmalbach.ddns.net/tipps/" + id + "?thumb=" + thumb) else { return }
+    
+    let rating = Rate(thumb: thumb)
+    
+    guard let encoded = try? JSONEncoder().encode(rating) else {
+        print("Failed to encode order")
+        return
+    }
+    
+    guard let url = URL(string: "http://bastianschmalbach.ddns.net/tipps/" + id) else { return }
     var request = URLRequest(url: url)
+    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
     request.httpMethod = "PATCH"
+    request.httpBody = encoded
     
     URLSession.shared.dataTask(with: request) { data, response, error in
         
     }.resume()
 }
 
+struct Rate : Encodable, Decodable{
+    var thumb: String
+}
+
 struct RateTippView_Previews: PreviewProvider {
     static var previews: some View {
-        RateTippView()
+        RateTippView(showRateTipps: .constant(false))
     }
 }

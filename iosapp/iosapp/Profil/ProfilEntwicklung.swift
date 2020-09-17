@@ -23,11 +23,11 @@ struct ProfilEntwicklung: View {
                         impact(style: .medium)
                     }) {
                         HStack (spacing: 15){
-                            Image(systemName: "arrow.left.circle")
-                                .font(.system(size: 24, weight: Font.Weight.medium))
+                            Image(systemName: "arrow.left")
+                                .font(.system(size: 20, weight: Font.Weight.medium))
                                 .foregroundColor(Color("black"))
                             Text("Deine Entwicklung")
-                                .font(.system(size: 26, weight: Font.Weight.medium))
+                                .font(.system(size: 20, weight: Font.Weight.medium))
                                 .fontWeight(.semibold)
                                 .foregroundColor(Color("black"))
                             Spacer()
@@ -37,7 +37,7 @@ struct ProfilEntwicklung: View {
                     VStack (spacing: 30) {
                         EntwicklungGraphView(graphColor: "cardgreen2", graphTitle: "Gefahrene Kilometer", graphCategory: 0)
                         EntwicklungGraphView(graphColor: "cardblue2", graphTitle: "Fleischkonsum", graphCategory: 1)
-                        EntwicklungGraphView(graphColor: "cardgreen2", graphTitle: "Selbst zubereitet", graphCategory: 2)
+                        EntwicklungGraphView(graphColor: "cardgreen2", graphTitle: "Essen gekauft", graphCategory: 2)
                         EntwicklungGraphView(graphColor: "cardpurple2", graphTitle: "Essen weggeschmissen", graphCategory: 3)
                         EntwicklungGraphView(graphColor: "cardyellow2", graphTitle: "Getränke gekauft", graphCategory: 4)
                         EntwicklungGraphView(graphColor: "cardturqouise2", graphTitle: "Duschzeit", graphCategory: 5)

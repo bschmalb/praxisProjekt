@@ -14,6 +14,7 @@ struct TippView: View {
     @State var show: Bool = false
     @State var tipps: [Tipp] = []
     @State var showAddTipps = false
+    @State var showRateTipps = false
     @Binding var isDark: Bool
     @Binding var appearenceDark: Bool
     
@@ -38,18 +39,8 @@ struct TippView: View {
                             .font(.title)
                             .fontWeight(.bold)
                             .padding(.leading, 20)
-
+                        
                         Spacer()
-//                        Button(action: {
-//                            self.isDark.toggle()
-//                            self.appearenceDark.toggle()
-//                            UserDefaults.standard.set(self.appearenceDark, forKey: "appearenceDark")
-//                            impact(style: .medium)
-//                        }) {
-//                            Image(systemName: "moon.circle")
-//                                .font(.title)
-//                                .padding(10)
-//                        }
                         Button(action: {
                             self.showAddTipps.toggle()
                             impact(style: .medium)
@@ -64,7 +55,7 @@ struct TippView: View {
                     .offset(y: 10)
                     
                     TippCardList()
-                        
+                    
                     VStack {
                         HStack {
                             Button(action: {
@@ -90,47 +81,79 @@ struct TippView: View {
                             .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
                         }
                         HStack {
-                            NavigationLink (destination: RateTippView()
-                                .navigationBarBackButtonHidden(false)
-                                .navigationBarTitle("")
-                                .navigationBarHidden(true)
-                            ){
-                                    HStack {
-                                        Image(systemName: "hand.thumbsup")
-                                            .font(.system(size: 20, weight: .medium))
-                                        Text("Tipps von Nutzern bewerten")
-                                            .font(.headline)
-                                            .fontWeight(.medium)
-                                    }
-                                    .padding(13)
-                                    .padding(.leading, 10)
-                                    Spacer()
-                            }.frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height / 16)
-                                .background(Color("buttonWhite"))
-                                .cornerRadius(15)
-                                .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
+                            Button(action: {
+                                self.showRateTipps.toggle()
+                                impact(style: .medium)
+                            }) {
+                                HStack {
+                                    Image(systemName: "hand.thumbsup")
+                                        .font(.system(size: 20, weight: .medium))
+                                    Text("Tipps von Nutzern bewerten")
+                                        .font(.headline)
+                                        .fontWeight(.medium)
+                                }
+                                .padding(13)
+                                .padding(.leading, 10)
+                                Spacer()
+                            }
+                            .frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height / 16)
+                            .background(Color("buttonWhite"))
+                            .cornerRadius(15)
+                            .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
+                        .sheet(isPresented: $showRateTipps, content: { RateTippView(showRateTipps: self.$showRateTipps).environmentObject(self.levelEnv).environmentObject(self.overlay)})
+                        
+//                            NavigationLink (destination: RateTippView(showRateTipps: $showRateTipps)
+//                                .navigationBarBackButtonHidden(false)
+//                                .navigationBarTitle("")
+//                                .navigationBarHidden(true)
+//                            ){
+//                                HStack {
+//                                    Image(systemName: "hand.thumbsup")
+//                                        .font(.system(size: 20, weight: .medium))
+//                                    Text("Tipps von Nutzern bewerten")
+//                                        .font(.headline)
+//                                        .fontWeight(.medium)
+//                                }
+//                                .padding(13)
+//                                .padding(.leading, 10)
+//                                Spacer()
+//                            }.frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height / 16)
+//                                .background(Color("buttonWhite"))
+//                                .cornerRadius(15)
+//                                .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
                         }
                     }.offset(y: -UIScreen.main.bounds.height / 81)
                     Spacer()
                 }
                 if (!firstUseTipp) {
-                    VStack {
+                    ZStack {
                         LottieView(filename: "swipe", loop: true)
-                            .frame(width: 200, height: 200)
-                            .background(Color("background"))
-                            .cornerRadius(20)
-                            .shadow(radius: 20)
-                            .offset(x: show ? 0 : -UIScreen.main.bounds.width, y: -50)
-                            .opacity(show ? 1 : 0)
-                            .scaleEffect(show ? 1 : 0)
-                            .onTapGesture {
-                                withAnimation { self.show = false }
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: {
-                                    UserDefaults.standard.set(true, forKey: "firstUseTipp")
-                                })
+                            .offset(y: -20)
+                        Button(action: {
+                            self.show = false
+                        }) {
+                            Text("Okay!")
+                                .foregroundColor(.white)
+                                .font(.headline)
+                                .padding(13)
+                                .frame(width: 180)
+                                .background(Color("blue"))
+                                .cornerRadius(10)
+                                .offset(y: 73)
                         }
+                    }.frame(width: 200, height: 220)
+                        .background(Color("background"))
+                        .cornerRadius(20)
+                        .shadow(radius: 20)
+                        .offset(x: show ? 0 : -UIScreen.main.bounds.width, y: -50)
+                        .opacity(show ? 1 : 0)
+                        .scaleEffect(show ? 1 : 0.8)
+                        .onTapGesture {
+                            withAnimation { self.show = false }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: {
+                                UserDefaults.standard.set(true, forKey: "firstUseTipp")
+                            })}
                         .animation(.spring())
-                    }
                 }
             }.accentColor(.primary)
                 .navigationBarTitle("")
@@ -146,13 +169,13 @@ struct TippView: View {
                     }))
                 .onAppear {
                     if self.appearenceDark {
-                    self.isDark = false
-                }else{
-                    self.isDark = true
-                }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: {
-                     self.show = true
-                })
+                        self.isDark = false
+                    }else{
+                        self.isDark = true
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: {
+                        self.show = true
+                    })
             }
         }
     }

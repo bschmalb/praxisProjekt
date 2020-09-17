@@ -32,7 +32,7 @@ struct LevelView: View {
         
         return ZStack {
             Circle()
-                .stroke(Color(.black).opacity(0.1), style: StrokeStyle(lineWidth: 6 * multiplier))
+                .stroke(Color(.gray).opacity(0.3), style: StrokeStyle(lineWidth: 6 * multiplier))
                 .frame(width: frameWidth, height: frameHeight)
             
             Circle()
