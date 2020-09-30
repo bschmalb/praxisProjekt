@@ -22,7 +22,11 @@ struct ProfilEinstellungen: View {
     
     @State var userLevelLocal: NSNumber = 13452
     
+    @ObservedObject var filter: FilterData2
+    
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
+    
+    var screenWidth = UIScreen.main.bounds.width
     
     var body: some View {
         ZStack {
@@ -33,52 +37,53 @@ struct ProfilEinstellungen: View {
                     self.mode.wrappedValue.dismiss()
                     impact(style: .medium)
                 }) {
-                    HStack (spacing: 15){
+                    HStack (spacing: 10){
                         Image(systemName: "arrow.left")
-                            .font(.system(size: 20, weight: Font.Weight.medium))
+                            .font(.system(size: screenWidth < 500 ? screenWidth * 0.040 : 18, weight: .medium))
                             .foregroundColor(Color("black"))
                         Text("Einstellungen")
-                            .font(.system(size: 20, weight: Font.Weight.medium))
-                            .fontWeight(.semibold)
+                            .font(.system(size: screenWidth < 500 ? screenWidth * 0.040 : 18, weight: .medium))
                             .foregroundColor(Color("black"))
                         Spacer()
                     }
-                    .padding(20)
-                    .padding(.top, UIScreen.main.bounds.height / 40)
+                    .padding(.leading, 20)
+                    .padding(.vertical, 10)
                 }
                 
                 VStack {
-                    Button(action: {
-                        impact(style: .rigid)
-                    }) {
+                    
+                    NavigationLink(destination: ProfilData()
+                                    .navigationBarTitle("")
+                                    .navigationBarHidden(true)
+                                    .navigationBarBackButtonHidden(true)) {
+                        HStack (spacing: 20){
+                            Image(systemName: "person")
+                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.05 : 22, weight: .medium))
+                                .padding(.leading, 20)
+                                .frame(width: 60, height: 20)
+                            Text("Deine Daten")
+                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.05 : 22, weight: .medium))
+                            Spacer()
+                        }.padding(10)
+                    }.navigationBarTitle("Navigation")
+                    
+                    NavigationLink(destination: ProfilFilter(filter: filter)
+                                    .navigationBarTitle("")
+                                    .navigationBarHidden(true)
+                                    .navigationBarBackButtonHidden(true)) {
                         HStack (spacing: 20){
                             Image(systemName: "arrow.merge")
                                 .rotationEffect(.degrees(180), anchor: .center)
-                                .font(.system(size: 22))
+                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.05 : 22, weight: .medium))
                                 .padding(.leading, 20)
                                 .frame(width: 60, height: 20)
-                            Text("Filter")
-                                .font(.system(size: 22))
+                            Text("Deine Filter")
+                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.05 : 22, weight: .medium))
                                 .fontWeight(.medium)
                             Spacer()
                         }.padding(10)
-                    }
-                    Button(action: {
-                        self.overlay.overlayLog = true
-                        self.offsetChangeName = -UIScreen.main.bounds.height / 20
-                        impact(style: .rigid)
-                    }) {
-                        HStack (spacing: 20){
-                            Image(systemName: "text.cursor")
-                                .font(.system(size: 22))
-                                .padding(.leading, 20)
-                                .frame(width: 60, height: 20)
-                            Text("Dein Name")
-                                .font(.system(size: 22))
-                                .fontWeight(.medium)
-                            Spacer()
-                        }.padding(10)
-                    }
+                    }.navigationBarTitle("Navigation")
+                    
                     Button(action: {
                         self.isDark.toggle()
                         self.appearenceDark.toggle()
@@ -87,31 +92,31 @@ struct ProfilEinstellungen: View {
                     }) {
                         HStack (spacing: 20){
                             Image(systemName: "moon.circle")
-                                .font(.system(size: 22))
+                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.05 : 22, weight: .medium))
                                 .padding(.leading, 20)
                                 .frame(width: 60, height: 20)
                             Text("Nachtmodus")
-                                .font(.system(size: 22))
+                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.05 : 22, weight: .medium))
                                 .fontWeight(.medium)
                             Spacer()
                         }.padding(10)
                     }
                     
                     Spacer()
-                    Button(action: {
-                        self.levelEnv.level += 5
-                        UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
-                    }) {
-                        HStack (spacing: 20){
-                            Image(systemName: "arrow.up")
-                                .font(.system(size: 16))
-                                .padding(.leading, 20)
-                                .frame(width: 60, height: 20)
-                            Text("Level Up")
-                            .font(.system(size: 16))
-                            Spacer()
-                        }.padding(10)
-                    }
+//                    Button(action: {
+//                        self.levelEnv.level += 5
+//                        UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
+//                    }) {
+//                        HStack (spacing: 20){
+//                            Image(systemName: "arrow.up")
+//                                .font(.system(size: 16))
+//                                .padding(.leading, 20)
+//                                .frame(width: 60, height: 20)
+//                            Text("Level Up")
+//                            .font(.system(size: 16))
+//                            Spacer()
+//                        }.padding(10)
+//                    }
                     Button(action: {
                         UserDefaults.standard.set(self.logDate, forKey: "logDate")
                         UserDefaults.standard.set(false, forKey: "firstUseTipp")
@@ -153,6 +158,11 @@ struct ProfilEinstellungen: View {
 
 struct ProfilEinstellungen_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilEinstellungen(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000)).environmentObject(UserLevel())
+        Group {
+        ProfilEinstellungen(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), filter: FilterData2()).environmentObject(UserLevel())
+            ProfilEinstellungen(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), filter: FilterData2()).environmentObject(UserLevel())
+                .previewDevice(PreviewDevice(rawValue: "iPhone 11"))
+                .previewDisplayName("iPhone 11")
+        }
     }
 }

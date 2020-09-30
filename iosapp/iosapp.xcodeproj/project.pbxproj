@@ -14,16 +14,21 @@
 		B701FFD324B2620C00207606 /* ChallengeCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B701FFD224B2620C00207606 /* ChallengeCard.swift */; };
 		B70BF79F2487EA8000B4C911 /* ProfilView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B70BF79E2487EA8000B4C911 /* ProfilView.swift */; };
 		B70BF7A12487EAC200B4C911 /* TagebuchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B70BF7A02487EAC200B4C911 /* TagebuchView.swift */; };
+		B71158742523B51500E6B5B7 /* KeyboardResponderIOS14.swift in Sources */ = {isa = PBXBuildFile; fileRef = B71158732523B51300E6B5B7 /* KeyboardResponderIOS14.swift */; };
 		B712CD14248973CD00A883A1 /* SwiftUIPager in Frameworks */ = {isa = PBXBuildFile; productRef = B712CD13248973CD00A883A1 /* SwiftUIPager */; };
 		B712CD162489747800A883A1 /* TippCardsPager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B712CD152489747800A883A1 /* TippCardsPager.swift */; };
 		B725218A248FDF9C00C43507 /* TippCardList.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7252189248FDF9C00C43507 /* TippCardList.swift */; };
 		B74727C124B268B300775E16 /* ProfilChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74727C024B268B300775E16 /* ProfilChallengeView.swift */; };
+		B747581C251E26D400E7131B /* AddTagebuchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B747581B251E26D300E7131B /* AddTagebuchView.swift */; };
 		B7481A39248AC9B900C4CCF1 /* AddTippView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7481A38248AC9B900C4CCF1 /* AddTippView.swift */; };
 		B7494059248CF9E700933A37 /* AddTippCard2.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7494058248CF9E700933A37 /* AddTippCard2.swift */; };
+		B7504ED52518BA4700038559 /* StartTutorialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7504ED42518BA4600038559 /* StartTutorialView.swift */; };
 		B7598B6824A8009A000436B8 /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7598B6724A8009A000436B8 /* UserData.swift */; };
 		B7598B6A24A803B8000436B8 /* UserDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7598B6924A803B8000436B8 /* UserDataStore.swift */; };
 		B7598B6C24A8BF1B000436B8 /* ProfilEntwicklung.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7598B6B24A8BF1B000436B8 /* ProfilEntwicklung.swift */; };
 		B7598B6E24A8C22B000436B8 /* ProfilEinstellungen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7598B6D24A8C22B000436B8 /* ProfilEinstellungen.swift */; };
+		B762F584251AC119001050A1 /* ProfilData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B762F583251AC118001050A1 /* ProfilData.swift */; };
+		B762F589251B3685001050A1 /* loadingWhite.json in Resources */ = {isa = PBXBuildFile; fileRef = B762F588251B3685001050A1 /* loadingWhite.json */; };
 		B7649E312490F3AB0079984A /* TippController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7649E302490F3AB0079984A /* TippController.swift */; };
 		B7649E33249105540079984A /* TippView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7649E32249105540079984A /* TippView.swift */; };
 		B77784E5248BDB7500C58AEE /* TippCardsCustom.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77784E4248BDB7500C58AEE /* TippCardsCustom.swift */; };
@@ -69,7 +74,6 @@
 		B7C2285924AD24E20075360D /* AddTagebuchCard6.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7C2285824AD24E20075360D /* AddTagebuchCard6.swift */; };
 		B7C2285B24AD26510075360D /* AddTagebuchCard7.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7C2285A24AD26510075360D /* AddTagebuchCard7.swift */; };
 		B7C2285D24AE05AD0075360D /* AddTagebuchSuccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7C2285C24AE05AC0075360D /* AddTagebuchSuccess.swift */; };
-		B7C655CC24B3491000A79DBE /* loadingWorld.json in Resources */ = {isa = PBXBuildFile; fileRef = B7C655CB24B3491000A79DBE /* loadingWorld.json */; };
 		B7C655CE24B349F400A79DBE /* swipe.json in Resources */ = {isa = PBXBuildFile; fileRef = B7C655CD24B349F300A79DBE /* swipe.json */; };
 		B7C655D024B3509200A79DBE /* loading.json in Resources */ = {isa = PBXBuildFile; fileRef = B7C655CF24B3509200A79DBE /* loading.json */; };
 		B7C655D224B3515800A79DBE /* loading2.json in Resources */ = {isa = PBXBuildFile; fileRef = B7C655D124B3515700A79DBE /* loading2.json */; };
@@ -108,15 +112,20 @@
 		B701FFD224B2620C00207606 /* ChallengeCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeCard.swift; sourceTree = "<group>"; };
 		B70BF79E2487EA8000B4C911 /* ProfilView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilView.swift; sourceTree = "<group>"; };
 		B70BF7A02487EAC200B4C911 /* TagebuchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagebuchView.swift; sourceTree = "<group>"; };
+		B71158732523B51300E6B5B7 /* KeyboardResponderIOS14.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardResponderIOS14.swift; sourceTree = "<group>"; };
 		B712CD152489747800A883A1 /* TippCardsPager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippCardsPager.swift; sourceTree = "<group>"; };
 		B7252189248FDF9C00C43507 /* TippCardList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippCardList.swift; sourceTree = "<group>"; };
 		B74727C024B268B300775E16 /* ProfilChallengeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilChallengeView.swift; sourceTree = "<group>"; };
+		B747581B251E26D300E7131B /* AddTagebuchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagebuchView.swift; sourceTree = "<group>"; };
 		B7481A38248AC9B900C4CCF1 /* AddTippView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTippView.swift; sourceTree = "<group>"; };
 		B7494058248CF9E700933A37 /* AddTippCard2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTippCard2.swift; sourceTree = "<group>"; };
+		B7504ED42518BA4600038559 /* StartTutorialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartTutorialView.swift; sourceTree = "<group>"; };
 		B7598B6724A8009A000436B8 /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
 		B7598B6924A803B8000436B8 /* UserDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataStore.swift; sourceTree = "<group>"; };
 		B7598B6B24A8BF1B000436B8 /* ProfilEntwicklung.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilEntwicklung.swift; sourceTree = "<group>"; };
 		B7598B6D24A8C22B000436B8 /* ProfilEinstellungen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilEinstellungen.swift; sourceTree = "<group>"; };
+		B762F583251AC118001050A1 /* ProfilData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilData.swift; sourceTree = "<group>"; };
+		B762F588251B3685001050A1 /* loadingWhite.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loadingWhite.json; sourceTree = "<group>"; };
 		B7649E302490F3AB0079984A /* TippController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippController.swift; sourceTree = "<group>"; };
 		B7649E32249105540079984A /* TippView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippView.swift; sourceTree = "<group>"; };
 		B77784E4248BDB7500C58AEE /* TippCardsCustom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippCardsCustom.swift; sourceTree = "<group>"; };
@@ -167,7 +176,6 @@
 		B7C2285824AD24E20075360D /* AddTagebuchCard6.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagebuchCard6.swift; sourceTree = "<group>"; };
 		B7C2285A24AD26510075360D /* AddTagebuchCard7.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagebuchCard7.swift; sourceTree = "<group>"; };
 		B7C2285C24AE05AC0075360D /* AddTagebuchSuccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagebuchSuccess.swift; sourceTree = "<group>"; };
-		B7C655CB24B3491000A79DBE /* loadingWorld.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loadingWorld.json; sourceTree = "<group>"; };
 		B7C655CD24B349F300A79DBE /* swipe.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = swipe.json; sourceTree = "<group>"; };
 		B7C655CF24B3509200A79DBE /* loading.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading.json; sourceTree = "<group>"; };
 		B7C655D124B3515700A79DBE /* loading2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loading2.json; sourceTree = "<group>"; };
@@ -257,6 +265,7 @@
 				B7598B6B24A8BF1B000436B8 /* ProfilEntwicklung.swift */,
 				B7598B6D24A8C22B000436B8 /* ProfilEinstellungen.swift */,
 				B7DB1E2C24AA138E00F28B07 /* ProfilFilter.swift */,
+				B762F583251AC118001050A1 /* ProfilData.swift */,
 				B7874C12249E84F50045D609 /* EntwicklungTabView.swift */,
 				B7874C18249E96B10045D609 /* EntwicklungGraphView.swift */,
 			);
@@ -276,11 +285,11 @@
 		B7919AED24981BBC00014240 /* Lottie */ = {
 			isa = PBXGroup;
 			children = (
+				B762F588251B3685001050A1 /* loadingWhite.json */,
 				B7F0492B24C4FAA600FA1C88 /* loadingCircle.json */,
 				B7C655D124B3515700A79DBE /* loading2.json */,
 				B7C655CF24B3509200A79DBE /* loading.json */,
 				B7C655CD24B349F300A79DBE /* swipe.json */,
-				B7C655CB24B3491000A79DBE /* loadingWorld.json */,
 				B7919AEE24981BBD00014240 /* success.json */,
 			);
 			path = Lottie;
@@ -311,6 +320,7 @@
 			children = (
 				B7A8CBDB242C10C50036FD6E /* AppDelegate.swift */,
 				B7A8CBDF242C10C50036FD6E /* ContentView.swift */,
+				B7504ED42518BA4600038559 /* StartTutorialView.swift */,
 				B7A8CBDD242C10C50036FD6E /* SceneDelegate.swift */,
 				B7649E3524912F4E0079984A /* Tipps */,
 				B7494057248CF98400933A37 /* AddTipp */,
@@ -325,6 +335,7 @@
 				B7874C06249A48CA0045D609 /* LevelView.swift */,
 				B7919AF324981C5B00014240 /* LottieView.swift */,
 				B784696B248D25BD000A4331 /* KeyboardResponder.swift */,
+				B71158732523B51300E6B5B7 /* KeyboardResponderIOS14.swift */,
 				B7A8CBE1242C10C80036FD6E /* Assets.xcassets */,
 				B7A8CBE6242C10C80036FD6E /* LaunchScreen.storyboard */,
 				B7919AED24981BBC00014240 /* Lottie */,
@@ -363,6 +374,7 @@
 		B7B4D9B8249EB4550055708E /* AddTagebuch */ = {
 			isa = PBXGroup;
 			children = (
+				B747581B251E26D300E7131B /* AddTagebuchView.swift */,
 				B7874C1B249EA28C0045D609 /* AddTagebuchCard1.swift */,
 				B7B4D9B9249EB4690055708E /* AddTagebuchCard2.swift */,
 				B7C2285224AD1DC60075360D /* AddTagebuchCard3.swift */,
@@ -517,9 +529,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				B7C655CE24B349F400A79DBE /* swipe.json in Resources */,
-				B7C655CC24B3491000A79DBE /* loadingWorld.json in Resources */,
 				B7A8CBE8242C10C80036FD6E /* LaunchScreen.storyboard in Resources */,
 				B7F0492C24C4FAA600FA1C88 /* loadingCircle.json in Resources */,
+				B762F589251B3685001050A1 /* loadingWhite.json in Resources */,
 				B7919AEF24981BBD00014240 /* success.json in Resources */,
 				B7C655D024B3509200A79DBE /* loading.json in Resources */,
 				B7C655D224B3515800A79DBE /* loading2.json in Resources */,
@@ -578,12 +590,14 @@
 				B784696A248D0A21000A4331 /* AddTippCard3.swift in Sources */,
 				B701FFD324B2620C00207606 /* ChallengeCard.swift in Sources */,
 				B74727C124B268B300775E16 /* ProfilChallengeView.swift in Sources */,
+				B71158742523B51500E6B5B7 /* KeyboardResponderIOS14.swift in Sources */,
 				B70BF79F2487EA8000B4C911 /* ProfilView.swift in Sources */,
 				B7481A39248AC9B900C4CCF1 /* AddTippView.swift in Sources */,
 				B7C2285724AD22540075360D /* AddTagebuchCard5.swift in Sources */,
 				B7649E312490F3AB0079984A /* TippController.swift in Sources */,
 				B7846974248D7D3D000A4331 /* TippCard.swift in Sources */,
 				B7598B6824A8009A000436B8 /* UserData.swift in Sources */,
+				B7504ED52518BA4700038559 /* StartTutorialView.swift in Sources */,
 				B701FFD124B2612C00207606 /* ChallengeCardList.swift in Sources */,
 				B7C2285524AD20750075360D /* AddTagebuchCard4.swift in Sources */,
 				B7C2285D24AE05AD0075360D /* AddTagebuchSuccess.swift in Sources */,
@@ -603,7 +617,9 @@
 				B7A8CBE0242C10C50036FD6E /* ContentView.swift in Sources */,
 				B7B50CE9250C160200DD2FE6 /* FactCardList.swift in Sources */,
 				B7B4D9BE249FC7990055708E /* ChallengeView.swift in Sources */,
+				B747581C251E26D400E7131B /* AddTagebuchView.swift in Sources */,
 				B7CF27B6249035DA009058E8 /* RateTippView.swift in Sources */,
+				B762F584251AC119001050A1 /* ProfilData.swift in Sources */,
 				B7CB3F28243A6D6600E4A0C7 /* TippData.swift in Sources */,
 				B7B50CEF250F9AD500DD2FE6 /* TippCard2.swift in Sources */,
 				B7C2285924AD24E20075360D /* AddTagebuchCard6.swift in Sources */,
@@ -786,14 +802,15 @@
 				DEVELOPMENT_TEAM = BU3T4Y74PR;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iosapp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bastianschmalbach.iosapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bastianschmalbach.sustainablelife;
 				PRODUCT_NAME = "Sustainable Life";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -807,14 +824,15 @@
 				DEVELOPMENT_TEAM = BU3T4Y74PR;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iosapp/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bastianschmalbach.iosapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bastianschmalbach.sustainablelife;
 				PRODUCT_NAME = "Sustainable Life";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

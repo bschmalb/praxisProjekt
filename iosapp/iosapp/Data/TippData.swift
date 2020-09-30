@@ -9,7 +9,8 @@
 import SwiftUI
 
 struct Tipp: Codable, Hashable, Identifiable{
-    let id: String
+    var id = UUID()
+    let _id: String
     let title: String
     let source: String
     let level: String
@@ -19,9 +20,10 @@ struct Tipp: Codable, Hashable, Identifiable{
     var isChecked: Bool = false
     var isBookmarked: Bool = false
     var official: String
+    var __v: Int?
     
     enum CodingKeys: String, CodingKey {
-        case id, title, source, level, category, score, postedBy, official
+        case _id, title, source, level, category, score, postedBy, official
     }
 }
 

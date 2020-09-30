@@ -42,6 +42,8 @@ struct TagebuchEntwicklung: View {
                         EntwicklungGraphView(graphColor: "cardred2", graphTitle: "Mülltrennung", graphCategory: 6)
                             .padding(.bottom, 15)
                     }
+                    .animation(.spring())
+                    .padding(.leading, 10)
                 }
             }
         }

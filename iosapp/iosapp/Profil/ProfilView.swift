@@ -10,22 +10,29 @@ import SwiftUI
 
 struct ProfilView: View {
     
+    @State var id = UserDefaults.standard.string(forKey: "id")
+    
     @State var offsetChangeName = -UIScreen.main.bounds.height
     @State var offsetLevel = -UIScreen.main.bounds.height
     @ObservedObject var userStore = UserDataStore()
     
     @Binding var isDark: Bool
     @Binding var appearenceDark: Bool
+    @Binding var selection: Int?
     
     @EnvironmentObject var overlay: Overlay
     
+    @EnvironmentObject var user: UserObserv
+    
+    @ObservedObject var filter: FilterData2
     
     @State private var userName: String = UserDefaults.standard.string(forKey: "userName") ?? "Nutzer"
     
+    var screen = UIScreen.main.bounds.width
+    
     var body: some View {
         ZStack {
-            NavigationView {
-                ZStack {
+            ZStack {
                     ZStack {
                         Color("background")
                             .edgesIgnoringSafeArea(.all)
@@ -49,30 +56,78 @@ struct ProfilView: View {
                     
                     VStack {
                         HStack {
-                            Button(action: {
-                                self.offsetChangeName = -UIScreen.main.bounds.height / 20
-                                self.overlay.overlayLog = true
-                            })
-                            {
-                                VStack (alignment: .leading){
-                                    Text("Hallo \(userName)")
-                                        .font(.title)
-                                        .fontWeight(.bold)
+                            VStack (alignment: .leading){
+                                HStack {
+                                    Text("Hallo")
+                                        .font(.system(size: 24, weight: Font.Weight.semibold))
                                         .lineLimit(1)
                                         .padding(.leading, 20)
-                                        .padding(.vertical, 5)
-                                        .frame(width: UIScreen.main.bounds.width / 1.4, height: 40, alignment: .leading)
-                                    Text("Wilkommen in deinem Profil")
-                                        .font(.callout)
-                                        .padding(.leading, 20)
+                                    TextField("", text: $user.name, onCommit: {
+                                        user.name = user.name
+                                        UserDefaults.standard.set(user.name, forKey: "userName")
+                                        self.postUserName()
+                                        
+                                    })
+                                        .font(.system(size: 24, weight: Font.Weight.semibold))
+                                        .lineLimit(1)
                                 }
-                                Spacer()
-                            }.accentColor(Color("black"))
+//                                Text("Hallo \(user.name)")
+//                                    .font(.title)
+//                                    .fontWeight(.bold)
+//                                    .lineLimit(1)
+//                                    .padding(.leading, 20)
+//                                    .padding(.vertical, 5)
+//                                    .frame(width: UIScreen.main.bounds.width / 1.4, height: 40, alignment: .leading)
+                                Text("Wilkommen in deinem Profil")
+                                    .font(.system(size: screen < 500 ? screen * 0.04 : 18))
+                                    .padding(.leading, 20)
+                            }.frame(width: UIScreen.main.bounds.width / 1.4)
+                            .padding(.top, 5)
+                            Spacer()
+                            
+//                            NavigationLink(destination: ProfilData()
+//                                            .navigationBarTitle("")
+//                                            .navigationBarHidden(true)
+//                                            .navigationBarBackButtonHidden(true)
+//                                           , tag: 1, selection: $selection) {
+//                                VStack (alignment: .leading){
+//                                    Text("Hallo \(user.name)")
+//                                        .font(.title)
+//                                        .fontWeight(.bold)
+//                                        .lineLimit(1)
+//                                        .padding(.leading, 20)
+//                                        .padding(.vertical, 5)
+//                                        .frame(width: UIScreen.main.bounds.width / 1.4, height: 40, alignment: .leading)
+//                                    Text("Wilkommen in deinem Profil")
+//                                        .font(.callout)
+//                                        .padding(.leading, 20)
+//                                }
+//                            }
+//                            Button(action: {
+//                                self.offsetChangeName = -UIScreen.main.bounds.height / 20
+//                                self.overlay.overlayLog = true
+//                                self.postUserName()
+//                            })
+//                            {
+//                                VStack (alignment: .leading){
+//                                    Text("Hallo \(user.name)")
+//                                        .font(.title)
+//                                        .fontWeight(.bold)
+//                                        .lineLimit(1)
+//                                        .padding(.leading, 20)
+//                                        .padding(.vertical, 5)
+//                                        .frame(width: UIScreen.main.bounds.width / 1.4, height: 40, alignment: .leading)
+//                                    Text("Wilkommen in deinem Profil")
+//                                        .font(.callout)
+//                                        .padding(.leading, 20)
+//                                }
+//                                Spacer()
+//                            }.accentColor(Color("black"))
                         }
                         .padding(.top, 10.0)
                         .offset(y: 10)
                         
-                        ProfilHomeView(isDark: $isDark, appearenceDark: $appearenceDark, offsetChangeName: $offsetChangeName, offsetLevel: $offsetLevel)
+                        ProfilHomeView(isDark: $isDark, appearenceDark: $appearenceDark, offsetChangeName: $offsetChangeName, offsetLevel: $offsetLevel, selection: $selection, filter: filter)
                             .navigationBarTitle("")
                             .navigationBarHidden(true)
                             .navigationBarBackButtonHidden(true)
@@ -81,16 +136,18 @@ struct ProfilView: View {
                     .navigationBarTitle("")
                     .navigationBarHidden(true)
                 }
-            }
             .padding(.top, 1)
             .padding(.bottom, UIScreen.main.bounds.height / 12)
 //            .overlay(Color("black").opacity(overlay.overlay ? 0.4 : 0))
             .blur(radius: overlay.overlayLog ? 2 : 0)
             .edgesIgnoringSafeArea(.all)
             .animation(.spring())
+            .onTapGesture(count: 1, perform: {
+                self.postUserName()
+            })
             
             
-            ChangeNameView(offsetChangeName: $offsetChangeName, userName: $userName)
+//            ChangeNameView(offsetChangeName: $offsetChangeName, userName: $userName)
             
             ProfileLevelView(offsetLevel: $offsetLevel)
                 .onTapGesture {
@@ -104,7 +161,8 @@ struct ProfilView: View {
                         if (value.translation.height < 0) {
                             if (value.translation.height < 20) {
                                 UserDefaults.standard.set(self.userName, forKey: "userName")
-                                self.offsetChangeName = -UIScreen.main.bounds.height / 1.5
+//                                self.postUserName()
+//                                self.offsetChangeName = -UIScreen.main.bounds.height / 1.5
                                 self.offsetLevel = -UIScreen.main.bounds.height / 1
                                 self.overlay.overlayLog = false
                                 self.hideKeyboard()
@@ -115,33 +173,58 @@ struct ProfilView: View {
         .padding(.top, 1)
     }
     
+    func postUserName(){
+        let patchData = UserNamePatch(name: user.name)
+        
+        guard let encoded = try? JSONEncoder().encode(patchData) else {
+                print("Failed to encode order")
+                return
+            }
+            
+            guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
+            var request = URLRequest(url: url)
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpMethod = "PATCH"
+            request.httpBody = encoded
+            
+            URLSession.shared.dataTask(with: request) { data, response, error in
+            }.resume()
+    }
+    
     func hideKeyboard() {
         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
 
+struct UserNamePatch: Encodable, Decodable {
+    var name: String
+}
+
 struct ProfilView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilView(isDark: .constant(false), appearenceDark: .constant(false)).environmentObject(UserLevel()).environmentObject(Overlay())
+        ProfilView(isDark: .constant(false), appearenceDark: .constant(false), selection: .constant(0), filter: FilterData2()).environmentObject(UserLevel()).environmentObject(Overlay()).environmentObject(UserObserv())
     }
 }
 
 struct ChangeNameView: View {
     
+    @State var id = UserDefaults.standard.string(forKey: "id")
+    
     @Binding var offsetChangeName : CGFloat
     @Binding var userName: String
     
+    @EnvironmentObject var user: UserObserv
     @EnvironmentObject var overlay: Overlay
     
     var body: some View {
         VStack {
             HStack {
-                TextField("Gib deinen Namen ein", text: $userName)
+                TextField("Gib deinen Namen ein", text: $user.name)
                     .padding(.leading, 50)
                     .frame(width: UIScreen.main.bounds.width * 0.8, height: 50)
                 Button(action: {
-                    UserDefaults.standard.set(self.userName, forKey: "userName")
-                    self.patchName(name: self.userName)
+                    UserDefaults.standard.set(self.user.name, forKey: "userName")
+                    self.patchName(name: self.user.name)
                     self.offsetChangeName = -UIScreen.main.bounds.height / 1.5
                     self.hideKeyboard()
                     self.overlay.overlayLog = false
@@ -158,8 +241,8 @@ struct ChangeNameView: View {
             .padding(.horizontal, /*@START_MENU_TOKEN@*/10/*@END_MENU_TOKEN@*/)
             .frame(width: UIScreen.main.bounds.width * 0.9)
             Button(action: {
-                UserDefaults.standard.set(self.userName, forKey: "userName")
-                self.patchName(name: self.userName)
+                UserDefaults.standard.set(self.user.name, forKey: "userName")
+                self.patchName(name: self.user.name)
                 self.offsetChangeName = -UIScreen.main.bounds.height / 1.5
                 self.overlay.overlayLog = true
                 self.hideKeyboard()
@@ -189,15 +272,14 @@ struct ChangeNameView: View {
     }
     
     func patchName(name: String) {
-        if let uuid = UIDevice.current.identifierForVendor?.uuidString {
-            let patchUserName = Name(name: name)
+        let patchUserName = Name(name: name)
             
             guard let encoded = try? JSONEncoder().encode(patchUserName) else {
                 print("Failed to encode order")
                 return
             }
             
-            guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + uuid) else { return }
+            guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
             var request = URLRequest(url: url)
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpMethod = "PATCH"
@@ -206,7 +288,6 @@ struct ChangeNameView: View {
             URLSession.shared.dataTask(with: request) { data, response, error in
                 
             }.resume()
-        }
     }
 }
 

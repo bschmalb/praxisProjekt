@@ -9,7 +9,6 @@
 import SwiftUI
 
 struct PostTipp: Codable {
-    let id: UUID
     let title: String
     let source: String
     let category: String
@@ -241,7 +240,7 @@ struct AddTippCard5: View {
     
     func postTipp(){
         if let uuid = UIDevice.current.identifierForVendor?.uuidString {
-            let tippData = PostTipp(id: UUID(), title: self.tippTitel, source: self.quelle, category: self.category, level: self.level, score: 0, postedBy: uuid, official: "Community")
+            let tippData = PostTipp(title: self.tippTitel, source: self.quelle, category: self.category, level: self.level, score: 0, postedBy: uuid, official: "Community")
             
             guard let encoded = try? JSONEncoder().encode(tippData) else {
                 print("Failed to encode order")
@@ -254,7 +253,7 @@ struct AddTippCard5: View {
             request.httpBody = encoded
             
             URLSession.shared.dataTask(with: request) { data, response, error in
-                guard let data = data else {
+                guard data != nil else {
                     print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
                     DispatchQueue.main.asyncAfter(deadline: .now() + 6, execute: {
                         self.isLoading = false
@@ -264,7 +263,6 @@ struct AddTippCard5: View {
                     return
                 }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-//                    print(data)
                     haptic(type: .success)
                     self.levelEnv.level += 35
                     UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")

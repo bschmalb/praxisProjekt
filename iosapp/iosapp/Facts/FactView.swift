@@ -96,7 +96,7 @@ struct FactView: View {
             }.accentColor(.primary)
                 .navigationBarTitle("")
                 .navigationBarHidden(true)
-        }
+        }.navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

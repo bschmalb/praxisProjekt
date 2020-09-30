@@ -12,27 +12,33 @@ struct ProfilEntwicklung: View {
     
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     
+    @State var loading2: Bool = true
+    
+    var screenWidth = UIScreen.main.bounds.width
+    
     var body: some View {
         ZStack {
             Color("background")
                 .edgesIgnoringSafeArea(.all)
+            
             VStack {
                 ScrollView (.vertical) {
+                    
                     Button(action: {
                         self.mode.wrappedValue.dismiss()
                         impact(style: .medium)
                     }) {
-                        HStack (spacing: 15){
+                        HStack (spacing: 10){
                             Image(systemName: "arrow.left")
-                                .font(.system(size: 20, weight: Font.Weight.medium))
+                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.040 : 18, weight: .medium))
                                 .foregroundColor(Color("black"))
                             Text("Deine Entwicklung")
-                                .font(.system(size: 20, weight: Font.Weight.medium))
-                                .fontWeight(.semibold)
+                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.040 : 18, weight: .medium))
                                 .foregroundColor(Color("black"))
                             Spacer()
                         }
-                        .padding(15)
+                        .padding(.leading, 20)
+                        .padding(.vertical, 10)
                     }
                     VStack (spacing: 30) {
                         EntwicklungGraphView(graphColor: "cardgreen2", graphTitle: "Gefahrene Kilometer", graphCategory: 0)
@@ -44,9 +50,18 @@ struct ProfilEntwicklung: View {
                         EntwicklungGraphView(graphColor: "cardred2", graphTitle: "Mülltrennung", graphCategory: 6)
                             .padding(.bottom, 15)
                     }
+                    .padding(.leading, 10)
+                    .opacity(loading2 ? 0.01 : 1)
                 }
             }
-            .padding(.top, 15)
+            VStack {
+                if (loading2) {
+                    VStack{
+                        LottieView(filename: "loadingCircle", loop: true)
+                            .frame(width: 50, height: 50)
+                    }
+                }
+            }
         }
         .gesture(DragGesture()
                     .onChanged({ (value) in
@@ -56,6 +71,10 @@ struct ProfilEntwicklung: View {
                     }))
         .onAppear {
             impact(style: .medium)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                haptic(type: .success)
+                self.loading2 = false
+            }
         }
     }
 }

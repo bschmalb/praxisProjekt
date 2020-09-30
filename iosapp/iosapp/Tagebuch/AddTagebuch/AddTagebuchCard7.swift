@@ -10,6 +10,8 @@ import SwiftUI
 
 struct AddTagebuchCard7: View {
     
+    @State var id = UserDefaults.standard.string(forKey: "id")
+    
     @Binding var tabViewSelected: Int
     
     var kilometer: Int
@@ -34,6 +36,8 @@ struct AddTagebuchCard7: View {
     
     @State var userLevelLocal = 0
     
+    var screenWidth = UIScreen.main.bounds.width
+    
     var body: some View {
         
         NavigationView {
@@ -54,8 +58,7 @@ struct AddTagebuchCard7: View {
                         .frame(minHeight: 100, idealHeight: 200, maxHeight: 300)
                         .shadow(radius: 2)
                     Text("Hast du gestern auf die Mülltrennung geachtet?")
-                        .font(.system(size: 20, weight: Font.Weight.medium))
-                        .fontWeight(.medium)
+                        .font(.system(size: screenWidth < 500 ? screenWidth * 0.06 : 26, weight: .medium))
                         .multilineTextAlignment(.center)
                         .padding()
                     
@@ -192,42 +195,38 @@ struct AddTagebuchCard7: View {
     }
     
     func postLog(){
-        if let uuid = UIDevice.current.identifierForVendor?.uuidString {
-            
-            let today = Date()
-            let formatter1 = DateFormatter()
-            formatter1.dateStyle = .short
-            let date = formatter1.string(from: today)
-            
-            UserDefaults.standard.set(date, forKey: "logDate")
-            
-            let logData = LogAdd(log: Log(id: UUID().uuidString, kilometer: kilometer, meat: meat, cooked: cooked, foodWaste: foodWaste, drinks: drinks, shower: shower, binWaste: binWaste, date: date))
-            
-            guard let encoded = try? JSONEncoder().encode(logData) else {
-                print("Failed to encode order")
+        let today = Date()
+        let formatter1 = DateFormatter()
+        formatter1.dateStyle = .short
+        let date = formatter1.string(from: today)
+        
+        UserDefaults.standard.set(date, forKey: "logDate")
+        
+        let logData = LogAdd(log: Log(kilometer: kilometer, meat: meat, cooked: cooked, foodWaste: foodWaste, drinks: drinks, shower: shower, binWaste: binWaste, date: date))
+        
+        guard let encoded = try? JSONEncoder().encode(logData) else {
+            print("Failed to encode order")
+            return
+        }
+        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "PATCH"
+        request.httpBody = encoded
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard data != nil else {
+                print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
                 return
             }
-            guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + uuid) else { return }
-            var request = URLRequest(url: url)
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.httpMethod = "PATCH"
-            request.httpBody = encoded
             
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                guard let data = data else {
-                    print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
-                    return
-                }
-//                print(data)
-                
-                UserDefaults.standard.set(date, forKey: "logDate")
-//                self.isSuccess = true
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 7, execute: {
-//                    self.showAddTipps = false;
-//                    self.isSuccess = false
-//                })
-            }.resume()
-        }
+            UserDefaults.standard.set(date, forKey: "logDate")
+            //                self.isSuccess = true
+            //                DispatchQueue.main.asyncAfter(deadline: .now() + 7, execute: {
+            //                    self.showAddTipps = false;
+            //                    self.isSuccess = false
+            //                })
+        }.resume()
     }
 }
 

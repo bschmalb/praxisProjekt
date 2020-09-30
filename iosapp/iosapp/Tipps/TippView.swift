@@ -17,6 +17,7 @@ struct TippView: View {
     @State var showRateTipps = false
     @Binding var isDark: Bool
     @Binding var appearenceDark: Bool
+    @ObservedObject var filter: FilterData2
     
     @ObservedObject var storeTipps = TippDataStore()
     
@@ -33,13 +34,12 @@ struct TippView: View {
                         .edgesIgnoringSafeArea(.all)
                 }
                 
-                VStack {
+                VStack (spacing: UIScreen.main.bounds.height < 700 ? 5 : 10) {
                     HStack {
                         Text("Tipps für Dich")
                             .font(.title)
                             .fontWeight(.bold)
                             .padding(.leading, 20)
-                        
                         Spacer()
                         Button(action: {
                             self.showAddTipps.toggle()
@@ -54,9 +54,9 @@ struct TippView: View {
                     .padding(.top, UIScreen.main.bounds.height / 81)
                     .offset(y: 10)
                     
-                    TippCardList()
+                    TippCardList(filter: filter).environmentObject(UserObserv()).environmentObject(FilterData2())
                     
-                    VStack {
+                    VStack (spacing: 10) {
                         HStack {
                             Button(action: {
                                 self.showAddTipps.toggle()
@@ -65,15 +65,15 @@ struct TippView: View {
                                 HStack {
                                     HStack {
                                         Image(systemName: "plus.circle")
-                                            .font(.system(size: 22))
+                                            .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.05 : 20, weight: Font.Weight.medium))
                                         Text("Eigenen Tipp hinzufügen")
-                                            .font(.headline)
+                                            .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.045 : 20))
                                             .fontWeight(.medium)
                                     }
                                     .padding(13)
                                     .padding(.leading, 10)
                                     Spacer()
-                                }.frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height / 16)
+                                }.frame(width: UIScreen.main.bounds.width - 30, height: 20 + UIScreen.main.bounds.height / 30)
                             }
                             .sheet(isPresented: $showAddTipps, content: { AddTippView(showAddTipps: self.$showAddTipps).environmentObject(self.levelEnv).environmentObject(self.overlay) })
                             .background(Color("buttonWhite"))
@@ -87,16 +87,16 @@ struct TippView: View {
                             }) {
                                 HStack {
                                     Image(systemName: "hand.thumbsup")
-                                        .font(.system(size: 20, weight: .medium))
+                                        .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.05 : 20, weight: Font.Weight.medium))
                                     Text("Tipps von Nutzern bewerten")
-                                        .font(.headline)
+                                        .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.045 : 20))
                                         .fontWeight(.medium)
                                 }
                                 .padding(13)
                                 .padding(.leading, 10)
                                 Spacer()
                             }
-                            .frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height / 16)
+                            .frame(width: UIScreen.main.bounds.width - 30, height: 20 + UIScreen.main.bounds.height / 30)
                             .background(Color("buttonWhite"))
                             .cornerRadius(15)
                             .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
@@ -168,22 +168,17 @@ struct TippView: View {
                         }
                     }))
                 .onAppear {
-                    if self.appearenceDark {
-                        self.isDark = false
-                    }else{
-                        self.isDark = true
-                    }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: {
                         self.show = true
                     })
             }
-        }
+        }.navigationViewStyle(StackNavigationViewStyle())
     }
 }
 
 struct TippView_Previews: PreviewProvider {
     var model = ToggleModel()
     static var previews: some View {
-        TippView(isDark: .constant(false), appearenceDark: .constant(false))
+        TippView(isDark: .constant(false), appearenceDark: .constant(false), filter: FilterData2())
     }
 }

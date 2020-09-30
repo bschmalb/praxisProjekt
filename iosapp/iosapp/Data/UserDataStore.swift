@@ -10,7 +10,7 @@ import SwiftUI
 import Combine
 
 class UserDataStore: ObservableObject {
-    @Published var user: User = User(id: "1", level: 0, checkedTipps: [], savedTipps: [], checkedChallenges: [], savedChallenges: [], log: [])
+    @Published var user: User = User(_id: "1", phoneId: "", level: 0, checkedTipps: [], savedTipps: [], log: [])
     
     init() {
         fetchUser()

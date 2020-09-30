@@ -207,33 +207,33 @@ struct ChallengeCard: View {
         .animation(.spring())
         .accentColor(.black)
         .frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height/2.3)
-        .onAppear(){
-            self.getUserChallenges()
-        }
+//        .onAppear(){
+//            self.getUserChallenges()
+//        }
     }
-    func getUserChallenges(){
-        if let uuid = UIDevice.current.identifierForVendor?.uuidString {
-            guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + uuid) else { return }
-            let request = URLRequest(url: url)
-            
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                guard let data = data else {
-                    print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
-                    return
-                }
-                DispatchQueue.main.async {
-                    if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
-                        if (decodedResponse.checkedChallenges.contains(self.challenge.id) ) {
-                            self.isChecked = true
-                        }
-                        if (decodedResponse.savedChallenges.contains(self.challenge.id) ) {
-                            self.isBookmarked = true
-                        }
-                    }
-                }
-            }.resume()
-        }
-    }
+//    func getUserChallenges(){
+//        if let uuid = UIDevice.current.identifierForVendor?.uuidString {
+//            guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + uuid) else { return }
+//            let request = URLRequest(url: url)
+//
+//            URLSession.shared.dataTask(with: request) { data, response, error in
+//                guard let data = data else {
+//                    print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
+//                    return
+//                }
+//                DispatchQueue.main.async {
+//                    if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
+//                        if (decodedResponse.checkedChallenges.contains(self.challenge.id) ) {
+//                            self.isChecked = true
+//                        }
+//                        if (decodedResponse.savedChallenges.contains(self.challenge.id) ) {
+//                            self.isBookmarked = true
+//                        }
+//                    }
+//                }
+//            }.resume()
+//        }
+//    }
     
     func addToProfile(challengeId: String, method: Int) {
         let patchData = ChallengePatchCheck(checkedChallenges: challengeId)

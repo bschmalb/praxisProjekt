@@ -32,7 +32,7 @@ struct FactCardList: View {
                         .padding(.leading, 20)
                     ForEach(filter.indices, id: \.self) { index in
                         HStack {
-                            FilterView(isSelected: self.$filter[index].isSelected, filter: self.filter[index])
+                            FilterView(isSelected: self.$filter[index].isSelected, filter: self.filter[index]).environmentObject(UserObserv())
                                 .onTapGesture {
                                     self.filter[index].isSelected.toggle()
                                     self.filterTipps(filterName: self.filter[index].name)

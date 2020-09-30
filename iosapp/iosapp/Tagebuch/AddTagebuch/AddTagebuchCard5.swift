@@ -29,6 +29,8 @@ struct AddTagebuchCard5: View {
     
     @State var drinks: Int = -1
     
+    var screenWidth = UIScreen.main.bounds.width
+    
     var body: some View {
         
         NavigationView {
@@ -49,8 +51,7 @@ struct AddTagebuchCard5: View {
                         .frame(minHeight: 100, idealHeight: 200, maxHeight: 300)
                         .shadow(radius: 2)
                     Text("Wie viel Liter gekaufte Getränke hast du gestern getrunken?")
-                        .font(.system(size: 20, weight: Font.Weight.medium))
-                        .fontWeight(.medium)
+                        .font(.system(size: screenWidth < 500 ? screenWidth * 0.06 : 26, weight: .medium))
                         .multilineTextAlignment(.center)
                         .padding()
                     

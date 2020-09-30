@@ -24,6 +24,8 @@ struct AddTagebuchSuccess: View {
                     .padding(.horizontal, 35)
                     .shadow(radius: 2)
                 Text("Du hast deinen Tagebucheintrag heute schon verfasst.\nSchaue hier morgen wieder vorbei!")
+                    .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.045 : 20))
+                    .multilineTextAlignment(.center)
                     .foregroundColor(Color("black").opacity(0.9))
                     .padding(.horizontal, 20)
             }
@@ -32,47 +34,29 @@ struct AddTagebuchSuccess: View {
             NavigationLink (destination: TagebuchEntwicklung()
                 .navigationBarBackButtonHidden(false)
                 .navigationBarTitle("")
-                .navigationBarHidden(true)
-            , tag: 1, selection: $selection) {
+                                .navigationBarHidden(true)
+                            , tag: 1, selection: $selection) {
                 Button(action: {
                     impact(style: .rigid)
                     self.selection = 1
                 }) {
                     HStack (spacing: 15){
                         Image(systemName: "arrow.up.right")
-                            .font(.headline)
-                            .accentColor(Color("white"))
+                            .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.05 : 20, weight: Font.Weight.medium))
                         Text("Zu deiner Entwicklung")
-                            .font(.headline)
-                            .accentColor(Color("white"))
+                            .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.045 : 20))
+                            .fontWeight(.medium)
                     }
-                    .padding(20)
-                    .frame(width: UIScreen.main.bounds.width - 70, height: 50)
+                    .padding(25)
+                    .frame(height: 25 + UIScreen.main.bounds.height / 30)
                     .background(Color("blue"))
                     .cornerRadius(15)
                 }
             }
-                //            Button(action: {
-                //                impact(style: .medium)
-                //                self.tabViewSelected = 3
-                //            })
-                //            {
-                //                HStack (spacing: 15){
-                //                    Image(systemName: "arrow.up.right")
-                //                        .font(.headline)
-                //                        .accentColor(Color("white"))
-                //                    Text("Zu deiner Entwicklung")
-//                        .font(.headline)
-//                        .accentColor(Color("white"))
-//                }
-//                .padding(20)
-//                .frame(width: UIScreen.main.bounds.width - 70, height: 50)
-//                .background(Color("blue"))
-//                .cornerRadius(15)
-//            }
             Spacer()
         }
         .background(Color("background"))
+        .accentColor(.white)
     }
 }
 

@@ -10,8 +10,10 @@ import SwiftUI
 
 struct RateTippView: View {
     
-//    @ObservedObject var store2 = RateTippDataStore()
+    //    @ObservedObject var store2 = RateTippDataStore()
     @State var rateTipps: [Tipp] = []
+    @State var rateTipps2: [Tipp] = []
+    @State var alreadyRated: [String] = UserDefaults.standard.stringArray(forKey: "alreadyRated") ?? []
     
     @Binding var showRateTipps: Bool
     
@@ -20,7 +22,7 @@ struct RateTippView: View {
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     @EnvironmentObject var levelEnv: UserLevel
     
-    @State var counter = 0
+    @State var counter: Int = 0
     @State var thumbUp = false
     @State var thumbDown = false
     @State var endReached = false
@@ -28,13 +30,18 @@ struct RateTippView: View {
     
     @State var userLevelLocal = 0
     
+    var screenHeight = UIScreen.main.bounds.height
+    
+    var cardColors: [String]  = [
+        "cardgreen2", "cardblue2", "cardyellow2", "cardpurple2", "cardorange2", "cardred2", "cardturqouise2", "cardyelgre2", "cardpink2"
+    ]
     
     var body: some View {
         NavigationView {
             ZStack {
                 Color("background").edgesIgnoringSafeArea(.all)
                 
-                VStack {
+                VStack (spacing: 0){
                     
                     HStack {
                         Text("Tipps bewerten")
@@ -48,75 +55,44 @@ struct RateTippView: View {
                             impact(style: .medium)
                         }) {
                             Image(systemName: "xmark")
-                            .font(.system(size: 24, weight: Font.Weight.medium))
-                            .padding(25)
+                                .font(.system(size: 24, weight: Font.Weight.medium))
+                                .padding(25)
                         }
                     }
                     .padding(.top, 20)
                     
-//                    HStack {
-//                        Button (action: {
-//                            self.mode.wrappedValue.dismiss()
-//                        }) {
-//                            Image(systemName: "arrow.left.circle")
-//                                .accentColor(.primary)
-//                                .font(.title)
-//                                .padding(10)
-//                                .padding(.leading, 15)
-//                        }
-//                        Spacer()
-//                        Text("Tipps bewerten")
-//                            .font(.title)
-//                            .fontWeight(.bold)
-//                        Spacer()
-//                        Button(action: {
-//                            self.showAddTipps2.toggle()
-//                        }) {
-//                            Image(systemName: "plus.circle")
-//                                .accentColor(.primary)
-//                                .font(.title)
-//                                .padding(10)
-//                                .padding(.trailing, 15)
-//                        }.sheet(isPresented: $showAddTipps2, content: { AddTippView(showAddTipps: self.$showAddTipps2)})
-//                    }
-//                    .padding(.top, 20.0)
-                    
-                    HStack {
-                        Text("Wenn ein Tipp von der Community gutes Feedback bekommt, wird dieser für alle Nutzer angezeigt")
-                    }.padding(.horizontal)
+                    Text("Wenn ein Tipp von der Community gutes Feedback bekommt, wird dieser für alle Nutzer angezeigt")
+                        .font(.system(size: 14))
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal, 15)
+                        .padding(.bottom, 15)
                     
                     if (!endReached && rateTipps.count > 0) {
-                        TippCard2(isChecked: self.$rateTipps[counter].isChecked, isBookmarked: self.$rateTipps[counter].isBookmarked, tipp: rateTipps[counter])
-                                .animation(.spring())
-                    }
-                    else if (endReached) {
-                        CustomCard(image: "ISuccess Work", text: "Vorerst keine weiteren Tipps mehr zum bewerten verfügbar", color: "cardgreen2")
+                        TippCard2(isChecked: self.$rateTipps[counter].isChecked, isBookmarked: self.$rateTipps[counter].isBookmarked, tipp: rateTipps[counter], color: cardColors[counter % 9])
                             .animation(.spring())
-                    }
-                    else {
-                        CustomCard(image: "Fix website (man)", text: "Stelle sicher, dass du mit dem Internet verbunden bist", color: "buttonWhite")
-                        .animation(.spring())
-                    }
-                        
-                    if (!endReached && !loading){
                         HStack {
                             Button(action: {
                                 
                             }) {
                                 Image(systemName: "hand.thumbsup")
-                                    .font(.title)
+                                    .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.06 : 24, weight: Font.Weight.medium))
                                     .accentColor(Color("black"))
                                     .padding(10)
-                                    .frame(width: UIScreen.main.bounds.width / 2 - 25, height: 50)
+                                    .frame(width: UIScreen.main.bounds.width > 600 ? 275 : UIScreen.main.bounds.width / 2 - 20, height: screenHeight > 700 ? 50 : screenHeight * 0.075)
                                     .background(Color("buttonWhite"))
                                     .cornerRadius(15)
-                                    .shadow(color: Color(.green).opacity(thumbUp ? 0.5 : 0.1), radius: 5, x: 4, y: 3)
+                                    .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
+//                                    .shadow(color: Color(.green).opacity(thumbUp ? 0.5 : 0.1), radius: 5, x: 4, y: 3)
                                     .scaleEffect(thumbUp ? 1.1 : 1)
                                     .gesture(
                                         LongPressGesture().onChanged{ value in
                                             self.levelEnv.level += 35
                                             UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
-                                            patchScore(id: self.rateTipps[self.counter].id, thumb: "up")
+                                            
+                                            self.alreadyRated.append(self.rateTipps[counter]._id)
+                                            UserDefaults.standard.set(self.alreadyRated, forKey: "alreadyRated")
+                                            
+                                            patchScore(id: self.rateTipps[self.counter]._id, thumb: "up")
                                             if (self.counter < self.rateTipps.count - 1){
                                                 withAnimation(){self.counter += 1}
                                             }
@@ -129,25 +105,30 @@ struct RateTippView: View {
                                                 self.thumbUp = false
                                             }
                                         }
-                                )
+                                    )
                             }
                             Button(action: {
                                 
                             }) {
                                 Image(systemName: "hand.thumbsdown")
-                                    .font(.title)
+                                    .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.06 : 24, weight: Font.Weight.medium))
                                     .accentColor(Color("black"))
                                     .padding(10)
-                                    .frame(width: UIScreen.main.bounds.width / 2 - 25, height: 50)
+                                    .frame(width: UIScreen.main.bounds.width > 600 ? 275 : UIScreen.main.bounds.width / 2 - 20, height: screenHeight > 700 ? 50 : screenHeight * 0.075)
                                     .background(Color("buttonWhite"))
                                     .cornerRadius(15)
-                                    .shadow(color: Color(.red).opacity(thumbDown ? 0.3 : 0.05), radius: 5, x: 4, y: 3)
+                                    .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
+//                                    .shadow(color: Color(.red).opacity(thumbDown ? 0.3 : 0.05), radius: 5, x: 4, y: 3)
                                     .scaleEffect(thumbDown ? 1.1 : 1)
                                     .gesture(
                                         LongPressGesture().onChanged(){ value in
                                             self.levelEnv.level += 35
                                             UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
-                                            patchScore(id: self.rateTipps[self.counter].id, thumb: "down")
+                                            
+                                            self.alreadyRated.append(self.rateTipps[counter]._id)
+                                            UserDefaults.standard.set(self.alreadyRated, forKey: "alreadyRated")
+                                            
+                                            patchScore(id: self.rateTipps[self.counter]._id, thumb: "down")
                                             if (self.counter < self.rateTipps.count - 1){
                                                 withAnimation(){self.counter += 1}
                                             }
@@ -160,37 +141,49 @@ struct RateTippView: View {
                                                 self.thumbDown = false
                                             }
                                         }
-                                )
+                                    )
                             }
                         }.padding(.top, 10)
                         .animation(.spring())
                     }
+//                    else if (self.rateTipps2.count < 1) {
+//                        CustomCard(image: "Fix website (man)", text: "Stelle sicher, dass du mit dem Internet verbunden bist", color: "buttonWhite")
+//                            .animation(.spring())
+//                    }
+                    else {
+                        CustomCard(image: "PersonSofa", text: "Vorerst keine weiteren Tipps mehr zum bewerten verfügbar", color: "cardgreen2")
+                            .animation(.spring())
+                    }
                     Spacer()
                     Button(action: {
                         self.showRateTipps = false
+                        impact(style: .medium)
                     }) {
                         Text("Fertig")
-                            .fontWeight(Font.Weight.medium)
+                            .font(.system(size: UIScreen.main.bounds.width * 0.035, weight: .medium))
                             .padding(25)
                             .opacity(0.8)
                     }
+                    Spacer(minLength: 5)
                 }
-                    .navigationBarTitle("")
+                .navigationBarTitle("")
                 .navigationBarHidden(true)
             }
         }
         .accentColor(.primary)
-            .onAppear(){
-                impact(style: .medium)
-                RateApi().fetchRateTipps { (rateTipps) in
-                    self.rateTipps = rateTipps
-                    if (self.counter > self.rateTipps.count - 1){
-                        self.endReached = true
-                    }
-                    if (self.rateTipps.count > 0) {
-                        self.loading = false
-                    }
+        .onAppear(){
+            impact(style: .medium)
+            RateApi().fetchRateTipps { (rateTipps2) in
+                self.rateTipps2 = rateTipps2
+                self.rateTipps = rateTipps2.filter({!alreadyRated.contains($0._id)})
+                print(rateTipps.count)
+                if (self.counter > self.rateTipps.count - 1){
+                    self.endReached = true
                 }
+                if (self.rateTipps.count > 0) {
+                    self.loading = false
+                }
+            }
         }
     }
 }

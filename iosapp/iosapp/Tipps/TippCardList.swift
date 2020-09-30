@@ -6,143 +6,133 @@
 //  Copyright © 2020 Bastian Schmalbach. All rights reserved.
 //
 
+import Foundation
 import SwiftUI
+import Combine
 
 struct TippCardList: View {
     
     @ObservedObject var store = TippDataStore()
     
-    @State var filter = filterData
+    @Environment(\.horizontalSizeClass) var horizontalSize
     
-    @State var filteredTipps: [Tipp] = [Tipp(id: "asdas", title: "asdsad", source: "https://www.google.com", level: "Leicht", category: "Ernährung", score: 0, postedBy: "", isChecked: true, isBookmarked: true, official: "Offiziell")]
+//    @State var filter = filterData
     
-    @State var filterString: String = ""
+//    @State var filteredTipps: [Tipp] = [Tipp(_id: "asdas", title: "asdsadasdsadasdsadasdsadasdsadasdsadasdsadasdsadasdsadasdsadasdsadasdsad", source: "https://www.google.com", level: "Leicht", category: "Ernährung", score: 0, postedBy: "", isChecked: true, isBookmarked: true, official: "Offiziell")]
+    
+    @State var filteredTipps: [Tipp] = []
     
     @State var loading: Bool = false
+    @State var dataLoading: Bool = true
+    @ObservedObject var filter: FilterData2
     
     @State var filterCategory2: [String] = ["Ernährung", "Transport", "Recycling", "Ressourcen"]
     @State var filterLevel2: [String] = ["Leicht", "Mittel", "Schwer"]
     @State var filterPoster: [String] = ["Offiziell", "Community"]
     
-    //    var cardColors: [String]  = [
-    //        "cardgreen", "cardblue", "cardyellow", "cardpurple", "cardorange"
-    //    ]
+    @State var notCategory: [String] = UserDefaults.standard.stringArray(forKey: "notCategory") ?? []
+    @State var notDifficulty: [String] = UserDefaults.standard.stringArray(forKey: "notDifficulty") ?? []
+    
+    @EnvironmentObject var user: UserObserv
+    
+    @EnvironmentObject var changeFilter: ChangeFilter
+    @EnvironmentObject var filterString: FilterString
+    
+    @State var showTipps: Bool = false
+    
+    var screen = UIScreen.main.bounds.width
+    
+    var cardColors: [String]  = [
+        "cardgreen2", "cardblue2", "cardyellow2", "cardpurple2", "cardorange2", "cardred2", "cardturqouise2", "cardyelgre2", "cardpink2"
+    ]
     
     var body: some View {
-        VStack {
+        VStack (spacing: 0) {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack (spacing: 20) {
                     Text("Filter:")
-                        .font(.system(size: 20, weight: .medium))
+                        .font(.system(size: screen < 500 ? screen * 0.050 : 20, weight: .medium))
                         .padding(.leading, 20)
-                    ForEach(filter.indices, id: \.self) { index in
-                        HStack {
-                            FilterView(isSelected: self.$filter[index].isSelected, filter: self.filter[index])
-                                .onTapGesture {
-                                    self.filter[index].isSelected.toggle()
-                                    self.filterTipps(filterName: self.filter[index].name)
-                                    impact(style: .heavy)
-                                    self.loading = true
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                        self.loading = false
+                    if (!changeFilter.changeFilter){
+                        ForEach(filter.filter.indices, id: \.self) { index in
+                            HStack {
+                                FilterView(isSelected: self.$filter.filter[index].isSelected, filter: self.filter.filter[index])
+                                    .onTapGesture {
+//                                        self.filter.filter[index].isSelected.toggle()
+                                        
+                                        self.filterTipps2(index: index)
+                                        
+//                                        self.filterTipps(filterName: self.filter.filter[index].name)
+                                        impact(style: .heavy)
+                                        self.loading = true
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                            self.loading = false
+                                        }
+                                    }
+                                    .onAppear(){
+                                        if (!self.filterString.filterString.contains(self.filter.filter[index].name)) {
+                                            self.filter.filter[index].isSelected = false
+                                        }
                                     }
                             }
                         }
                     }
                 }
                 .padding(.vertical, UIScreen.main.bounds.height / 81)
+                .padding(.trailing, 20)
             }.accentColor(Color("black"))
             
             ZStack {
+//                Text("Wähle mehr Kategorien aus")
+//                    .padding()
                 VStack {
-                    if (!self.filteredTipps.isEmpty) {
-                        GeometryReader { proxy in
-                            UIScrollViewWrapper {
-                                HStack {
-                                    ForEach(self.filteredTipps.indices, id: \.self) { index in
-                                        HStack {
-                                            if(self.filterCategory2.contains(self.filteredTipps[index].category) && self.filterLevel2.contains(self.filteredTipps[index].level) && self.filterPoster.contains(self.filteredTipps[index].official)) {
-                                                GeometryReader { geometry in
-                                                    TippCard2(isChecked: self.$filteredTipps[index].isChecked, isBookmarked: self.$filteredTipps[index].isBookmarked, tipp: self.filteredTipps[index])
-                                                        .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX < UIScreen.main.bounds.width*2 && geometry.frame(in: .global).minX > -UIScreen.main.bounds.width*2  ? (geometry.frame(in: .global).minX - 5 ) / -10 : 0))), axis: (x: 0, y: 10.0, z:0))
-                                                        .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
-                                                        .padding(.vertical, 10)
-                                                        .opacity(Double(geometry.frame(in: .global).minX < UIScreen.main.bounds.width && geometry.frame(in: .global).minX > -UIScreen.main.bounds.width ? 1 : 0))
+                    if (dataLoading) {
+                        LottieView(filename: "loadingCircle", loop: true)
+                            .shadow(color: Color(.white), radius: 1, x: 0, y: 0)
+                            .frame(width: 100, height: 100)
+                    }
+                    else {
+                        if (self.filteredTipps.count > 0) {
+                            GeometryReader { proxy in
+                                UIScrollViewWrapper {
+                                    HStack (spacing: 0) {
+                                        if (!changeFilter.changeFilter){
+                                            ForEach(self.filteredTipps.indices, id: \.self) { index in
+                                                HStack {
+                                                    if ([self.filteredTipps[index].category, self.filteredTipps[index].level, self.filteredTipps[index].official].allSatisfy(self.filterString.filterString.contains)){
+                                                        GeometryReader { geometry in
+                                                            HStack {
+                                                                Spacer()
+                                                                TippCard2(isChecked: self.$filteredTipps[index].isChecked, isBookmarked: self.$filteredTipps[index].isBookmarked, tipp: self.filteredTipps[index], color: cardColors[index % 9])
+                                                                    .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX < UIScreen.main.bounds.width*2 && geometry.frame(in: .global).minX > -UIScreen.main.bounds.width*2  ? (geometry.frame(in: .global).minX - 5 ) / -10 : 0))), axis: (x: 0, y: 10.0, z:0))
+                                                                    .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
+                                                                    .opacity(Double(geometry.frame(in: .global).minX < UIScreen.main.bounds.width && geometry.frame(in: .global).minX > -UIScreen.main.bounds.width ? 1 : 0))
+                                                                    .padding(.vertical, 10)
+                                                                Spacer()
+                                                            }
+                                                        }
+                                                        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2.1 + 20)
+                                                    }
                                                 }
-                                                .frame(width: UIScreen.main.bounds.width - 7.5, height: UIScreen.main.bounds.height/2.1 + 20)
                                             }
                                         }
                                     }
+                                    .frame(height: UIScreen.main.bounds.height/2.1 + 20)
+                                    .background(Color("background"))
+                                    .animation(.spring())
                                 }
-                                .padding(.horizontal, 5)
-                                .frame(height: UIScreen.main.bounds.height/2.1 + 20)
-                                .background(Color("background"))
-                                .animation(.spring())
                             }
-                        }
-                        .frame(height: UIScreen.main.bounds.height/2.1 + 20)
-                        .offset(x: loading ? 300 : 0)
-                        .animation(.spring())
-                            
-                            //                    ScrollView (.horizontal, showsIndicators: false) {
-                            //                        HStack (spacing: -2){
-                            //                            ForEach(filteredTipps.indices, id: \.self) { index in
-                            //                                VStack {
-                            //                                    if(self.filterCategory2.contains(self.filteredTipps[index].category) && self.filterLevel2.contains(self.filteredTipps[index].level)) {
-                            //                                        GeometryReader { geometry in
-                            //                                            TippCard(isChecked: self.$filteredTipps[index].isChecked, isBookmarked: self.$filteredTipps[index].isBookmarked, tipp: self.filteredTipps[index])
-                            //                                                .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX) - 20 ) / -20), axis: (x: 0, y: 10.0, z:0))
-                            //                                                .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
-                            //                                        }
-                            //                                        .frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height/2.1 + 20)
-                            //                                    }
-                            //                                }
-                            //                                .padding(.leading, 15)
-                            //                                .padding(.trailing, 15)
-                            //                            }
-                            //                        }
-                            //                    }
-                            //                    .animation(.spring())
-                            
-                            //                    ScrollView (.horizontal, showsIndicators: false) {
-                            //                        if #available(iOS 14.0, *) {
-                            //                            ScrollViewReader { value2 in
-                            //                                ZStack {
-                            //                                    HStack (spacing: -2){
-                            //                                        ForEach(filteredTipps.indices, id: \.self) { index in
-                            //                                            VStack {
-                            //                                                if(self.filterCategory2.contains(self.filteredTipps[index].category) && self.filterLevel2.contains(self.filteredTipps[index].level)) {
-                            //                                                    GeometryReader { geometry in
-                            //                                                        TippCard(isChecked: self.$filteredTipps[index].isChecked, isBookmarked: self.$filteredTipps[index].isBookmarked, tipp: self.filteredTipps[index])
-                            //                                                            .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX) - 20 ) / -20), axis: (x: 0, y: 10.0, z:0))
-                            //                                                            .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
-                            //                                                    }
-                            //                                                    .frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height/2.1 + 20)
-                            //                                                }
-                            //                                            }
-                            //                                            .gesture(DragGesture()
-                            //                                                        .onChanged({ value in
-                            //                                                            print("drag")
-                            //                                                        }))
-                            //                                            .padding(.leading, 15)
-                            //                                            .padding(.trailing, 15)
-                            //                                        }
-                            //                                    }
-                            //                                }
-                            //                            }
-                            //                        } else {
-                            //                            // Fallback on earlier versions
-                            //                        }
-                            //                    }
+                            .frame(height: UIScreen.main.bounds.height/2.1 + 20)
+                            .offset(x: loading ? 300 : 0)
                             .animation(.spring())
-                    }
-                    else {
-                        CustomCard(image: "Fix website (man)", text: "Stelle sicher, dass du mit dem Internet verbunden bist", color: "buttonWhite")
-                            .padding(.horizontal, 15)
-                            .padding(.bottom, 5)
+                        }
+                        else {
+                            CustomCard(image: "Fix website (man)", text: "Stelle sicher, dass du mit dem Internet verbunden bist", color: "buttonWhite")
+                                .padding(.horizontal, 15)
+                                .padding(.bottom, 5)
+                        }
                     }
                 }
-                .offset(y: -UIScreen.main.bounds.height / 81)
                 .animation(.spring())
                 if (loading) {
                     LottieView(filename: "loadingCircle", loop: true)
@@ -150,12 +140,29 @@ struct TippCardList: View {
                         .frame(width: 100, height: 100)
                 }
             }
+            .offset(y: -3)
         }
-        .onAppear{
+        .onAppear(){
             Api().fetchTipps { (filteredTipps) in
                 self.filteredTipps = filteredTipps
+                self.dataLoading = false
             }
         }
+    }
+    
+    func filterTipps2(index: Int){
+        if (filterString.filterString.contains(filter.filter[index].name)){
+            filterString.filterString.removeAll(where: {$0 == filter.filter[index].name})
+            self.filter.filter[index].isSelected = false
+        } else {
+            filterString.filterString.append(filter.filter[index].name)
+            self.filter.filter[index].isSelected = true
+        }
+        changeFilter.changeFilterProfile = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            changeFilter.changeFilterProfile = false
+        }
+        print(filterString.filterString)
     }
     
     func filterTipps(filterName: String){
@@ -180,23 +187,6 @@ struct TippCardList: View {
                 filterPoster.removeAll(where: {$0 == filterName})
             }
         }
-        
-        //        if (filterCategory.count > 0) {
-        //            print("remove Category")
-        //            for name in filterCategory {
-        //                filteredTipps.removeAll {
-        //                    $0.category == name
-        //                }
-        //            }
-        //        }
-        //        if (filterLevel.count > 0) {
-        //            print("remove Level")
-        //            for name in filterLevel {
-        //                filteredTipps.removeAll {
-        //                    $0.level == name
-        //                }
-        //            }
-        //        }
     }
 }
 
@@ -213,6 +203,17 @@ class UIScrollViewViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.addSubview(self.scrollView)
+        self.pinEdges(of: self.scrollView, to: self.view)
+        
+        self.hostingController.willMove(toParent: self)
+        self.scrollView.addSubview(self.hostingController.view)
+        self.pinEdges(of: self.hostingController.view, to: self.scrollView)
+        self.hostingController.didMove(toParent: self)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         self.view.addSubview(self.scrollView)
         self.pinEdges(of: self.scrollView, to: self.view)
         
@@ -256,6 +257,7 @@ struct UIScrollViewWrapper<Content: View>: UIViewControllerRepresentable {
 struct FilterView: View {
     @Binding var isSelected: Bool
     var filter: Filter
+    var screen = UIScreen.main.bounds.width
     
     var body: some View {
         HStack {
@@ -264,10 +266,10 @@ struct FilterView: View {
                     .resizable()
                     .scaledToFit()
                     .font(.title)
-                    .frame(width: 30, height: 30)
+                    .frame(width: screen < 400 ? screen * 0.07 : 30, height: screen < 400 ? screen * 0.07 : 30)
                     .opacity(isSelected ? 1 : 0.3)
                 Text(filter.name)
-                    .font(.headline)
+                    .font(.system(size: screen < 500 ? screen * 0.045 : 20))
                     .fontWeight(.medium)
                     .accentColor(Color("black"))
                     .opacity(isSelected ? 1 : 0.3)
@@ -276,16 +278,63 @@ struct FilterView: View {
         }
         .background(Color(isSelected ? "buttonWhite" : "transparent"))
         .cornerRadius(15)
-        .shadow(color: isSelected ?Color("black").opacity(0.1) : Color("transparent"), radius: 5, x: 4, y: 4)
+        .shadow(color: isSelected ?Color("black").opacity(0.1) : Color("transparent"), radius: 3, x: 2, y: 2)
     }
 }
 
-struct Filter: Codable, Identifiable, Hashable {
+//struct FilterView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        FilterView(isSelected: .constant(true), filter: Filter(id: UUID(), icon: "Ernährung", name: "Ernährung", isSelected: true))
+//    }
+//}
+
+class Filter: Identifiable, ObservableObject {
     var id: UUID
     var icon: String
     var name: String
-    var isSelected: Bool
+    @Published var isSelected: Bool
+    
+    init(id: UUID, icon: String, name: String, isSelected: Bool) {
+        self.id = id
+        self.icon = icon
+        self.name = name
+        self.isSelected = isSelected
+    }
 }
+
+class FilterData2: ObservableObject {
+    @Published var filter = [Filter]()
+    private var cancellables = Set<AnyCancellable>()
+    
+    func addItem(_ item: Filter) {
+        filter.append(item)
+        // this subscribes us to listen for objectWillChange messages from each
+        // of the items in the array, and we emit our own objectWillChange message
+        item.objectWillChange
+            .sink(receiveValue: { self.objectWillChange.send() })
+            .store(in: &cancellables)
+    }
+}
+
+//class FilterData2: ObservableObject {
+//    @Published var filter: [Filter]
+//
+//    init(){
+//        self.filter = [
+//            Filter(id: UUID(), icon: "blackFruits", name: "Ernährung", isSelected: true),
+//            Filter(id: UUID(), icon: "blackTransport", name: "Transport", isSelected: true),
+//            Filter(id: UUID(), icon: "blackRecycle", name: "Recycling", isSelected: true),
+//            Filter(id: UUID(), icon: "blackRessourcen", name: "Ressourcen", isSelected: true),
+//            Filter(id: UUID(), icon: "blackStar", name: "Leicht", isSelected: true),
+//            Filter(id: UUID(), icon: "blackHalfStar", name: "Mittel", isSelected: true),
+//            Filter(id: UUID(), icon: "blackStarFilled", name: "Schwer", isSelected: true),
+//            Filter(id: UUID(), icon: "blackVerified", name: "Offiziell", isSelected: true),
+//            Filter(id: UUID(), icon: "blackCommunity", name: "Community", isSelected: true)
+//        ]
+//    }
+//
+//}
+
 
 var filterData = [
     Filter(id: UUID(), icon: "blackFruits", name: "Ernährung", isSelected: true),
@@ -301,7 +350,7 @@ var filterData = [
 
 struct TippCardList_Previews: PreviewProvider {
     static var previews: some View {
-        TippCardList()
+        TippCardList(filter: FilterData2()).environmentObject(ChangeFilter()).environmentObject(UserObserv()).environmentObject(FilterString())
     }
 }
 
@@ -318,11 +367,13 @@ struct CustomCard: View {
                 Image(image)
                     .resizable()
                     .scaledToFit()
+                    .frame(minHeight: 100, idealHeight: 200, maxHeight: 300)
+                    .padding(20)
                 Text(text)
-                    .font(.system(size: 20))
+                    .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.07 : 26, weight: .medium))
                     .foregroundColor(.black)
                     .multilineTextAlignment(.center)
-                    .padding(.horizontal)
+                    .padding()
                 Spacer()
             }
             .background(Color(color))

@@ -27,6 +27,11 @@ struct ProfilChallengeView: View {
     @State var selectWidth: CGFloat = 90
     @State var slidingText: String = "Abgehakte"
     
+    var screenWidth = UIScreen.main.bounds.width
+    
+    var cardColors: [String]  = [
+        "cardgreen2", "cardblue2", "cardyellow2", "cardpurple2", "cardorange2", "cardred2", "cardturqouise2", "cardyelgre2", "cardpink2"
+    ]
     
     var body: some View {
         ZStack {
@@ -37,98 +42,20 @@ struct ProfilChallengeView: View {
                     self.mode.wrappedValue.dismiss()
                     impact(style: .medium)
                 }) {
-                    HStack (spacing: 15){
+                    HStack (spacing: 10){
                         Image(systemName: "arrow.left")
-                            .font(.system(size: 20, weight: Font.Weight.medium))
+                            .font(.system(size: screenWidth < 500 ? screenWidth * 0.040 : 18, weight: .medium))
                             .foregroundColor(Color("black"))
                         Text("Deine Fakten")
-                            .font(.system(size: 20, weight: Font.Weight.medium))
-                            .fontWeight(.semibold)
+                            .font(.system(size: screenWidth < 500 ? screenWidth * 0.040 : 18, weight: .medium))
                             .foregroundColor(Color("black"))
                         Spacer()
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 5)
-                    .padding(.top, UIScreen.main.bounds.height / 40)
+                    .padding(.leading, 20)
+                    .padding(.vertical, 10)
                 }
-                ZStack {
-                    Text(slidingText)
-                        .font(.footnote)
-                        .foregroundColor(Color("black"))
-                        .frame(width: selectWidth, height: 2)
-                        .offset(x: tippOffset - (UIScreen.main.bounds.width/2), y:  UIScreen.main.bounds.height / 30)
-                        .animation(.spring())
-                    HStack (spacing: UIScreen.main.bounds.width / 5){
-                        GeometryReader { g in
-                            Button(action: {
-                                self.tabSelected = 0
-                                self.tippOffset = g.frame(in: .global).midX
-                                self.selectWidth = 90
-                                
-                                self.slidingText = "Abgehakte"
-                                
-                                impact(style: .medium)
-                            }){
-                                VStack {
-                                    Image(systemName: "checkmark")
-                                        .multilineTextAlignment(.center)
-                                        .font(Font.system(size: 25, weight: .regular))
-                                        .foregroundColor(self.tabSelected == 0 ? Color("black") : .secondary)
-                                        .offset(y: self.tabSelected == 0 ? 0 : 5)
-                                }
-                                .padding(.all, 10)
-                                .animation(.spring())
-                            }
-                        }
-                        .frame(width: 60, height: 50)
-                        GeometryReader { g in
-                            Button(action: {
-                                self.tabSelected = 1
-                                self.tippOffset = g.frame(in: .global).midX
-                                self.selectWidth = 120
-                                
-                                self.slidingText = "Gespeicherte"
-                                
-                                impact(style: .medium)
-                            }){
-                                VStack {
-                                    Image(systemName: "bookmark")
-                                        .multilineTextAlignment(.center)
-                                        .font(Font.system(size: 25, weight: .regular))
-                                        .foregroundColor(self.tabSelected == 1 ? Color("black") : .secondary)
-                                        .offset(y: self.tabSelected == 1 ? 0 : 5)
-                                }
-                                .padding(.all, 10)
-                                .animation(.spring())
-                            }
-                        }
-                        .frame(width: 60, height: 50)
-                        GeometryReader { g in
-                            Button(action: {
-                                self.tabSelected = 2
-                                self.tippOffset = g.frame(in: .global).midX
-                                self.selectWidth = 80
-                                
-                                self.slidingText = "Eigene"
-                                
-                                impact(style: .medium)
-                            }){
-                                VStack {
-                                    Image(systemName: "plus.circle")
-                                        .multilineTextAlignment(.center)
-                                        .font(Font.system(size: 25, weight: .regular))
-                                        .foregroundColor(self.tabSelected == 2 ? Color("black") : .secondary)
-                                        .offset(y: self.tabSelected == 2 ? 0 : 5)
-                                }
-                                .padding(.all, 10)
-                                .animation(.spring())
-                            }
-                        }
-                        .frame(width: 60, height: 50)
-                    }.padding(.horizontal, 10)
-                        .padding(.bottom, 10)
-                }
-                .offset(y: -10)
+//                SliderView(slidingText: $slidingText, selectWidth: $selectWidth, tippOffset: $tippOffset, tabSelected: $tabSelected)
+//                .offset(y: -10)
                 
                 ZStack {
                     VStack {
@@ -139,7 +66,7 @@ struct ProfilChallengeView: View {
                                         ForEach(self.filteredTipps.indices, id: \.self) { index in
                                             HStack {
                                                 GeometryReader { geometry in
-                                                        TippCard2(isChecked: self.$filteredTipps[index].isChecked, isBookmarked: self.$filteredTipps[index].isBookmarked, tipp: self.filteredTipps[index])
+                                                        TippCard2(isChecked: self.$filteredTipps[index].isChecked, isBookmarked: self.$filteredTipps[index].isBookmarked, tipp: self.filteredTipps[index], color: cardColors[index % 9])
                                                             .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX) - 5 ) / -10), axis: (x: 0, y: 10.0, z:0))
                                                             .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
                                                             .padding(.vertical, 10)

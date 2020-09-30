@@ -51,7 +51,8 @@ struct TagebuchView: View {
                         if (dateToday == logDate) {
                             AddTagebuchSuccess(tabViewSelected: $tabViewSelected)
                         } else {
-                            AddTagebuchCard1(tabViewSelected: $tabViewSelected)
+//                            AddTagebuchCard1(tabViewSelected: $tabViewSelected)
+                            AddTagebuchView(tabViewSelected: $tabViewSelected)
                         }
                     }.blur(radius: overlayLog.overlayLog ? 2 : 0)
                     
@@ -126,7 +127,7 @@ struct TagebuchView: View {
                 })
                 }
             }
-        }
+        }.navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

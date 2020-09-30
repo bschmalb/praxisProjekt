@@ -10,6 +10,8 @@ import SwiftUI
 
 struct TippCard: View {
     
+    @State var id = UserDefaults.standard.string(forKey: "id")
+    
     @EnvironmentObject var levelEnv: UserLevel
     @Binding var isChecked: Bool
     @Binding var isBookmarked: Bool
@@ -17,7 +19,7 @@ struct TippCard: View {
     @State var isClicked2: Bool = false
     var tipp: Tipp
     
-    @State var user2: User = User(id: "", level: 2, checkedTipps: [], savedTipps: [], checkedChallenges: [], savedChallenges: [], checkedFacts: [], savedFacts: [], log: [])
+    @State var user2: User = User(_id: "", phoneId: "", level: 2, checkedTipps: [], savedTipps: [], checkedFacts: [], savedFacts: [], log: [])
     
     @State var userLevelLocal = 0
     
@@ -64,7 +66,7 @@ struct TippCard: View {
                 HStack {
                     Button(action: {
                         self.isChecked.toggle()
-                        self.addToProfile(tippId: self.tipp.id, method: 0)
+                        self.addToProfile(tippId: self.tipp._id, method: 0)
                         self.patchScore(thumb: "up")
                         self.isClicked = true
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -90,7 +92,7 @@ struct TippCard: View {
                     Spacer()
                     Button(action: {
                         self.isBookmarked.toggle()
-                        self.addToProfile(tippId: self.tipp.id, method: 1)
+                        self.addToProfile(tippId: self.tipp._id, method: 1)
                         
                         self.isClicked2 = true
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -172,7 +174,7 @@ struct TippCard: View {
                 }
                 Spacer()
                 
-                Text("Geposted von: \(user2.level)")
+                Text("Geposted von: \(user2.level ?? 0)")
                     .font(.headline)
                     .multilineTextAlignment(.center)
                     .padding()
@@ -266,27 +268,25 @@ struct TippCard: View {
         }
     }
     func getUserTipps(){
-       if let uuid = UIDevice.current.identifierForVendor?.uuidString {
-            guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + uuid) else { return }
-            let request = URLRequest(url: url)
-            
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                guard let data = data else {
-                    print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
-                    return
-                }
-                DispatchQueue.main.async {
-                    if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
-                        if (decodedResponse.checkedTipps.contains(self.tipp.id) ) {
-                            self.isChecked = true
-                        }
-                        if (decodedResponse.savedTipps.contains(self.tipp.id) ) {
-                            self.isBookmarked = true
-                        }
+        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
+        let request = URLRequest(url: url)
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data else {
+                print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
+                return
+            }
+            DispatchQueue.main.async {
+                if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
+                    if (decodedResponse.checkedTipps.contains(self.tipp._id) ) {
+                        self.isChecked = true
+                    }
+                    if (decodedResponse.savedTipps.contains(self.tipp._id) ) {
+                        self.isBookmarked = true
                     }
                 }
-            }.resume()
-        }
+            }
+        }.resume()
     }
     
     func patchScore(thumb: String) {
@@ -298,7 +298,7 @@ struct TippCard: View {
             return
         }
         
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/tipps/" + tipp.id) else { return }
+        guard let url = URL(string: "http://bastianschmalbach.ddns.net/tipps/" + tipp._id) else { return }
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "PATCH"
@@ -343,24 +343,21 @@ struct TippCard: View {
         let patchData = TippPatchCheck(checkedTipps: tippId)
         let patchData2 = TippPatchSave(savedTipps: tippId)
         
-        if let uuid = UIDevice.current.identifierForVendor?.uuidString {
-            
-            var encoded: Data?
-            if (method == 0) {
-                encoded = try? JSONEncoder().encode(patchData)
-            } else {
-                encoded = try? JSONEncoder().encode(patchData2)
-            }
-            guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + uuid) else { return }
-            var request = URLRequest(url: url)
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.httpMethod = "PATCH"
-            request.httpBody = encoded
-            
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                
-            }.resume()
+        var encoded: Data?
+        if (method == 0) {
+            encoded = try? JSONEncoder().encode(patchData)
+        } else {
+            encoded = try? JSONEncoder().encode(patchData2)
         }
+        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "PATCH"
+        request.httpBody = encoded
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            
+        }.resume()
     }
     
 }
@@ -374,6 +371,6 @@ struct TippPatchSave : Encodable{
 
 struct TippCard_Previews: PreviewProvider {
     static var previews: some View {
-        TippCard(isChecked: .constant(false), isBookmarked: .constant(false), tipp: .init(id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", level: "Leicht", category: "Ernährung", score: 25, postedBy: "123", official: "Community"))
+        TippCard(isChecked: .constant(false), isBookmarked: .constant(false), tipp: .init(_id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", level: "Leicht", category: "Ernährung", score: 25, postedBy: "123", official: "Community"))
     }
 }

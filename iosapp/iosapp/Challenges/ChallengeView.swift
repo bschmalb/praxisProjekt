@@ -45,7 +45,7 @@ struct ChallengeView: View {
                             .padding(.top, 10.0)
                             .offset(y: 10)
                             
-                            ChallengeCardList()
+                            ChallengeCardList().environmentObject(UserObserv())
                             
                             VStack {
                                 HStack {

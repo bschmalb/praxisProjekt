@@ -9,24 +9,24 @@
 import SwiftUI
 
 struct User: Encodable, Decodable {
-    var id: String
+    var _id: String?
+    var phoneId: String
     var name: String?
     var gender: String?
     var age: String?
-    var level: Int16
+    var hideInfo: Bool?
+    var level: Int16?
     var checkedTipps: [String]
     var savedTipps: [String]
-    var checkedChallenges: [String]
-    var savedChallenges: [String]
     var checkedFacts: [String]?
     var savedFacts: [String]?
-//    var seenTipps: [String]?
-//    var seenChallenges: [String]?
     var log: [Log]
+    var __v: Int?
+    var reports: Int?
 }
 
 struct Log: Encodable, Decodable {
-    var id: String
+    var _id: String?
     var kilometer: Int
     var meat: Int
     var cooked: Int
@@ -38,28 +38,28 @@ struct Log: Encodable, Decodable {
 }
 
 class UserApi {
+    
+    @State var id = UserDefaults.standard.string(forKey: "id")
+    
     func fetchUser(completion: @escaping (User) -> ()) {
-        if let uuid = UIDevice.current.identifierForVendor?.uuidString {
+        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
+        
+        URLSession.shared.dataTask(with: url) { (data, _, _) in
             
-            guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + uuid) else { return }
-            
-            URLSession.shared.dataTask(with: url) { (data, _, _) in
-                
-                if let data = data {
-                    if let user = try? JSONDecoder().decode(User.self, from: data) {
-                        // we have good data – go back to the main thread
-                        DispatchQueue.main.async {
-                            // update our UI
-                            completion(user)
-                        }
-
-                        // everything is good, so we can exit
-                        return
+            if let data = data {
+                if let user = try? JSONDecoder().decode(User.self, from: data) {
+                    // we have good data – go back to the main thread
+                    DispatchQueue.main.async {
+                        // update our UI
+                        completion(user)
                     }
+                    
+                    // everything is good, so we can exit
+                    return
                 }
             }
-            .resume()
         }
+        .resume()
     }
 }
 
