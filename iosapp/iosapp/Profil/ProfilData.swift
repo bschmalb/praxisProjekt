@@ -197,35 +197,66 @@ struct ProfilData: View {
                     
                     Spacer()
                     
-                    Button(action: {
-                        self.posting = true
-                        self.isChanged = true
-                        self.firstResponder = false
-                        self.hideKeyboard()
-                        self.firstResponder = false
-                        self.postUserData()
-                    }){
-                        HStack (spacing: 15) {
-                            if (posting) {
-                                LottieView(filename: "loadingWhite", loop: true)
-                                    .frame(width: 20, height: 20)
-                                    .scaleEffect(3)
-                            } else {
-                                Image(systemName: isChanged ? "doc" : "checkmark")
-                                    .font(.headline)
-                                    .padding(.leading, 5)
+                    if #available(iOS 14, *) {
+                        Button(action: {
+                            self.posting = true
+                            self.isChanged = true
+                            self.firstResponder = false
+                            self.hideKeyboard()
+                            self.firstResponder = false
+                            self.postUserData()
+                        }){
+                            HStack (spacing: 15) {
+                                if (posting) {
+                                    LottieView(filename: "loadingWhite", loop: true)
+                                        .frame(width: 20, height: 20)
+                                        .scaleEffect(3)
+                                } else {
+                                    Image(systemName: isChanged ? "doc" : "checkmark")
+                                        .font(.headline)
+                                        .padding(.leading, 5)
+                                }
+                                Text(isChanged ? "Speichern" : "Gespeichert")
+                                    .font(.system(size: screenWidth < 500 ? screenWidth * 0.050 : 18, weight: .medium))
+                                    .padding(.trailing, 3)
                             }
-                            Text(isChanged ? "Speichern" : "Gespeichert")
-                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.050 : 18, weight: .medium))
-                                .padding(.trailing, 3)
+                            .accentColor(Color("white"))
+                            .padding(UIScreen.main.bounds.height < 600 ? 10 : 15)
+                            .background(Color("blue"))
+                            .cornerRadius(15)
                         }
-                        .accentColor(Color("white"))
-                        .padding(UIScreen.main.bounds.height < 600 ? 10 : 15)
-                        .background(Color("blue"))
-                        .cornerRadius(15)
+                        .disabled(!isChanged)
+                    } else {
+                        Button(action: {
+                            self.posting = true
+                            self.isChanged = true
+                            self.firstResponder = false
+                            self.hideKeyboard()
+                            self.firstResponder = false
+                            self.postUserData()
+                        }){
+                            HStack (spacing: 15) {
+                                if (posting) {
+                                    LottieView(filename: "loadingWhite", loop: true)
+                                        .frame(width: 20, height: 20)
+                                        .scaleEffect(3)
+                                } else {
+                                    Image(systemName: isChanged ? "doc" : "checkmark")
+                                        .font(.headline)
+                                        .padding(.leading, 5)
+                                }
+                                Text(isChanged ? "Speichern" : "Gespeichert")
+                                    .font(.system(size: screenWidth < 500 ? screenWidth * 0.050 : 18, weight: .medium))
+                                    .padding(.trailing, 3)
+                            }
+                            .accentColor(Color("white"))
+                            .padding(UIScreen.main.bounds.height < 600 ? 10 : 15)
+                            .background(Color("blue"))
+                            .cornerRadius(15)
+                        }
+                        .padding(.bottom, keyboard.currentHeight)
+                        .disabled(!isChanged)
                     }
-                    .padding(.bottom, keyboard.currentHeight)
-                    .disabled(!isChanged)
                     Spacer()
                 }
                 .accentColor(.primary)

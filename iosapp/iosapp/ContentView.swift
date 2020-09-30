@@ -404,3 +404,32 @@ struct ContentView_Previews: PreviewProvider {
         }
     }
 }
+
+struct KeyboardOffSetModifier: ViewModifier {
+    @ObservedObject var keyboard = KeyboardResponder()
+    
+    func body(content: Content) -> some View {
+        ZStack {
+            if #available(iOS 14, *) {
+                content
+            } else {
+                content
+                    .padding(.bottom, keyboard.currentHeight / 2)
+                    .offset(y: -keyboard.currentHeight / 2)
+            }
+        }
+    }
+}
+
+extension View {
+    @ViewBuilder
+    func keyboardOffset() -> some View {
+        if #available(iOS 14, *) {
+            self
+        }
+        else {
+            self
+                .modifier(KeyboardOffSetModifier())
+        }
+    }
+}

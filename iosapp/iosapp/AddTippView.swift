@@ -50,132 +50,273 @@ struct AddTippView: View {
     
     var body: some View {
         ZStack {
-            VStack (spacing: 0) {
-                
-                HStack {
-                    Text("Tipp posten")
-                        .font(.title)
-                        .fontWeight(.bold)
-                        .padding(.leading, 20)
+            if #available(iOS 14, *) {
+                VStack (spacing: 0) {
                     
-                    Spacer()
-                    Button(action: {
-                        self.showAddTipps = false
-                        impact(style: .medium)
-                    }) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 24, weight: Font.Weight.medium))
-                            .padding(25)
-                    }
-                }
-                .padding(.top, 20)
-                
-                ZStack {
-                    VStack {
-                        HStack {
-                            Spacer()
-                            Text("\(step)/5").bold().padding(20).foregroundColor(Color.secondary)
-                        }
+                    HStack {
+                        Text("Tipp posten")
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .padding(.leading, 20)
+                        
                         Spacer()
-                    }
-                    AddTipp1(category: $category, categorySelected: $optionSelected[0])
-                        .offset(x: offsets[0])
-                    AddTipp2(category: $level, categorySelected: $optionSelected[1])
-                        .offset(x: offsets[1])
-                    AddTipp3(category: $name, categorySelected: $optionSelected[2], firstResponder: $isReponder)
-                        .offset(x: offsets[2])
-                    AddTipp4(category: $quelle, categorySelected: $optionSelected[3], firstResponder: $isReponder2)
-                        .offset(x: offsets[3])
-                    AddTipp5(category: $category, level: $level, title: $name, quelle: $quelle, categorySelected: $optionSelected[4])
-                        .offset(x: offsets[4])
-                        .padding(.bottom)
-                }
-                HStack {
-                    Button (action: {
-                        if (step != 4) {
-                            self.hideKeyboard()
-                        }
-                        
-                        self.step -= 1
-                        
-                        if (step == 4){
-                            self.isReponder2 = true
-                        }
-                        else if (step == 3) {
-                            self.isReponder2 = false
-                            self.isReponder = true
-                        }
-                        else if (step == 2) {
-                            self.isReponder = false
-                        }
-                        
-                        self.back(i: self.step-1)
-                    }) {
-                        Image(systemName: "arrow.left")
-                            .font(.headline)
-                            .padding(5)
-                            .frame(width: 80, height: 40)
-                    }.opacity(step > 1 ? 1 : 0)
-                    Spacer()
-                    Button(action: {
-                        if (step < 5){
+                        Button(action: {
+                            self.showAddTipps = false
                             impact(style: .medium)
-                            
-                            if (step != 3) {
+                        }) {
+                            Image(systemName: "xmark")
+                                .font(.system(size: 24, weight: Font.Weight.medium))
+                                .padding(25)
+                        }
+                    }
+                    .padding(.top, 20)
+                    
+                    ZStack {
+                        VStack {
+                            HStack {
+                                Spacer()
+                                Text("\(step)/5").bold().padding(20).foregroundColor(Color.secondary)
+                            }
+                            Spacer()
+                        }
+                        AddTipp1(category: $category, categorySelected: $optionSelected[0])
+                            .offset(x: offsets[0])
+                        AddTipp2(category: $level, categorySelected: $optionSelected[1])
+                            .offset(x: offsets[1])
+                        AddTipp3(category: $name, categorySelected: $optionSelected[2], firstResponder: $isReponder)
+                            .offset(x: offsets[2])
+                        AddTipp4(category: $quelle, categorySelected: $optionSelected[3], firstResponder: $isReponder2)
+                            .offset(x: offsets[3])
+                        AddTipp5(category: $category, level: $level, title: $name, quelle: $quelle, categorySelected: $optionSelected[4])
+                            .offset(x: offsets[4])
+                            .padding(.bottom)
+                    }
+                    HStack {
+                        Button (action: {
+                            if (step != 4) {
                                 self.hideKeyboard()
                             }
                             
-                            self.step += 1
+                            self.step -= 1
                             
-                            if (step == 3) {
-                                self.isReponder = true
-                            }
-                            else if (step == 4) {
-                                self.isReponder = false
+                            if (step == 4){
                                 self.isReponder2 = true
                             }
+                            else if (step == 3) {
+                                self.isReponder2 = false
+                                self.isReponder = true
+                            }
+                            else if (step == 2) {
+                                self.isReponder = false
+                            }
                             
-                            self.next(i: self.step-1)
-                        }
-                        else {
-                            self.posted = true
-                            self.overlay.overlayLog = true
-                            self.isLoading = true
-                            self.show = true
-                            self.postTipp()
-                        }
-                    }) {
-                        if (step < 5) {
-                            Image(systemName: "arrow.right")
+                            self.back(i: self.step-1)
+                        }) {
+                            Image(systemName: "arrow.left")
                                 .font(.headline)
-                                .accentColor(Color(optionSelected[step-1] > -1 ? "white" :"white"))
                                 .padding(5)
                                 .frame(width: 80, height: 40)
-                                .background(Color(optionSelected[step-1] > -1 ? "blue" : "blueDisabled"))
-                                .cornerRadius(15)
-                        } else {
-                            HStack {
-                                Text("Posten")
-                                    .font(.headline)
-                                Image(systemName: "arrow.up.doc")
-                                    .font(.headline)
+                        }.opacity(step > 1 ? 1 : 0)
+                        Spacer()
+                        Button(action: {
+                            if (step < 5){
+                                impact(style: .medium)
+                                
+                                if (step != 3) {
+                                    self.hideKeyboard()
+                                    print("self.hideKeyboard()")
+                                }
+                                
+                                self.step += 1
+                                
+                                if (step == 3) {
+                                    self.isReponder = true
+                                }
+                                else if (step == 4) {
+                                    self.isReponder2 = true
+                                    self.isReponder = false
+                                }
+                                else if (step == 5) {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                        self.hideKeyboard()
+                                        self.isReponder2 = false
+                                        self.isReponder = false
+                                    }
+                                }
+                                
+                                self.next(i: self.step-1)
                             }
-                            .accentColor(Color("white"))
-                            .padding(5)
-                            .frame(width: 120, height: 40)
-                            .background(Color("blue"))
-                            .cornerRadius(15)
-                        }
-                    }.disabled(optionSelected[step-1] < 0 || posted)
+                            else {
+                                self.posted = true
+                                self.overlay.overlayLog = true
+                                self.isLoading = true
+                                self.show = true
+                                self.postTipp()
+                            }
+                        }) {
+                            if (step < 5) {
+                                Image(systemName: "arrow.right")
+                                    .font(.headline)
+                                    .accentColor(Color(optionSelected[step-1] > -1 ? "white" :"white"))
+                                    .padding(5)
+                                    .frame(width: 80, height: 40)
+                                    .background(Color(optionSelected[step-1] > -1 ? "blue" : "blueDisabled"))
+                                    .cornerRadius(15)
+                            } else {
+                                HStack {
+                                    Text("Posten")
+                                        .font(.headline)
+                                    Image(systemName: "arrow.up.doc")
+                                        .font(.headline)
+                                }
+                                .accentColor(Color("white"))
+                                .padding(5)
+                                .frame(width: 120, height: 40)
+                                .background(Color("blue"))
+                                .cornerRadius(15)
+                            }
+                        }.disabled(optionSelected[step-1] < 0 || posted)
+                    }
+                    .animation(.linear)
+                    .padding(.bottom, 20)
+                    .padding(.horizontal, 20)
                 }
-                .animation(.linear)
-                .padding(.bottom, 20)
-                .padding(.horizontal, 20)
-//                .padding(.bottom, keyboard.currentHeight)
+                .blur(radius: isLoading || isSuccess || isError ? 4 : 0)
+            } else {
+                VStack (spacing: 0) {
+                    
+                    HStack {
+                        Text("Tipp posten")
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .padding(.leading, 20)
+                        
+                        Spacer()
+                        Button(action: {
+                            self.showAddTipps = false
+                            impact(style: .medium)
+                        }) {
+                            Image(systemName: "xmark")
+                                .font(.system(size: 24, weight: Font.Weight.medium))
+                                .padding(25)
+                        }
+                    }
+                    .padding(.top, 20)
+                    
+                    ZStack {
+                        VStack {
+                            HStack {
+                                Spacer()
+                                Text("\(step)/5").bold().padding(20).foregroundColor(Color.secondary)
+                            }
+                            Spacer()
+                        }
+                        AddTipp1(category: $category, categorySelected: $optionSelected[0])
+                            .offset(x: offsets[0])
+                        AddTipp2(category: $level, categorySelected: $optionSelected[1])
+                            .offset(x: offsets[1])
+                        AddTipp3(category: $name, categorySelected: $optionSelected[2], firstResponder: $isReponder)
+                            .offset(x: offsets[2])
+                        AddTipp4(category: $quelle, categorySelected: $optionSelected[3], firstResponder: $isReponder2)
+                            .offset(x: offsets[3])
+                        AddTipp5(category: $category, level: $level, title: $name, quelle: $quelle, categorySelected: $optionSelected[4])
+                            .offset(x: offsets[4])
+                            .padding(.bottom)
+                    }
+                    HStack {
+                        Button (action: {
+                            if (step != 4) {
+                                self.hideKeyboard()
+                            }
+                            
+                            self.step -= 1
+                            
+                            if (step == 4){
+                                self.isReponder2 = true
+                            }
+                            else if (step == 3) {
+                                self.isReponder2 = false
+                                self.isReponder = true
+                            }
+                            else if (step == 2) {
+                                self.isReponder = false
+                            }
+                            
+                            self.back(i: self.step-1)
+                        }) {
+                            Image(systemName: "arrow.left")
+                                .font(.headline)
+                                .padding(5)
+                                .frame(width: 80, height: 40)
+                        }.opacity(step > 1 ? 1 : 0)
+                        Spacer()
+                        Button(action: {
+                            if (step < 5){
+                                impact(style: .medium)
+                                
+                                if (step != 3) {
+                                    self.hideKeyboard()
+                                    print("self.hideKeyboard()")
+                                }
+                                
+                                self.step += 1
+                                
+                                if (step == 3) {
+                                    self.isReponder = true
+                                }
+                                else if (step == 4) {
+                                    self.isReponder2 = true
+                                    self.isReponder = false
+                                }
+                                else if (step == 5) {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                        self.hideKeyboard()
+                                        self.isReponder2 = false
+                                        self.isReponder = false
+                                    }
+                                }
+                                
+                                self.next(i: self.step-1)
+                            }
+                            else {
+                                self.posted = true
+                                self.overlay.overlayLog = true
+                                self.isLoading = true
+                                self.show = true
+                                self.postTipp()
+                            }
+                        }) {
+                            if (step < 5) {
+                                Image(systemName: "arrow.right")
+                                    .font(.headline)
+                                    .accentColor(Color(optionSelected[step-1] > -1 ? "white" :"white"))
+                                    .padding(5)
+                                    .frame(width: 80, height: 40)
+                                    .background(Color(optionSelected[step-1] > -1 ? "blue" : "blueDisabled"))
+                                    .cornerRadius(15)
+                            } else {
+                                HStack {
+                                    Text("Posten")
+                                        .font(.headline)
+                                    Image(systemName: "arrow.up.doc")
+                                        .font(.headline)
+                                }
+                                .accentColor(Color("white"))
+                                .padding(5)
+                                .frame(width: 120, height: 40)
+                                .background(Color("blue"))
+                                .cornerRadius(15)
+                            }
+                        }.disabled(optionSelected[step-1] < 0 || posted)
+                    }
+                    .animation(.linear)
+                    .padding(.bottom, 20)
+                    .padding(.horizontal, 20)
+                }
+                .padding(.bottom, keyboard.currentHeight / 2)
+                .offset(y: -keyboard.currentHeight / 2)
+                .blur(radius: isLoading || isSuccess || isError ? 4 : 0)
             }
-            .padding(.bottom, keyboard.currentHeight / 2)
-            .offset(y: -keyboard.currentHeight / 2)
-            .blur(radius: isLoading || isSuccess || isError ? 4 : 0)
             if isLoading {
                 ZStack {
                     VStack {
@@ -187,12 +328,12 @@ struct AddTippView: View {
                         .font(.headline)
                         .offset(y: 20)
                 }.frame(width: 200, height: 130)
-                    .background(Color("white"))
-                    .cornerRadius(20)
-                    .shadow(radius: 20)
-                    .offset(x: show ? 0 : -UIScreen.main.bounds.width, y: -50)
-                    .opacity(show ? 1 : 0)
-                    .scaleEffect(show ? 1 : 0)
+                .background(Color("white"))
+                .cornerRadius(20)
+                .shadow(radius: 20)
+                .offset(x: show ? 0 : -UIScreen.main.bounds.width, y: -50)
+                .opacity(show ? 1 : 0)
+                .scaleEffect(show ? 1 : 0)
                 .animation(.spring())
             }
             
@@ -211,18 +352,18 @@ struct AddTippView: View {
                             .padding()
                     }
                 }.frame(width: 200, height: 130)
-                    .background(Color("white"))
-                    .cornerRadius(20)
-                    .shadow(radius: 20)
-                    .offset(x: show ? 0 : -UIScreen.main.bounds.width, y: -50)
-                    .opacity(show ? 1 : 0)
-                    .scaleEffect(show ? 1 : 0)
-                    .onTapGesture {
-                        self.posted = false
-                        self.show = false
-                        self.isSuccess = false
-                        self.overlay.overlayLog = false
-                    }
+                .background(Color("white"))
+                .cornerRadius(20)
+                .shadow(radius: 20)
+                .offset(x: show ? 0 : -UIScreen.main.bounds.width, y: -50)
+                .opacity(show ? 1 : 0)
+                .scaleEffect(show ? 1 : 0)
+                .onTapGesture {
+                    self.posted = false
+                    self.show = false
+                    self.isSuccess = false
+                    self.overlay.overlayLog = false
+                }
                 .animation(.spring())
             }
             
@@ -232,7 +373,7 @@ struct AddTippView: View {
                         self.showAddTipps = false
                         self.isSuccess = false
                         self.overlay.overlayLog = false
-                }
+                    }
             }
         }.accentColor(Color("black"))
         .animation(.spring())
@@ -311,7 +452,7 @@ struct AddTippView_Previews: PreviewProvider {
             AddTippView(showAddTipps: .constant(true))
                 .previewDevice(PreviewDevice(rawValue: "iPod touch (7th generation))"))
                 .previewDisplayName("iPod touch (7th generation)")
-//
+            //
             AddTippView(showAddTipps: .constant(true))
                 .previewDevice(PreviewDevice(rawValue: "iPhone 11"))
                 .previewDisplayName("iPhone 11")
@@ -386,7 +527,6 @@ struct AddTipp3: View {
     
     @ObservedObject private var keyboard = KeyboardResponder()
     
-    @State var isFocused = false
     @Binding var firstResponder: Bool?
     
     var screenWidth = UIScreen.main.bounds.width
@@ -407,16 +547,19 @@ struct AddTipp3: View {
             Text("Gebe deinen Tipp ein")
                 .font(.system(size: screenWidth < 500 ? screenWidth * 0.06 : 24))
                 .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
                 .padding()
             
             VStack {
                 HStack (alignment: .center){
                     Section {
-                        CustomTextField(text: binding,
-                                        nextResponder: .constant(false),
-                                        isResponder: $firstResponder,
-                                        isSecured: false,
-                                        keyboard: .default)
+                        //                        CustomTextField(text: binding,
+                        //                                        nextResponder: .constant(false),
+                        //                                        isResponder: $firstResponder,
+                        //                                        isSecured: false,
+                        //                                        keyboard: .default)
+                        //                            .frame(height: 40)
+                        CustomTextField2(text: binding, isFirstResponder: $firstResponder)
                             .frame(height: 40)
                     }
                 }
@@ -427,7 +570,6 @@ struct AddTipp3: View {
         }
         .onTapGesture {
             self.firstResponder = false
-            self.isFocused = false
             self.hideKeyboard()
         }
     }
@@ -444,7 +586,6 @@ struct AddTipp4: View {
     
     @ObservedObject private var keyboard = KeyboardResponder()
     
-    @State var isFocused = false
     @Binding var firstResponder: Bool?
     
     var screenWidth = UIScreen.main.bounds.width
@@ -466,37 +607,34 @@ struct AddTipp4: View {
                 .font(.system(size: screenWidth < 500 ? screenWidth * 0.06 : 24))
                 .fontWeight(.medium)
                 .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
                 .padding()
             
             VStack {
                 HStack (alignment: .center){
                     Section {
-                        CustomTextField(text: binding,
-                                        nextResponder: .constant(false),
-                                        isResponder: $firstResponder,
-                                        isSecured: false,
-                                        keyboard: .default)
+                        //                        CustomTextField(text: binding,
+                        //                                        nextResponder: .constant(false),
+                        //                                        isResponder: $firstResponder,
+                        //                                        isSecured: false,
+                        //                                        keyboard: .default)
+                        //                            .frame(height: 40)
+                        
+                        CustomTextField2(text: binding, isFirstResponder: $firstResponder)
                             .frame(height: 40)
                         
                         //                        TextField("Dein Tipp", text: binding)
                         //                            .font(.system(size: 18))
                         //                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                        //                            .onTapGesture {
-                        //                                self.isFocused = true
-                        //                        }
                     }
                 }
             }.padding(.horizontal)
             .edgesIgnoringSafeArea(.bottom)
             .animation(.easeInOut)
-            .onAppear(){
-                self.isFocused = true
-            }
             Spacer()
         }
         .onTapGesture {
             self.firstResponder = false
-            self.isFocused = false
             self.hideKeyboard()
         }
         .accentColor(Color("black"))
@@ -697,4 +835,65 @@ struct CustomTextField: UIViewRepresentable {
         }
     }
     
+}
+
+struct CustomTextField2: UIViewRepresentable {
+    
+    class Coordinator: NSObject, UITextFieldDelegate {
+        
+        @Binding var text: String
+        @Binding var isFirstResponder: Bool?
+        
+        @State var didBecomeFirstResponder = false
+        
+        init(text: Binding<String>, isFirstResponder: Binding<Bool?>) {
+            _text = text
+            _isFirstResponder = isFirstResponder
+        }
+        
+        func textFieldDidChangeSelection(_ textField: UITextField) {
+            text = textField.text ?? ""
+        }
+        
+        func textFieldDidBeginEditing(_ textField: UITextField) {
+            DispatchQueue.main.async {
+                self.isFirstResponder = true
+            }
+        }
+        
+        func textFieldDidEndEditing(_ textField: UITextField) {
+            DispatchQueue.main.async {
+                self.isFirstResponder = false
+            }
+        }
+    }
+    
+    @Binding var text: String
+    @Binding var isFirstResponder: Bool?
+    
+    func makeUIView(context: UIViewRepresentableContext<CustomTextField2>) -> UITextField {
+        let textField = UITextField(frame: .zero)
+        textField.delegate = context.coordinator
+        textField.borderStyle = UITextField.BorderStyle.roundedRect
+        return textField
+    }
+    
+    func makeCoordinator() -> CustomTextField2.Coordinator {
+        return Coordinator(text: $text, isFirstResponder: $isFirstResponder)
+    }
+    
+    func updateUIView(_ uiView: UITextField, context: UIViewRepresentableContext<CustomTextField2>) {
+        uiView.text = text
+        if isFirstResponder ?? false && !context.coordinator.didBecomeFirstResponder  {
+            uiView.becomeFirstResponder()
+            context.coordinator.didBecomeFirstResponder = true
+        } else if (!(isFirstResponder ?? true) && context.coordinator.didBecomeFirstResponder){
+            uiView.resignFirstResponder()
+            context.coordinator.didBecomeFirstResponder = false
+        }
+        else if (!(isFirstResponder ?? true)){
+            uiView.resignFirstResponder()
+            context.coordinator.didBecomeFirstResponder = false
+        }
+    }
 }

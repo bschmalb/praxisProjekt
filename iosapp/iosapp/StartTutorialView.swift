@@ -178,6 +178,8 @@ struct StartTutorialView: View {
                     .padding(.bottom, 30)
                 }
                 .offset(y: -keyboard.currentHeight)
+//                .padding(.bottom, keyboard.currentHeight)
+                .padding(.bottom, 0)
                 .blur(radius: loading ? 5 : 0)
                 if (loading) {
                     ZStack {
@@ -300,6 +302,7 @@ struct Intro1: View {
         })
         
         return VStack {
+            Spacer()
             Image("ProfileImage")
                 .resizable()
                 .scaledToFit()
@@ -315,22 +318,26 @@ struct Intro1: View {
             Text("Gebe deinen Namen ein:")
                 .multilineTextAlignment(.center)
                 .font(.footnote)
-            TextField("", text: binding, onEditingChanged: { (editingchanged) in
-                if (editingchanged) {
-                    self.firstResponder = true
-                } else {
-                    self.firstResponder = false
-                }
-                
-            } , onCommit: {
-                user.name = user.name
-                UserDefaults.standard.set(user.name, forKey: "userName")
-                
-            })
+            Section {
+                TextField("", text: binding, onEditingChanged: { (editingchanged) in
+                    if (editingchanged) {
+                        self.firstResponder = true
+                    } else {
+                        self.firstResponder = false
+                    }
+                    
+                } , onCommit: {
+                    user.name = user.name
+                    UserDefaults.standard.set(user.name, forKey: "userName")
+                    
+                })
                 .lineLimit(1)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
+                .frame(maxWidth: UIScreen.main.bounds.width - 30)
                 .padding(.horizontal)
-//            CustomTextField(text: binding,
+            }
+            Spacer()
+            //            CustomTextField(text: binding,
 //                            nextResponder: .constant(false),
 //                            isResponder: $firstResponder,
 //                            isSecured: false,
@@ -362,6 +369,8 @@ struct Intro2 : View {
     @State var isSelected: [Bool] = [false, false, false, false, false, false]
     @State var isSelectedGender: [Bool] = [false, false, false]
     
+    @ObservedObject private var keyboard = KeyboardResponder()
+    
     var body: some View {
         
         VStack {
@@ -384,6 +393,7 @@ struct Intro2 : View {
                 self.firstResponder = false
                 self.hideKeyboard()
             })
+            if (keyboard.currentHeight < 10) {
             GeometryReader { bounds in
                 ScrollView (.horizontal, showsIndicators: false) {
                     HStack {
@@ -415,6 +425,7 @@ struct Intro2 : View {
             }
             .frame(maxHeight: 50)
             .opacity(hideInfo ? 0.5 : 1)
+            }
             Spacer()
                 .frame(minHeight: 5, idealHeight: 15, maxHeight: 25)
             Text("Geschlecht")
