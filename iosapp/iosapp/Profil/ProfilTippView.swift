@@ -11,6 +11,7 @@ import SwiftUI
 struct ProfilTippView: View {
     
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
+    @EnvironmentObject var myUrl: ApiUrl
     
     @ObservedObject var store = AllTippDataStore()
     
@@ -188,7 +189,7 @@ struct ProfilTippView: View {
                 }
             }
             .onAppear{
-                guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
+                guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
                     let request = URLRequest(url: url)
                     
                     URLSession.shared.dataTask(with: request) { data, response, error in

@@ -13,6 +13,7 @@ struct SmallTippCard: View {
     @State var id = UserDefaults.standard.string(forKey: "id")
     
     @EnvironmentObject var levelEnv: UserLevel
+    @EnvironmentObject var myUrl: ApiUrl
     
     @ObservedObject var user = UserDataStore()
     
@@ -277,26 +278,6 @@ struct SmallTippCard: View {
                 self.isBookmarked = true
             }
         }
-        
-//        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
-//        let request = URLRequest(url: url)
-//
-//        URLSession.shared.dataTask(with: request) { data, response, error in
-//            guard let data = data else {
-//                print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
-//                return
-//            }
-//            DispatchQueue.main.async {
-//                if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
-//                    if (decodedResponse.checkedTipps.contains(self.tipp._id) ) {
-//                        self.isChecked = true
-//                    }
-//                    if (decodedResponse.savedTipps.contains(self.tipp._id) ) {
-//                        self.isBookmarked = true
-//                    }
-//                }
-//            }
-//        }.resume()
     }
     
     func patchScoreUser(reportedTipps: String) {
@@ -308,7 +289,7 @@ struct SmallTippCard: View {
             return
         }
         
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + tipp.postedBy) else { return }
+        guard let url = URL(string: myUrl.users + tipp.postedBy) else { return }
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "PATCH"
@@ -338,7 +319,7 @@ struct SmallTippCard: View {
         } else {
             encoded = try? JSONEncoder().encode(patchData2)
         }
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
+        guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "PATCH"
@@ -350,7 +331,7 @@ struct SmallTippCard: View {
     }
     
     func getPoster() {
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + tipp.postedBy) else { return }
+        guard let url = URL(string: myUrl.users + tipp.postedBy) else { return }
         
         URLSession.shared.dataTask(with: url) { (data, _, _) in
             
@@ -379,7 +360,7 @@ struct SmallTippCard: View {
             return
         }
         
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/tipps/" + tipp._id) else { return }
+        guard let url = URL(string: myUrl.tipps + tipp._id) else { return }
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "PATCH"

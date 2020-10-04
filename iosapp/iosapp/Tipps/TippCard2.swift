@@ -14,6 +14,7 @@ struct TippCard2: View {
     
     @EnvironmentObject var levelEnv: UserLevel
     @EnvironmentObject var changeFilter: ChangeFilter
+    @EnvironmentObject var myUrl: ApiUrl
     
     @ObservedObject var user = UserDataStore()
     
@@ -36,8 +37,6 @@ struct TippCard2: View {
     @State var reportClicked: Bool = false
     @State var likeClicked: Bool = false
     @State var dislikeClicked: Bool = false
-    
-    @State var myUrl = "https://www.google.com"
     
     @State var correctUrl: String = ""
     
@@ -448,7 +447,7 @@ struct TippCard2: View {
             return
         }
         
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/tipps/" + tipp._id) else { return }
+        guard let url = URL(string: myUrl.tipps + tipp._id) else { return }
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "PATCH"
@@ -468,7 +467,7 @@ struct TippCard2: View {
             return
         }
         
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + tipp.postedBy) else { return }
+        guard let url = URL(string: myUrl.users + tipp.postedBy) else { return }
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "PATCH"
@@ -480,7 +479,7 @@ struct TippCard2: View {
     }
     
     func getPoster() {
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + tipp.postedBy) else { return }
+        guard let url = URL(string: myUrl.users + tipp.postedBy) else { return }
         
         URLSession.shared.dataTask(with: url) { (data, _, _) in
             
@@ -526,7 +525,7 @@ struct TippCard2: View {
         } else {
             encoded = try? JSONEncoder().encode(patchData2)
         }
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
+        guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "PATCH"
@@ -541,7 +540,7 @@ struct TippCard2: View {
         
         self.changeFilter.changeFilter = true
         
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/tipps/" + (tipp._id)) else { return }
+        guard let url = URL(string: myUrl.tipps + (tipp._id)) else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
         

@@ -20,6 +20,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var filter = FilterData2()
     var changeFilter = ChangeFilter()
     var filterString = FilterString()
+    var apiUrl = ApiUrl()
     
     private(set) static var shared: SceneDelegate?
 
@@ -33,7 +34,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
 
         // Create the SwiftUI view that provides the window contents.
-        let contentView = ContentView().environmentObject(levelEnv).environmentObject(overlay).environmentObject(overlayLog).environmentObject(user).environmentObject(filter).environmentObject(changeFilter).environmentObject(filterString)
+        let contentView = ContentView().environmentObject(levelEnv).environmentObject(overlay).environmentObject(overlayLog).environmentObject(user).environmentObject(filter).environmentObject(changeFilter).environmentObject(filterString).environmentObject(apiUrl)
 
         // Use a UIHostingController as window root view controller.
         if let windowScene = scene as? UIWindowScene {

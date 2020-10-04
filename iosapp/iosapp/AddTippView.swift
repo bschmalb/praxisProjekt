@@ -24,6 +24,7 @@ struct AddTippView: View {
     @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject var levelEnv: UserLevel
     @EnvironmentObject var overlay: Overlay
+    @EnvironmentObject var myUrl: ApiUrl
     
     @ObservedObject private var keyboard = KeyboardResponder()
     
@@ -398,7 +399,7 @@ struct AddTippView: View {
             print("Failed to encode order")
             return
         }
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/tipps") else { return }
+        guard let url = URL(string: myUrl.tipps) else { return }
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "POST"
@@ -1050,26 +1051,16 @@ struct MultilineTextView2: UIViewRepresentable {
         view.isScrollEnabled = true
         view.isEditable = true
         view.isUserInteractionEnabled = true
-        view.layer.cornerRadius = 5
-//        view.layer.borderWidth = 1
-//        view.layer.borderColor = UIColor.lightGray.cgColor
+        view.layer.cornerRadius = 10
+        view.layer.borderWidth = 1
+        let myColor : UIColor = UIColor( red: 0.1, green: 0.1, blue: 0.1, alpha: 0.1 )
+        view.layer.borderColor = myColor.cgColor
         view.delegate = context.coordinator
-        view.font = .systemFont(ofSize: UIScreen.main.bounds.width * 0.045)
+        view.font = .systemFont(ofSize: UIScreen.main.bounds.width * 0.04)
         return view
     }
 
     func updateUIView(_ uiView: UITextView, context: Context) {
         uiView.text = text
-        if isFirstResponder ?? false && !context.coordinator.didBecomeFirstResponder  {
-            uiView.becomeFirstResponder()
-            context.coordinator.didBecomeFirstResponder = true
-        } else if (!(isFirstResponder ?? true) && context.coordinator.didBecomeFirstResponder){
-            uiView.resignFirstResponder()
-            context.coordinator.didBecomeFirstResponder = false
-        }
-        else if (!(isFirstResponder ?? true)){
-            uiView.resignFirstResponder()
-            context.coordinator.didBecomeFirstResponder = false
-        }
     }
 }

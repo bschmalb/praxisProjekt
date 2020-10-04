@@ -24,6 +24,8 @@ struct ProfilData: View {
     @State var posting: Bool = false
     
     @EnvironmentObject var user2: UserObserv
+    @EnvironmentObject var myUrl: ApiUrl
+    
 //    @State var name: String = UserDefaults.standard.string(forKey: "userName") ?? "User123"
     @State var age: String = ""
     @State var gender: String = ""
@@ -278,7 +280,7 @@ struct ProfilData: View {
     }
     
     func getUser() {
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
+        guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
             
             URLSession.shared.dataTask(with: url) { (data, _, _) in
                 
@@ -318,7 +320,7 @@ struct ProfilData: View {
                 return
             }
             
-            guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
+        guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
             var request = URLRequest(url: url)
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpMethod = "PATCH"

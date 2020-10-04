@@ -34,6 +34,7 @@
 		B77784E5248BDB7500C58AEE /* TippCardsCustom.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77784E4248BDB7500C58AEE /* TippCardsCustom.swift */; };
 		B77784E7248BDBA600C58AEE /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77784E6248BDBA600C58AEE /* PageViewController.swift */; };
 		B77784E9248BDC7700C58AEE /* PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77784E8248BDC7700C58AEE /* PageView.swift */; };
+		B77C7E0D252A369E00677C12 /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77C7E0C252A369E00677C12 /* FeedbackView.swift */; };
 		B784696A248D0A21000A4331 /* AddTippCard3.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7846969248D0A21000A4331 /* AddTippCard3.swift */; };
 		B784696C248D25BD000A4331 /* KeyboardResponder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B784696B248D25BD000A4331 /* KeyboardResponder.swift */; };
 		B784696E248D2C13000A4331 /* AddTippCard4.swift in Sources */ = {isa = PBXBuildFile; fileRef = B784696D248D2C13000A4331 /* AddTippCard4.swift */; };
@@ -131,6 +132,7 @@
 		B77784E4248BDB7500C58AEE /* TippCardsCustom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippCardsCustom.swift; sourceTree = "<group>"; };
 		B77784E6248BDBA600C58AEE /* PageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
 		B77784E8248BDC7700C58AEE /* PageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageView.swift; sourceTree = "<group>"; };
+		B77C7E0C252A369E00677C12 /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
 		B7846969248D0A21000A4331 /* AddTippCard3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTippCard3.swift; sourceTree = "<group>"; };
 		B784696B248D25BD000A4331 /* KeyboardResponder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardResponder.swift; sourceTree = "<group>"; };
 		B784696D248D2C13000A4331 /* AddTippCard4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTippCard4.swift; sourceTree = "<group>"; };
@@ -264,6 +266,7 @@
 				B74727C024B268B300775E16 /* ProfilChallengeView.swift */,
 				B7598B6B24A8BF1B000436B8 /* ProfilEntwicklung.swift */,
 				B7598B6D24A8C22B000436B8 /* ProfilEinstellungen.swift */,
+				B77C7E0C252A369E00677C12 /* FeedbackView.swift */,
 				B7DB1E2C24AA138E00F28B07 /* ProfilFilter.swift */,
 				B762F583251AC118001050A1 /* ProfilData.swift */,
 				B7874C12249E84F50045D609 /* EntwicklungTabView.swift */,
@@ -614,6 +617,7 @@
 				B7874C13249E84F50045D609 /* EntwicklungTabView.swift in Sources */,
 				B7598B6C24A8BF1B000436B8 /* ProfilEntwicklung.swift in Sources */,
 				B7919AF424981C5B00014240 /* LottieView.swift in Sources */,
+				B77C7E0D252A369E00677C12 /* FeedbackView.swift in Sources */,
 				B7A8CBE0242C10C50036FD6E /* ContentView.swift in Sources */,
 				B7B50CE9250C160200DD2FE6 /* FactCardList.swift in Sources */,
 				B7B4D9BE249FC7990055708E /* ChallengeView.swift in Sources */,

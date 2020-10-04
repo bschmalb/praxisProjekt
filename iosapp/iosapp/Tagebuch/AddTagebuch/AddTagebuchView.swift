@@ -16,6 +16,7 @@ struct AddTagebuchView: View {
     @State var id = UserDefaults.standard.string(forKey: "id")
     
     @EnvironmentObject var levelEnv: UserLevel
+    @EnvironmentObject var myUrl: ApiUrl
     
     @ObservedObject private var keyboard = KeyboardResponder()
     
@@ -246,7 +247,7 @@ struct AddTagebuchView: View {
             print("Failed to encode order")
             return
         }
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
+        guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "PATCH"

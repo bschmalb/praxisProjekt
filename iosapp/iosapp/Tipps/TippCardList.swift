@@ -87,9 +87,12 @@ struct TippCardList: View {
 //                    .padding()
                 VStack {
                     if (dataLoading) {
-                        LottieView(filename: "loadingCircle", loop: true)
-                            .shadow(color: Color(.white), radius: 1, x: 0, y: 0)
-                            .frame(width: 100, height: 100)
+                        VStack {
+                            LottieView(filename: "loadingCircle", loop: true)
+                                .shadow(color: Color(.white), radius: 1, x: 0, y: 0)
+                                .frame(width: 100, height: 100)
+                        }
+                        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2.1 + 20)
                     }
                     else {
                         if (self.filteredTipps.count > 0) {

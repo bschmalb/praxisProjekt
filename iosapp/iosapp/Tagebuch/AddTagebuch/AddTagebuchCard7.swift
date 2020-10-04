@@ -24,6 +24,7 @@ struct AddTagebuchCard7: View {
     @Environment(\.presentationMode) private var presentationMode
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     @EnvironmentObject var levelEnv: UserLevel
+    @EnvironmentObject var myUrl: ApiUrl
     
     @State var firstBinWaste: Bool = false
     @State var secondBinWaste: Bool = false
@@ -208,7 +209,7 @@ struct AddTagebuchCard7: View {
             print("Failed to encode order")
             return
         }
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
+        guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "PATCH"

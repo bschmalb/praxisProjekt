@@ -13,6 +13,7 @@ struct TippCard: View {
     @State var id = UserDefaults.standard.string(forKey: "id")
     
     @EnvironmentObject var levelEnv: UserLevel
+    @EnvironmentObject var myUrl: ApiUrl
     @Binding var isChecked: Bool
     @Binding var isBookmarked: Bool
     @State var isClicked: Bool = false
@@ -268,7 +269,7 @@ struct TippCard: View {
         }
     }
     func getUserTipps(){
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
+        guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
         let request = URLRequest(url: url)
         
         URLSession.shared.dataTask(with: request) { data, response, error in
@@ -298,7 +299,7 @@ struct TippCard: View {
             return
         }
         
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/tipps/" + tipp._id) else { return }
+        guard let url = URL(string: myUrl.tipps + tipp._id) else { return }
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "PATCH"
@@ -310,7 +311,7 @@ struct TippCard: View {
     }
     
     func getPoster() {
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + tipp.postedBy) else { return }
+        guard let url = URL(string: myUrl.users + tipp.postedBy) else { return }
         
         URLSession.shared.dataTask(with: url) { (data, _, _) in
             
@@ -349,7 +350,7 @@ struct TippCard: View {
         } else {
             encoded = try? JSONEncoder().encode(patchData2)
         }
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
+        guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "PATCH"

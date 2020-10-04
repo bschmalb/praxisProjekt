@@ -28,6 +28,22 @@ class UserLevel: ObservableObject {
     @Published var level = UserDefaults.standard.integer(forKey: "userLevel")
 }
 
+class ApiUrl: ObservableObject {
+    @Published var tipps: String = UserDefaults.standard.string(forKey: "urlTipps") ?? "http://bastianschmalbach.ddns.net/tipps/"
+    @Published var users: String = UserDefaults.standard.string(forKey: "urlUsers") ?? "http://bastianschmalbach.ddns.net/users/"
+    @Published var feedbacks: String = UserDefaults.standard.string(forKey: "urlFeedbacks") ?? "http://bastianschmalbach.ddns.net/feedbacks/"
+    @Published var facts: String = UserDefaults.standard.string(forKey: "urlFacts") ?? "http://bastianschmalbach.ddns.net/facts/"
+    @Published var tippsNoSlash: String = UserDefaults.standard.string(forKey: "tippsNoSlash") ?? "http://bastianschmalbach.ddns.net/tipps"
+    
+    init() {
+        UserDefaults.standard.set("http://bastianschmalbach.ddns.net/tipps/", forKey: "urlTipps")
+        UserDefaults.standard.set("http://bastianschmalbach.ddns.net/users/", forKey: "urlUsers")
+        UserDefaults.standard.set("http://bastianschmalbach.ddns.net/feedbacks/", forKey: "urlFeedbacks")
+        UserDefaults.standard.set("http://bastianschmalbach.ddns.net/facts", forKey: "urlFacts")
+        UserDefaults.standard.set("http://bastianschmalbach.ddns.net/tipps", forKey: "tippsNoSlash")
+    }
+}
+
 class Overlay: ObservableObject {
     @Published var overlayLog = UserDefaults.standard.bool(forKey: "overlay")
 }
@@ -76,6 +92,8 @@ struct ContentView: View {
     @State private var deviceCorners = UserDefaults.standard.bool(forKey: "deviceCorners")
     
     @State var id = UserDefaults.standard.string(forKey: "id")
+    
+    @EnvironmentObject var myUrl: ApiUrl
     
     @State private var appearenceDark = UserDefaults.standard.bool(forKey: "appearenceDark")
     @State private var isUser2 = UserDefaults.standard.bool(forKey: "isUser4")
@@ -359,7 +377,7 @@ struct ContentView: View {
                 print("Failed to encode order")
                 return
             }
-            guard let url = URL(string: "http://bastianschmalbach.ddns.net/users") else { return }
+            guard let url = URL(string: myUrl.users) else { return }
             var request = URLRequest(url: url)
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpMethod = "POST"
@@ -393,42 +411,13 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         //        ContentView().environmentObject(UserLevel()).environmentObject(Overlay()).environmentObject(OverlayLog())
         Group {
-            ContentView().environmentObject(UserLevel()).environmentObject(Overlay()).environmentObject(OverlayLog()).environmentObject(ChangeFilter()).environmentObject(FilterString())
+            ContentView().environmentObject(UserLevel()).environmentObject(Overlay()).environmentObject(OverlayLog()).environmentObject(ChangeFilter()).environmentObject(FilterString()).environmentObject(ApiUrl())
                 .previewDevice(PreviewDevice(rawValue: "iPod touch (7th generation))"))
                 .previewDisplayName("iPod touch (7th generation)")
 //
-            ContentView().environmentObject(UserLevel()).environmentObject(Overlay()).environmentObject(OverlayLog()).environmentObject(ChangeFilter()).environmentObject(FilterString())
+            ContentView().environmentObject(UserLevel()).environmentObject(Overlay()).environmentObject(OverlayLog()).environmentObject(ChangeFilter()).environmentObject(FilterString()).environmentObject(ApiUrl())
                 .previewDevice(PreviewDevice(rawValue: "iPhone 11"))
                 .previewDisplayName("iPhone 11")
-        }
-    }
-}
-
-struct KeyboardOffSetModifier: ViewModifier {
-    @ObservedObject var keyboard = KeyboardResponder()
-    
-    func body(content: Content) -> some View {
-        ZStack {
-            if #available(iOS 14, *) {
-                content
-            } else {
-                content
-                    .padding(.bottom, keyboard.currentHeight / 2)
-                    .offset(y: -keyboard.currentHeight / 2)
-            }
-        }
-    }
-}
-
-extension View {
-    @ViewBuilder
-    func keyboardOffset() -> some View {
-        if #available(iOS 14, *) {
-            self
-        }
-        else {
-            self
-                .modifier(KeyboardOffSetModifier())
         }
     }
 }

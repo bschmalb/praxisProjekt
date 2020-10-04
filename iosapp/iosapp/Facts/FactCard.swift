@@ -11,6 +11,8 @@ import SwiftUI
 struct FactCard: View {
     
     @EnvironmentObject var levelEnv: UserLevel
+    @EnvironmentObject var myUrl: ApiUrl
+    
     @Binding var isChecked: Bool
     @Binding var isBookmarked: Bool
     var fact: Fact
@@ -239,7 +241,7 @@ struct FactCard: View {
     func getUserFacts(){
         
         if let uuid = UIDevice.current.identifierForVendor?.uuidString {
-            guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + uuid) else { return }
+            guard let url = URL(string: myUrl.users + uuid) else { return }
             let request = URLRequest(url: url)
             
             URLSession.shared.dataTask(with: request) { data, response, error in
@@ -282,7 +284,7 @@ struct FactCard: View {
             } else {
                 encoded = try? JSONEncoder().encode(patchData2)
             }
-            guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + uuid) else { return }
+            guard let url = URL(string: myUrl.users + uuid) else { return }
             var request = URLRequest(url: url)
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpMethod = "PATCH"

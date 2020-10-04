@@ -18,6 +18,7 @@ struct StartTutorialView: View {
     @State var id: String = UserDefaults.standard.string(forKey: "id") ?? ""
     
     @EnvironmentObject var user: UserObserv
+    @EnvironmentObject var myUrl: ApiUrl
     
     @State var firstResponder: Bool? = false
     @State var name: String = ""
@@ -243,7 +244,7 @@ struct StartTutorialView: View {
             return
         }
         
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + id) else { return }
+        guard let url = URL(string: myUrl.users + id) else { return }
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "PATCH"

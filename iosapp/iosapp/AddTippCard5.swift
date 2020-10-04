@@ -32,6 +32,7 @@ struct AddTippCard5: View {
     @Environment(\.presentationMode) private var presentationMode
     @EnvironmentObject var levelEnv: UserLevel
     @EnvironmentObject var overlay: Overlay
+    @EnvironmentObject var myUrl: ApiUrl
     
     @ObservedObject private var keyboard2 = KeyboardResponder()
     
@@ -246,7 +247,7 @@ struct AddTippCard5: View {
                 print("Failed to encode order")
                 return
             }
-            guard let url = URL(string: "http://bastianschmalbach.ddns.net/tipps") else { return }
+            guard let url = URL(string: myUrl.tipps) else { return }
             var request = URLRequest(url: url)
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpMethod = "POST"

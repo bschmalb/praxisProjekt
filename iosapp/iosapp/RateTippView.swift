@@ -21,6 +21,7 @@ struct RateTippView: View {
     
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     @EnvironmentObject var levelEnv: UserLevel
+    @EnvironmentObject var myUrl: ApiUrl
     
     @State var counter: Int = 0
     @State var thumbUp = false
@@ -199,26 +200,25 @@ struct RateTippView: View {
             }
         }
     }
-}
-
-func patchScore(id: String, thumb: String) {
-    
-    let rating = Rate(thumb: thumb)
-    
-    guard let encoded = try? JSONEncoder().encode(rating) else {
-        print("Failed to encode order")
-        return
-    }
-    
-    guard let url = URL(string: "http://bastianschmalbach.ddns.net/tipps/" + id) else { return }
-    var request = URLRequest(url: url)
-    request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    request.httpMethod = "PATCH"
-    request.httpBody = encoded
-    
-    URLSession.shared.dataTask(with: request) { data, response, error in
+    func patchScore(id: String, thumb: String) {
         
-    }.resume()
+        let rating = Rate(thumb: thumb)
+        
+        guard let encoded = try? JSONEncoder().encode(rating) else {
+            print("Failed to encode order")
+            return
+        }
+        
+        guard let url = URL(string: myUrl.tipps + id) else { return }
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "PATCH"
+        request.httpBody = encoded
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            
+        }.resume()
+    }
 }
 
 struct Rate : Encodable, Decodable{

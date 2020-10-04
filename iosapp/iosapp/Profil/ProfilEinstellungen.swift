@@ -79,6 +79,24 @@ struct ProfilEinstellungen: View {
                         }.padding(10)
                         }.navigationBarTitle("Navigation")
                     
+                    NavigationLink(destination: FeedbackView()
+                                        .navigationBarTitle("")
+                                        .navigationBarHidden(true)
+                                        .navigationBarBackButtonHidden(true)) {
+                        HStack (spacing: 5){
+                            Image(systemName: "plus.bubble")
+                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.055 : 20))
+                                .padding(.leading, 10)
+                                .frame(width: screenWidth < 500 ? screenWidth * 0.16 : 50, height: 20)
+                            Text("Feedback geben")
+                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.050 : 20, weight: .medium))
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.055 : 20))
+                                .padding(.trailing, 28)
+                        }.padding(10)
+                        }.navigationBarTitle("Navigation")
+                    
                     Button(action: {
                         self.isDark.toggle()
                         self.appearenceDark.toggle()
