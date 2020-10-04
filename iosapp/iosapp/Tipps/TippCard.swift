@@ -59,10 +59,10 @@ struct TippCard: View {
                         }
                         print(self.tipp.source)
                         self.quelleShowing = true
-                }
-                .sheet(isPresented: $quelleShowing) {
-                    WebLinkView(url: self.tipp.source)
-                }
+                    }
+                    .sheet(isPresented: $quelleShowing) {
+                        WebLinkView(url: self.tipp.source)
+                    }
                 HStack {
                     Button(action: {
                         self.isChecked.toggle()
@@ -156,9 +156,9 @@ struct TippCard: View {
                 Spacer()
             }
             .frame(width: UIScreen.main.bounds.width - 30, height:
-                UIScreen.main.bounds.height / 2.1)
-                .opacity(options ? 0 : 1)
-                .animation(options ? .easeIn(duration: 0.15) : Animation.easeOut(duration: 0.15).delay(0.15))
+                    UIScreen.main.bounds.height / 2.1)
+            .opacity(options ? 0 : 1)
+            .animation(options ? .easeIn(duration: 0.15) : Animation.easeOut(duration: 0.15).delay(0.15))
             VStack {
                 HStack(alignment: .top) {
                     Spacer()
@@ -180,7 +180,7 @@ struct TippCard: View {
                     .padding()
                     .onAppear(){
                         self.getPoster()
-                }
+                    }
                 Spacer()
                 Button(action: {
                     impact(style: .medium)
@@ -253,10 +253,10 @@ struct TippCard: View {
                 }
                 Spacer()
             }.frame(width: UIScreen.main.bounds.width - 30, height:
-                UIScreen.main.bounds.height / 2.1)
-                .rotation3DEffect(Angle(degrees: 180), axis: (x: 0, y: 1, z: 0))
-                .opacity(options ? 1 : 0)
-                .animation(options ? Animation.easeOut(duration: 0.15).delay(0.15) : .easeIn(duration: 0.15))
+                        UIScreen.main.bounds.height / 2.1)
+            .rotation3DEffect(Angle(degrees: 180), axis: (x: 0, y: 1, z: 0))
+            .opacity(options ? 1 : 0)
+            .animation(options ? Animation.easeOut(duration: 0.15).delay(0.15) : .easeIn(duration: 0.15))
             
         }
         .rotation3DEffect(Angle(degrees: options ? 180 : 0), axis: (x: 0, y: 1, z: 0))
@@ -311,23 +311,23 @@ struct TippCard: View {
     
     func getPoster() {
         guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + tipp.postedBy) else { return }
+        
+        URLSession.shared.dataTask(with: url) { (data, _, _) in
             
-            URLSession.shared.dataTask(with: url) { (data, _, _) in
-                
-                if let data = data {
-                    if let user = try? JSONDecoder().decode(User.self, from: data) {
-                        // we have good data – go back to the main thread
-                        DispatchQueue.main.async {
-                            // update our UI
-                            self.user2 = user
-                        }
-
-                        // everything is good, so we can exit
-                        return
+            if let data = data {
+                if let user = try? JSONDecoder().decode(User.self, from: data) {
+                    // we have good data – go back to the main thread
+                    DispatchQueue.main.async {
+                        // update our UI
+                        self.user2 = user
                     }
+                    
+                    // everything is good, so we can exit
+                    return
                 }
             }
-            .resume()
+        }
+        .resume()
     }
     
     func verifyUrl (urlString: String?) -> Bool {

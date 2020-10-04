@@ -35,8 +35,6 @@ struct ProfilTippView: View {
     @State var selectWidth: CGFloat = 90
     @State var slidingText: String = "Abgehakte"
     
-    @Binding var offsetSelf: CGFloat
-    
     var cardColor: [String]  = [
         "cardgreen2", "cardyellow2", "cardpurple2", "cardorange2", "cardred2", "cardturqouise2", "cardblue2", "cardpink2"
     ]
@@ -50,7 +48,6 @@ struct ProfilTippView: View {
             VStack {
                 Button(action: {
                     self.mode.wrappedValue.dismiss()
-                    self.offsetSelf = UIScreen.main.bounds.width
                     impact(style: .medium)
                 }) {
                     HStack (spacing: 10){
@@ -129,7 +126,7 @@ struct ProfilTippView: View {
                                         if value.translation.width < -60 {
                                             
                                             self.tabSelected = 2
-                                            self.tippOffset = UIScreen.main.bounds.width / 1.5 + geoMidOwn
+                                            self.tippOffset = geoMidOwn
                                             self.selectWidth = 80
                                             
                                             self.slidingText = "Eigene"
@@ -182,14 +179,14 @@ struct ProfilTippView: View {
                 }
                 .opacity(loading2 ? 0 : 1)
             }
-//            VStack {
-//                if (loading2) {
-//                    VStack{
-//                        LottieView(filename: "loadingCircle", loop: true)
-//                            .frame(width: 50, height: 50)
-//                    }
-//                }
-//            }
+            VStack {
+                if (loading2) {
+                    VStack{
+                        LottieView(filename: "loadingCircle", loop: true)
+                            .frame(width: 50, height: 50)
+                    }
+                }
+            }
             .onAppear{
                 guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
                     let request = URLRequest(url: url)
@@ -238,7 +235,7 @@ struct ProfilTippView: View {
 
 struct ProfilTippView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilTippView(offsetSelf: .constant(0))
+        ProfilTippView()
     }
 }
 
@@ -334,7 +331,9 @@ struct SliderView: View {
                             .frame(width: 60, height: 40)
                     }
                     .onAppear(){
-                        self.geoMidOwn = g.frame(in: .global).midX
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            self.geoMidOwn = g.frame(in: .global).midX
+                        }
                     }
                 }.animation(.spring())
                 .frame(width: 60, height: 40)

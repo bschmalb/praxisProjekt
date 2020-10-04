@@ -370,7 +370,6 @@ struct ContentView: View {
                 if let data = data {
                     if let user = try? JSONDecoder().decode(User.self, from: data) {
                         DispatchQueue.main.async {
-                            print("USERDATA \(user)")
                             self.isUser2 = true
                             UserDefaults.standard.set(self.isUser2, forKey: "isUser4")
                             UserDefaults.standard.set(user._id, forKey: "id")

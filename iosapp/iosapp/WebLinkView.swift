@@ -32,6 +32,6 @@ struct WebLinkView: UIViewRepresentable {
 
 struct WebLinkView_Previews: PreviewProvider {
     static var previews: some View {
-        WebLinkView(url: "www.google.com")
+        WebLinkView(url: "http://www.google.com")
     }
 }

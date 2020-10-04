@@ -34,7 +34,7 @@ struct ProfilData: View {
     @State var isSelected: [Bool] = [false, false, false, false, false, false]
     @State var isSelectedGender: [Bool] = [false, false, false]
     
-    @State var isChanged: Bool = false
+    @Binding var isChanged: Bool
     
     var screenWidth = UIScreen.main.bounds.width
     
@@ -94,6 +94,7 @@ struct ProfilData: View {
                     })
                         .lineLimit(1)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .frame(maxWidth: UIScreen.main.bounds.width - 30)
                         .padding(.horizontal)
                     
 //                    CustomTextField(text: binding,
@@ -108,8 +109,6 @@ struct ProfilData: View {
 //                        .padding(.horizontal)
                     
                     Spacer()
-//                    TextField("d", text: binding)
-//                        .padding()
                     
                     if ((!(firstResponder ?? true)) && !(keyboard.currentHeight > 100)) {
                         Text("Alter")
@@ -347,6 +346,6 @@ struct ProfilData: View {
 
 struct ProfilData_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilData().environmentObject(UserObserv())
+        ProfilData(isChanged: .constant(false)).environmentObject(UserObserv())
     }
 }

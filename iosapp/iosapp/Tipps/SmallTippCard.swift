@@ -13,6 +13,9 @@ struct SmallTippCard: View {
     @State var id = UserDefaults.standard.string(forKey: "id")
     
     @EnvironmentObject var levelEnv: UserLevel
+    
+    @ObservedObject var user = UserDataStore()
+    
     @Binding var isChecked: Bool
     @Binding var isBookmarked: Bool
     @State var isClicked: Bool = false
@@ -265,25 +268,35 @@ struct SmallTippCard: View {
         }
     }
     func getUserTipps(){
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
-        let request = URLRequest(url: url)
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data else {
-                print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
-                return
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            if (user.user.checkedTipps.contains(self.tipp._id) ) {
+                self.isChecked = true
             }
-            DispatchQueue.main.async {
-                if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
-                    if (decodedResponse.checkedTipps.contains(self.tipp._id) ) {
-                        self.isChecked = true
-                    }
-                    if (decodedResponse.savedTipps.contains(self.tipp._id) ) {
-                        self.isBookmarked = true
-                    }
-                }
+            if (user.user.savedTipps.contains(self.tipp._id) ) {
+                self.isBookmarked = true
             }
-        }.resume()
+        }
+        
+//        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
+//        let request = URLRequest(url: url)
+//
+//        URLSession.shared.dataTask(with: request) { data, response, error in
+//            guard let data = data else {
+//                print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
+//                return
+//            }
+//            DispatchQueue.main.async {
+//                if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
+//                    if (decodedResponse.checkedTipps.contains(self.tipp._id) ) {
+//                        self.isChecked = true
+//                    }
+//                    if (decodedResponse.savedTipps.contains(self.tipp._id) ) {
+//                        self.isBookmarked = true
+//                    }
+//                }
+//            }
+//        }.resume()
     }
     
     func patchScoreUser(reportedTipps: String) {

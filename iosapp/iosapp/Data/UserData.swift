@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct User: Encodable, Decodable {
-    var _id: String?
+    var _id: String
     var phoneId: String
     var name: String?
     var gender: String?

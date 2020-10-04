@@ -115,6 +115,14 @@ struct TippCardList: View {
                                                     }
                                                 }
                                             }
+                                        } else {
+                                            Text("")
+                                                .onAppear(){
+                                                    Api().fetchTipps { (filteredTipps) in
+                                                        self.filteredTipps = filteredTipps
+                                                        self.dataLoading = false
+                                                    }
+                                                }
                                         }
                                     }
                                     .frame(height: UIScreen.main.bounds.height/2.1 + 20)
@@ -190,7 +198,7 @@ struct TippCardList: View {
     }
 }
 
-class UIScrollViewViewController: UIViewController {
+class UIScrollViewViewController: UIViewController, UIGestureRecognizerDelegate {
     
     lazy var scrollView: UIScrollView = {
         let v = UIScrollView()
@@ -233,6 +241,10 @@ class UIScrollViewViewController: UIViewController {
         ])
     }
     
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+            return true
+        }
+    
 }
 
 struct UIScrollViewWrapper<Content: View>: UIViewControllerRepresentable {
@@ -252,6 +264,10 @@ struct UIScrollViewWrapper<Content: View>: UIViewControllerRepresentable {
     func updateUIViewController(_ viewController: UIScrollViewViewController, context: Context) {
         viewController.hostingController.rootView = AnyView(self.content())
     }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+            return true
+        }
 }
 
 struct FilterView: View {
@@ -370,7 +386,7 @@ struct CustomCard: View {
                     .frame(minHeight: 100, idealHeight: 200, maxHeight: 300)
                     .padding(20)
                 Text(text)
-                    .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.07 : 26, weight: .medium))
+                    .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.045 : 22))
                     .foregroundColor(.black)
                     .multilineTextAlignment(.center)
                     .padding()

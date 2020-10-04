@@ -28,130 +28,83 @@ struct ProfilView: View {
     
     @State private var userName: String = UserDefaults.standard.string(forKey: "userName") ?? "Nutzer"
     
+    @State var isChanged: Bool = false
+    
+    @State var showLevel: Bool = false
+    
     var screen = UIScreen.main.bounds.width
     
     var body: some View {
+        
         ZStack {
             ZStack {
-                    ZStack {
-                        Color("background")
-                            .edgesIgnoringSafeArea(.all)
-                    }
-                    
-                    VStack {
-                        HStack {
-                            Spacer()
-                            Button(action: {
-                                self.offsetLevel = -UIScreen.main.bounds.height / 20
-                                self.overlay.overlayLog = true
-                            })
-                            {
-                            LevelView(frameWidth: 60, frameHeight: 60)
-                                .padding(30)
-                                .offset(y: -5)
-                            }
-                        }
-                        Spacer()
-                    }.zIndex(1)
-                    
-                    VStack {
-                        HStack {
-                            VStack (alignment: .leading){
-                                HStack {
-                                    Text("Hallo")
-                                        .font(.system(size: 24, weight: Font.Weight.semibold))
-                                        .lineLimit(1)
-                                        .padding(.leading, 20)
-                                    TextField("", text: $user.name, onCommit: {
-                                        user.name = user.name
-                                        UserDefaults.standard.set(user.name, forKey: "userName")
-                                        self.postUserName()
-                                        
-                                    })
-                                        .font(.system(size: 24, weight: Font.Weight.semibold))
-                                        .lineLimit(1)
-                                }
-//                                Text("Hallo \(user.name)")
-//                                    .font(.title)
-//                                    .fontWeight(.bold)
-//                                    .lineLimit(1)
-//                                    .padding(.leading, 20)
-//                                    .padding(.vertical, 5)
-//                                    .frame(width: UIScreen.main.bounds.width / 1.4, height: 40, alignment: .leading)
-                                Text("Wilkommen in deinem Profil")
-                                    .font(.system(size: screen < 500 ? screen * 0.04 : 18))
-                                    .padding(.leading, 20)
-                            }.frame(width: UIScreen.main.bounds.width / 1.4)
-                            .padding(.top, 5)
-                            Spacer()
-                            
-//                            NavigationLink(destination: ProfilData()
-//                                            .navigationBarTitle("")
-//                                            .navigationBarHidden(true)
-//                                            .navigationBarBackButtonHidden(true)
-//                                           , tag: 1, selection: $selection) {
-//                                VStack (alignment: .leading){
-//                                    Text("Hallo \(user.name)")
-//                                        .font(.title)
-//                                        .fontWeight(.bold)
-//                                        .lineLimit(1)
-//                                        .padding(.leading, 20)
-//                                        .padding(.vertical, 5)
-//                                        .frame(width: UIScreen.main.bounds.width / 1.4, height: 40, alignment: .leading)
-//                                    Text("Wilkommen in deinem Profil")
-//                                        .font(.callout)
-//                                        .padding(.leading, 20)
-//                                }
-//                            }
-//                            Button(action: {
-//                                self.offsetChangeName = -UIScreen.main.bounds.height / 20
-//                                self.overlay.overlayLog = true
-//                                self.postUserName()
-//                            })
-//                            {
-//                                VStack (alignment: .leading){
-//                                    Text("Hallo \(user.name)")
-//                                        .font(.title)
-//                                        .fontWeight(.bold)
-//                                        .lineLimit(1)
-//                                        .padding(.leading, 20)
-//                                        .padding(.vertical, 5)
-//                                        .frame(width: UIScreen.main.bounds.width / 1.4, height: 40, alignment: .leading)
-//                                    Text("Wilkommen in deinem Profil")
-//                                        .font(.callout)
-//                                        .padding(.leading, 20)
-//                                }
-//                                Spacer()
-//                            }.accentColor(Color("black"))
-                        }
-                        .padding(.top, 10.0)
-                        .offset(y: 10)
-                        
-                        ProfilHomeView(isDark: $isDark, appearenceDark: $appearenceDark, offsetChangeName: $offsetChangeName, offsetLevel: $offsetLevel, selection: $selection, filter: filter)
-                            .navigationBarTitle("")
-                            .navigationBarHidden(true)
-                            .navigationBarBackButtonHidden(true)
-                    }
-                    .animation(.spring())
-                    .navigationBarTitle("")
-                    .navigationBarHidden(true)
+                ZStack {
+                    Color("background")
+                        .edgesIgnoringSafeArea(.all)
                 }
+                
+                VStack {
+                    HStack {
+                        Spacer()
+                        Button(action: {
+                            self.showLevel = true
+                        })
+                        {
+                            LevelView(frameWidth: 60, frameHeight: 60)
+                                .padding(10)
+                                .offset(y: -5)
+                        }
+                    }
+                    .padding(20)
+                    Spacer()
+                }.zIndex(1)
+                
+                VStack (alignment: .leading){
+                    HStack {
+                        VStack (alignment: .leading){
+                            Text("Hallo \(user.name)")
+                                .font(.system(size: 24, weight: Font.Weight.semibold))
+                                .lineLimit(1)
+//                            TextField("", text: $user.name, onCommit: {
+//                                user.name = user.name
+//                                UserDefaults.standard.set(user.name, forKey: "userName")
+//                                self.postUserName()
+//                            }).font(.system(size: 24, weight: Font.Weight.semibold))
+//                            .lineLimit(1)
+                            Text("Wilkommen in deinem Profil")
+                                .font(.system(size: screen < 500 ? screen * 0.04 : 18))
+                                .padding(.top, 1)
+                        }
+                        .padding(.leading, 20)
+                        .padding(.top, 5)
+                        Spacer()
+                    }.frame(maxWidth: UIScreen.main.bounds.width / 1.4)
+                    .padding(.top, 10.0)
+                    .offset(y: 10)
+                    
+                    ProfilHomeView(isDark: $isDark, appearenceDark: $appearenceDark, offsetChangeName: $offsetChangeName, offsetLevel: $offsetLevel, selection: $selection, filter: filter, isChanged: $isChanged)
+                        .navigationBarTitle("")
+                        .navigationBarHidden(true)
+                        .navigationBarBackButtonHidden(true)
+                }
+                .animation(.spring())
+                .navigationBarTitle("")
+                .navigationBarHidden(true)
+            }
             .padding(.top, 1)
             .padding(.bottom, UIScreen.main.bounds.height / 12)
-//            .overlay(Color("black").opacity(overlay.overlay ? 0.4 : 0))
-            .blur(radius: overlay.overlayLog ? 2 : 0)
+            .blur(radius: showLevel ? 4 : 0)
             .edgesIgnoringSafeArea(.all)
             .animation(.spring())
-            .onTapGesture(count: 1, perform: {
-                self.postUserName()
-            })
             
+            //            ChangeNameView(offsetChangeName: $offsetChangeName, userName: $userName)
             
-//            ChangeNameView(offsetChangeName: $offsetChangeName, userName: $userName)
-            
-            ProfileLevelView(offsetLevel: $offsetLevel)
+            ProfileLevelView()
+                .offset(y: showLevel ? 0 : -UIScreen.main.bounds.height)
                 .onTapGesture {
-                    self.offsetLevel = -UIScreen.main.bounds.height / 1.5
+                    self.showLevel = false
+                    self.overlay.overlayLog = false
+                    impact(style: .medium)
                 }
             
             
@@ -161,8 +114,8 @@ struct ProfilView: View {
                         if (value.translation.height < 0) {
                             if (value.translation.height < 20) {
                                 UserDefaults.standard.set(self.userName, forKey: "userName")
-//                                self.postUserName()
-//                                self.offsetChangeName = -UIScreen.main.bounds.height / 1.5
+                                //                                self.postUserName()
+                                //                                self.offsetChangeName = -UIScreen.main.bounds.height / 1.5
                                 self.offsetLevel = -UIScreen.main.bounds.height / 1
                                 self.overlay.overlayLog = false
                                 self.hideKeyboard()
@@ -177,18 +130,18 @@ struct ProfilView: View {
         let patchData = UserNamePatch(name: user.name)
         
         guard let encoded = try? JSONEncoder().encode(patchData) else {
-                print("Failed to encode order")
-                return
-            }
-            
-            guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
-            var request = URLRequest(url: url)
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.httpMethod = "PATCH"
-            request.httpBody = encoded
-            
-            URLSession.shared.dataTask(with: request) { data, response, error in
-            }.resume()
+            print("Failed to encode order")
+            return
+        }
+        
+        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "PATCH"
+        request.httpBody = encoded
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+        }.resume()
     }
     
     func hideKeyboard() {
@@ -273,21 +226,21 @@ struct ChangeNameView: View {
     
     func patchName(name: String) {
         let patchUserName = Name(name: name)
+        
+        guard let encoded = try? JSONEncoder().encode(patchUserName) else {
+            print("Failed to encode order")
+            return
+        }
+        
+        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "PATCH"
+        request.httpBody = encoded
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
             
-            guard let encoded = try? JSONEncoder().encode(patchUserName) else {
-                print("Failed to encode order")
-                return
-            }
-            
-            guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
-            var request = URLRequest(url: url)
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.httpMethod = "PATCH"
-            request.httpBody = encoded
-            
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                
-            }.resume()
+        }.resume()
     }
 }
 
@@ -297,7 +250,7 @@ struct Name: Encodable, Decodable {
 
 struct ProfileLevelView: View {
     
-    @Binding var offsetLevel: CGFloat
+    //    @Binding var offsetLevel: CGFloat
     
     @EnvironmentObject var levelEnv: UserLevel
     @EnvironmentObject var overlay: Overlay
@@ -315,49 +268,59 @@ struct ProfileLevelView: View {
         
         let progress = 1 - CGFloat(Int(numberFormatter.string(for: levelEnv.level) ?? "2") ?? 10) / 100
         
-        return VStack (spacing: 30) {
-            HStack {
-                Text("Level \((levelEnv.level/100)+1)")
-                    .font(.system(size: 28))
-                    .bold()
-                    .foregroundColor(Color("black"))
-                Spacer()
-                ZStack {
-                    Circle()
-                        .stroke(Color(.gray).opacity(0.3), style: StrokeStyle(lineWidth: 8))
-                        .frame(width: frameWidth, height: frameHeight)
-                    Circle()
-                        .trim(from: progress, to: 1)
-                        .stroke(
-                            LinearGradient(gradient: Gradient(colors: [color1, color2]), startPoint: .topTrailing, endPoint: .bottomLeading),
-                            style: StrokeStyle(lineWidth: 10, lineCap: .round, lineJoin: .round, miterLimit: .infinity, dash: [20, 0], dashPhase: 0
+        return VStack {
+            VStack (spacing: 30) {
+                HStack {
+                    Text("Level \((levelEnv.level/100)+1)")
+                        .font(.system(size: 28))
+                        .bold()
+                        .foregroundColor(Color("black"))
+                    Spacer()
+                    ZStack {
+                        Circle()
+                            .stroke(Color(.gray).opacity(0.3), style: StrokeStyle(lineWidth: 8))
+                            .frame(width: frameWidth, height: frameHeight)
+                        Circle()
+                            .trim(from: progress, to: 1)
+                            .stroke(
+                                LinearGradient(gradient: Gradient(colors: [color1, color2]), startPoint: .topTrailing, endPoint: .bottomLeading),
+                                style: StrokeStyle(lineWidth: 10, lineCap: .round, lineJoin: .round, miterLimit: .infinity, dash: [20, 0], dashPhase: 0
+                                )
                             )
-                        )
-                        .rotationEffect(Angle(degrees: 90))
-                        .rotation3DEffect(Angle(degrees: 180), axis: (x: 1, y: 0, z: 0))
-                        .frame(width: frameWidth, height: frameHeight)
-                        .shadow(color: Color("blue").opacity(0.1), radius: 3, x: 0, y: 3)
-                    VStack (spacing: -5){
-                        Text("\(numberFormatter.string(for: levelEnv.level) ?? "0")/100")
-                            .multilineTextAlignment(.center)
-                            .font(.system(size: 16))
-                            .frame(width: 60)
-                            .foregroundColor(Color("black").opacity(0.8))
-                    }.offset(y: 2)
+                            .rotationEffect(Angle(degrees: 90))
+                            .rotation3DEffect(Angle(degrees: 180), axis: (x: 1, y: 0, z: 0))
+                            .frame(width: frameWidth, height: frameHeight)
+                            .shadow(color: Color("blue").opacity(0.1), radius: 3, x: 0, y: 3)
+                        VStack (spacing: -5){
+                            Text("\(numberFormatter.string(for: levelEnv.level) ?? "0")/100")
+                                .multilineTextAlignment(.center)
+                                .font(.system(size: 16))
+                                .frame(width: 60)
+                                .foregroundColor(Color("black").opacity(0.8))
+                        }.offset(y: 2)
+                    }
                 }
-            }
-            .padding(.horizontal, 40)
-            Text("Level weiter hoch indem du Tipps abhakst und an Challenges teilnimmst.\n\nDeinen Fortschritt kannst du jederzeit in deinem Profil ansehen.")
                 .padding(.horizontal, 40)
-        }
-        .frame(width: UIScreen.main.bounds.width * 0.9, height: UIScreen.main.bounds.height / 2.3)
-        .background(Color("buttonWhite"))
-        .cornerRadius(25)
-        .shadow(radius: 10)
-        .offset(y: offsetLevel)
-        .onTapGesture {
-            self.offsetLevel = -UIScreen.main.bounds.height / 1.2
-            self.overlay.overlayLog = false
+                Text("Durch das Hinzufügen, Speichern, selbst Erstellen und Eewerten von Tipps, sowie das Erstellen von Tagebucheinträgen sammelst du Punkte\n\nDeinen Fortschritt kannst du jederzeit in deinem Profil ansehen.")
+                    .font(.system(size: 15))
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.horizontal, 20)
+                Text("Alles klar")
+                    .font(.system(size: UIScreen.main.bounds.width * 0.040, weight: .medium))
+                    .padding(15)
+                    .opacity(0.9)
+            }
+            .padding(.vertical, 30)
+            .background(Color("buttonWhite"))
+            .cornerRadius(25)
+            .shadow(radius: 10)
+            .padding(.horizontal, 20)
         }
     }
 }
+//
+//struct ProfileLevelView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        ProfileLevelView(offsetLevel: .constant(10)).environmentObject(UserLevel()).environmentObject(Overlay()).environmentObject(UserObserv())
+//    }
+//}

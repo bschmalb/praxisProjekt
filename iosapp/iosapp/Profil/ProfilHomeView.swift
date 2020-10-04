@@ -25,6 +25,8 @@ struct ProfilHomeView: View {
     
     var screenWidth = UIScreen.main.bounds.width
     
+    @Binding var isChanged: Bool
+    
     var body: some View {
         
         NavigationView {
@@ -37,7 +39,7 @@ struct ProfilHomeView: View {
                             .scaledToFit()
                             .padding(screenWidth * 0.07)
                             .padding(.top, screenWidth < 350 ? 0 : screenWidth * 0.05)
-                    NavigationLink(destination: ProfilTippView(offsetSelf: $offsetTipps)
+                    NavigationLink(destination: ProfilTippView()
                                     .navigationBarTitle("")
                                     .navigationBarHidden(true)
                                     .navigationBarBackButtonHidden(true)
@@ -61,7 +63,7 @@ struct ProfilHomeView: View {
                             ProfilLink(image: "arrow.up.right", name: "Deine Entwicklung")
                         }.navigationBarTitle("Navigation")
                         
-                    NavigationLink(destination: ProfilEinstellungen(isDark: $isDark, appearenceDark: $appearenceDark, offsetChangeName: $offsetChangeName, offsetLevel: $offsetLevel, filter: filter)
+                    NavigationLink(destination: ProfilEinstellungen(isDark: $isDark, appearenceDark: $appearenceDark, offsetChangeName: $offsetChangeName, offsetLevel: $offsetLevel, filter: filter, isChanged: $isChanged)
                                     .navigationBarTitle("")
                                     .navigationBarHidden(true)
                                     .navigationBarBackButtonHidden(true)
@@ -71,22 +73,27 @@ struct ProfilHomeView: View {
                     Spacer()
                 }.padding(.top, 30)
                 .padding(.bottom, 20)
-                .offset(x: offsetTipps - UIScreen.main.bounds.width)
-                .opacity(offsetTipps == 0 ? 0 : 1)
             }
             .animation(.spring())
             .navigationBarTitle("")
             .navigationBarHidden(true)
             .navigationBarBackButtonHidden(true)
         }.accentColor(Color("black"))
+        .onTapGesture(perform: {
+            self.hideKeyboard()
+        })
+    }
+    
+    func hideKeyboard() {
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
 
 struct ProfilHomeView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-        ProfilHomeView(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), selection: .constant(0), filter: FilterData2())
-            ProfilHomeView(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), selection: .constant(0), filter: FilterData2())
+        ProfilHomeView(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), selection: .constant(0), filter: FilterData2(), isChanged: .constant(false))
+            ProfilHomeView(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), selection: .constant(0), filter: FilterData2(), isChanged: .constant(false))
                 .previewDevice(PreviewDevice(rawValue: "iPhone 11"))
                 .previewDisplayName("iPhone 11")
         }

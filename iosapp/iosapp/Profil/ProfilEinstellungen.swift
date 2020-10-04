@@ -28,6 +28,8 @@ struct ProfilEinstellungen: View {
     
     var screenWidth = UIScreen.main.bounds.width
     
+    @Binding var isChanged: Bool
+    
     var body: some View {
         ZStack {
             Color("background")
@@ -49,40 +51,33 @@ struct ProfilEinstellungen: View {
                     .padding(.leading, 20)
                     .padding(.vertical, 10)
                 }
-                
-                VStack {
-                    
-                    NavigationLink(destination: ProfilData()
+                VStack (spacing: screenWidth < 350 ? 5 : 15) {
+                    NavigationLink(destination: ProfilData(isChanged: $isChanged)
                                     .navigationBarTitle("")
                                     .navigationBarHidden(true)
                                     .navigationBarBackButtonHidden(true)) {
-                        HStack (spacing: 20){
-                            Image(systemName: "person")
-                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.05 : 22, weight: .medium))
-                                .padding(.leading, 20)
-                                .frame(width: 60, height: 20)
-                            Text("Deine Daten")
-                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.05 : 22, weight: .medium))
-                            Spacer()
-                        }.padding(10)
+                        ProfilLink(image: "person", name: "Deine Daten")
                     }.navigationBarTitle("Navigation")
                     
                     NavigationLink(destination: ProfilFilter(filter: filter)
-                                    .navigationBarTitle("")
-                                    .navigationBarHidden(true)
-                                    .navigationBarBackButtonHidden(true)) {
-                        HStack (spacing: 20){
+                                        .navigationBarTitle("")
+                                        .navigationBarHidden(true)
+                                        .navigationBarBackButtonHidden(true)) {
+                        HStack (spacing: 5){
                             Image(systemName: "arrow.merge")
-                                .rotationEffect(.degrees(180), anchor: .center)
-                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.05 : 22, weight: .medium))
-                                .padding(.leading, 20)
-                                .frame(width: 60, height: 20)
+                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.055 : 20))
+                                .padding(.leading, 10)
+                                .rotationEffect(.degrees(90))
+                                .offset(x: 4, y: -4)
+                                .frame(width: screenWidth < 500 ? screenWidth * 0.16 : 50, height: 20)
                             Text("Deine Filter")
-                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.05 : 22, weight: .medium))
-                                .fontWeight(.medium)
+                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.050 : 20, weight: .medium))
                             Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.055 : 20))
+                                .padding(.trailing, 28)
                         }.padding(10)
-                    }.navigationBarTitle("Navigation")
+                        }.navigationBarTitle("Navigation")
                     
                     Button(action: {
                         self.isDark.toggle()
@@ -90,53 +85,36 @@ struct ProfilEinstellungen: View {
                         UserDefaults.standard.set(self.appearenceDark, forKey: "appearenceDark")
                         impact(style: .rigid)
                     }) {
-                        HStack (spacing: 20){
+                        HStack (spacing: 5){
                             Image(systemName: "moon.circle")
-                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.05 : 22, weight: .medium))
-                                .padding(.leading, 20)
-                                .frame(width: 60, height: 20)
+                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.055 : 20))
+                                .padding(.leading, 10)
+                                .frame(width: screenWidth < 500 ? screenWidth * 0.16 : 50, height: 20)
                             Text("Nachtmodus")
-                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.05 : 22, weight: .medium))
-                                .fontWeight(.medium)
+                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.050 : 20, weight: .medium))
                             Spacer()
                         }.padding(10)
                     }
-                    
                     Spacer()
-//                    Button(action: {
-//                        self.levelEnv.level += 5
-//                        UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
-//                    }) {
-//                        HStack (spacing: 20){
-//                            Image(systemName: "arrow.up")
-//                                .font(.system(size: 16))
-//                                .padding(.leading, 20)
-//                                .frame(width: 60, height: 20)
-//                            Text("Level Up")
-//                            .font(.system(size: 16))
-//                            Spacer()
-//                        }.padding(10)
-//                    }
                     Button(action: {
                         UserDefaults.standard.set(self.logDate, forKey: "logDate")
                         UserDefaults.standard.set(false, forKey: "firstUseTipp")
                         UserDefaults.standard.set(false, forKey: "firstUseLog")
                         impact(style: .rigid)
                     }) {
-                        HStack (spacing: 20){
+                        HStack (spacing: 5){
                             Image(systemName: "delete.left")
-                                .font(.system(size: 16))
-                                .padding(.leading, 20)
-                                .frame(width: 60, height: 20)
+                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.035 : 14))
+                                .padding(.leading, 10)
+                                .frame(width: screenWidth < 500 ? screenWidth * 0.16 : 50, height: 20)
                             Text("Reset to First App Use")
-                                .font(.system(size: 16))
+                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.030 : 14, weight: .medium))
                             Spacer()
                         }.padding(10)
-                        .padding(.bottom, 20)
                     }
                 }
-                .padding(.top, 10)
-                .padding(.leading, 15)
+                .padding(.bottom, 20)
+                .padding(.top, screenWidth < 350 ? 0 : 20)
                 
                 
                 Spacer()
@@ -159,8 +137,8 @@ struct ProfilEinstellungen: View {
 struct ProfilEinstellungen_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-        ProfilEinstellungen(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), filter: FilterData2()).environmentObject(UserLevel())
-            ProfilEinstellungen(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), filter: FilterData2()).environmentObject(UserLevel())
+            ProfilEinstellungen(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), filter: FilterData2(), isChanged: .constant(false)).environmentObject(UserLevel())
+            ProfilEinstellungen(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), filter: FilterData2(), isChanged: .constant(false)).environmentObject(UserLevel())
                 .previewDevice(PreviewDevice(rawValue: "iPhone 11"))
                 .previewDisplayName("iPhone 11")
         }

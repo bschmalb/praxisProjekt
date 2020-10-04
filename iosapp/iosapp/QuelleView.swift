@@ -15,25 +15,30 @@ struct QuelleView: View {
     @Binding var quelleShowing: Bool
     
     var body: some View {
-        VStack {
+        VStack (spacing: 0){
             HStack {
                 Spacer()
                 Button(action: {
                     self.quelleShowing = false
                 }){
-                    Text("Fertig")
+                    Image(systemName: "xmark")
                     .padding()
                 }
+                .accentColor(.primary)
             }
-            .accentColor(.primary)
-            .background(Color.secondary.opacity(0.2))
+            .background(Color.secondary.opacity(0.1))
+            
             WebLinkView(url: quelle)
+                .edgesIgnoringSafeArea(.all)
+                .onAppear(){
+                    print("Quelle: \(quelle)")
+                }
         }
     }
 }
 
 struct QuelleView_Previews: PreviewProvider {
     static var previews: some View {
-        QuelleView(quelle: "", quelleShowing: .constant(true))
+        QuelleView(quelle: "http://www.duschbrocken.de", quelleShowing: .constant(true))
     }
 }

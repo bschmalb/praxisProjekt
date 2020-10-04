@@ -37,12 +37,12 @@ struct AddTippView: View {
     @State var show = false
     @State var posted = false
     
-    @State var optionSelected: [Int] = [-1, -1, -1, -1, 1]
+    @State var optionSelected: [Int] = [-1, -1, -1, 1, 1]
     
     @State var category: String = "Transport"
     @State var level: String = "Leicht"
     @State var name: String = ""
-    @State var quelle: String = ""
+    @State var quelle: String = "https://www."
     
     @State var offsets: [CGFloat] = [0, UIScreen.main.bounds.width, UIScreen.main.bounds.width, UIScreen.main.bounds.width, UIScreen.main.bounds.width]
     
@@ -164,14 +164,13 @@ struct AddTippView: View {
                                     .cornerRadius(15)
                             } else {
                                 HStack {
-                                    Text("Posten")
-                                        .font(.headline)
                                     Image(systemName: "arrow.up.doc")
+                                        .font(.headline)
+                                    Text("Posten")
                                         .font(.headline)
                                 }
                                 .accentColor(Color("white"))
-                                .padding(5)
-                                .frame(width: 120, height: 40)
+                                .frame(width: 140, height: 50)
                                 .background(Color("blue"))
                                 .cornerRadius(15)
                             }
@@ -559,8 +558,23 @@ struct AddTipp3: View {
                         //                                        isSecured: false,
                         //                                        keyboard: .default)
                         //                            .frame(height: 40)
-                        CustomTextField2(text: binding, isFirstResponder: $firstResponder)
-                            .frame(height: 40)
+//                        CustomTextField2(text: binding, isFirstResponder: $firstResponder, maxLength: 65)
+//                            .frame(height: 40)
+//                            .frame(maxWidth: UIScreen.main.bounds.width - 30)
+                        ZStack{
+                            MultilineTextView(text: binding, isFirstResponder: $firstResponder, maxLength: 70)
+                            VStack {
+                                Spacer()
+                                HStack {
+                                    Spacer()
+                                    Text("\(category.count)/70")
+                                        .padding(5)
+                                        .font(.system(size: UIScreen.main.bounds.width * 0.03))
+                                        .opacity(0.5)
+                                }
+                            }
+                        }.frame(height: UIScreen.main.bounds.width * 0.25)
+                        .frame(maxWidth: UIScreen.main.bounds.width - 30)
                     }
                 }
             }.padding(.horizontal)
@@ -619,9 +633,13 @@ struct AddTipp4: View {
                         //                                        isSecured: false,
                         //                                        keyboard: .default)
                         //                            .frame(height: 40)
+                        MultilineTextView(text: binding, isFirstResponder: $firstResponder, maxLength: 1000, fontSize: 0.04)
+                            .frame(height: 50)
+                            .frame(maxWidth: UIScreen.main.bounds.width - 30)
                         
-                        CustomTextField2(text: binding, isFirstResponder: $firstResponder)
-                            .frame(height: 40)
+//                        CustomTextField2(text: binding, isFirstResponder: $firstResponder, maxLength: 5)
+//                            .frame(height: 40)
+//                            .frame(maxWidth: UIScreen.main.bounds.width - 30)
                         
                         //                        TextField("Dein Tipp", text: binding)
                         //                            .font(.system(size: 18))
@@ -672,21 +690,22 @@ struct AddTipp5: View {
                         .scaledToFit()
                         .frame(minHeight: 100, maxHeight: 200)
                     Text(title)
-                        .font(.title)
+                        .font(.system(size: screenWidth < 500 ? screenWidth * 0.07  - CGFloat(title.count / 25) : 26, weight: .medium))
+                        .fixedSize(horizontal: false, vertical: true)
                         .foregroundColor(Color("alwaysblack"))
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
                     Button(action: {
                     }) {
-                        Text(quelle)
-                            .font(.footnote)
-                            .foregroundColor(Color("alwaysblack"))
+                        Text("Quelle")
+                            .foregroundColor(.gray)
+                            .font(.system(size: screenWidth * 0.03, weight: .medium))
                             .multilineTextAlignment(.center)
                             .padding(5)
                     }
                     Spacer()
                     HStack {
-                        Image(systemName: "checkmark")
+                        Image(systemName: "plus")
                             .font(.system(size: 25))
                             .foregroundColor(.black)
                             .opacity(0.1)
@@ -751,19 +770,19 @@ struct SelectButton: View {
             
         }) {
             VStack {
-                Image(self.categorySelected == selectAmount ? "white" + icon : "black" + icon)
+                Image(categoryLocal)
                     .resizable()
                     .scaledToFit()
                     .offset(y: 3)
                 Text(categoryLocal)
                     .font(.system(size: screenWidth < 500 ? screenWidth * 0.04 : 18, weight: .medium))
                     .fixedSize()
-                    .foregroundColor(Color(self.categorySelected == selectAmount ? "white" : "black"))
                     .multilineTextAlignment(.center)
                     .padding(5)
             }.frame(height: screenWidth < 500 ? screenWidth / 5 : 80)
             .padding(2)
             .padding(.horizontal, 5)
+            .foregroundColor(Color(self.categorySelected == selectAmount ? "white" : "black"))
             .background(Color(categorySelected == selectAmount ? "blue" : "transparent"))
             .cornerRadius(15)
             
@@ -843,16 +862,22 @@ struct CustomTextField2: UIViewRepresentable {
         
         @Binding var text: String
         @Binding var isFirstResponder: Bool?
+        @State var maxLength: Int
         
         @State var didBecomeFirstResponder = false
         
-        init(text: Binding<String>, isFirstResponder: Binding<Bool?>) {
+        init(text: Binding<String>, isFirstResponder: Binding<Bool?>, maxLength: State<Int>) {
             _text = text
             _isFirstResponder = isFirstResponder
+            _maxLength = maxLength
         }
         
         func textFieldDidChangeSelection(_ textField: UITextField) {
-            text = textField.text ?? ""
+            if let t: String = textField.text {
+                textField.text = String(t.prefix(maxLength))
+                text = textField.text!
+            }
+//            text = textField.text ?? ""
         }
         
         func textFieldDidBeginEditing(_ textField: UITextField) {
@@ -870,19 +895,170 @@ struct CustomTextField2: UIViewRepresentable {
     
     @Binding var text: String
     @Binding var isFirstResponder: Bool?
+    @State var maxLength: Int
     
     func makeUIView(context: UIViewRepresentableContext<CustomTextField2>) -> UITextField {
         let textField = UITextField(frame: .zero)
         textField.delegate = context.coordinator
         textField.borderStyle = UITextField.BorderStyle.roundedRect
+        textField.bounds.size.width = UIScreen.main.bounds.width - 30
         return textField
     }
     
     func makeCoordinator() -> CustomTextField2.Coordinator {
-        return Coordinator(text: $text, isFirstResponder: $isFirstResponder)
+        return Coordinator(text: $text, isFirstResponder: $isFirstResponder, maxLength: _maxLength)
     }
     
     func updateUIView(_ uiView: UITextField, context: UIViewRepresentableContext<CustomTextField2>) {
+        uiView.text = text
+        if isFirstResponder ?? false && !context.coordinator.didBecomeFirstResponder  {
+            uiView.becomeFirstResponder()
+            context.coordinator.didBecomeFirstResponder = true
+        } else if (!(isFirstResponder ?? true) && context.coordinator.didBecomeFirstResponder){
+            uiView.resignFirstResponder()
+            context.coordinator.didBecomeFirstResponder = false
+        }
+        else if (!(isFirstResponder ?? true)){
+            uiView.resignFirstResponder()
+            context.coordinator.didBecomeFirstResponder = false
+        }
+    }
+}
+
+struct MultilineTextView: UIViewRepresentable {
+    
+    class Coordinator: NSObject, UITextViewDelegate {
+        
+        @Binding var text: String
+        @Binding var isFirstResponder: Bool?
+        @State var maxLength: Int
+        
+        @State var didBecomeFirstResponder = false
+        
+        init(text: Binding<String>, isFirstResponder: Binding<Bool?>, maxLength: State<Int>) {
+            _text = text
+            _isFirstResponder = isFirstResponder
+            _maxLength = maxLength
+        }
+        
+        func textViewDidChange(_ textField: UITextView) {
+            if let t: String = textField.text {
+                textField.text = String(t.prefix(maxLength))
+                text = textField.text!
+            }
+        }
+        
+        func textViewDidBeginEditing(_ textField: UITextView) {
+            DispatchQueue.main.async {
+                self.isFirstResponder = true
+            }
+        }
+        
+        func textViewDidEndEditing(_ textField: UITextView) {
+            DispatchQueue.main.async {
+                self.isFirstResponder = false
+            }
+        }
+    }
+    
+    @Binding var text: String
+    @Binding var isFirstResponder: Bool?
+    @State var maxLength: Int
+    @State var fontSize: CGFloat = 0.055
+
+    @State var didBecomeFirstResponder = false
+
+    func makeCoordinator() -> MultilineTextView.Coordinator {
+        return MultilineTextView.Coordinator(text: $text, isFirstResponder: $isFirstResponder, maxLength: _maxLength)
+    }
+    
+    func makeUIView(context: Context) -> UITextView {
+        let view = UITextView()
+        view.isScrollEnabled = true
+        view.isEditable = true
+        view.isUserInteractionEnabled = true
+        view.layer.cornerRadius = 5
+        view.delegate = context.coordinator
+        view.font = .systemFont(ofSize: UIScreen.main.bounds.width * fontSize)
+        return view
+    }
+
+    func updateUIView(_ uiView: UITextView, context: Context) {
+        uiView.text = text
+        if isFirstResponder ?? false && !context.coordinator.didBecomeFirstResponder  {
+            uiView.becomeFirstResponder()
+            context.coordinator.didBecomeFirstResponder = true
+        } else if (!(isFirstResponder ?? true) && context.coordinator.didBecomeFirstResponder){
+            uiView.resignFirstResponder()
+            context.coordinator.didBecomeFirstResponder = false
+        }
+        else if (!(isFirstResponder ?? true)){
+            uiView.resignFirstResponder()
+            context.coordinator.didBecomeFirstResponder = false
+        }
+    }
+}
+
+struct MultilineTextView2: UIViewRepresentable {
+    
+    class Coordinator: NSObject, UITextViewDelegate {
+        
+        @Binding var text: String
+        @Binding var isFirstResponder: Bool?
+        @State var maxLength: Int
+        
+        @State var didBecomeFirstResponder = false
+        
+        init(text: Binding<String>, isFirstResponder: Binding<Bool?>, maxLength: State<Int>) {
+            _text = text
+            _isFirstResponder = isFirstResponder
+            _maxLength = maxLength
+        }
+        
+        func textViewDidChange(_ textField: UITextView) {
+            if let t: String = textField.text {
+                textField.text = String(t.prefix(maxLength))
+                text = textField.text!
+            }
+        }
+        
+        func textViewDidBeginEditing(_ textField: UITextView) {
+            DispatchQueue.main.async {
+                self.isFirstResponder = true
+            }
+        }
+        
+        func textViewDidEndEditing(_ textField: UITextView) {
+            DispatchQueue.main.async {
+                self.isFirstResponder = false
+            }
+        }
+    }
+    
+    @Binding var text: String
+    @Binding var isFirstResponder: Bool?
+    @State var maxLength: Int
+
+    @State var didBecomeFirstResponder = false
+
+    func makeCoordinator() -> MultilineTextView2.Coordinator {
+        return MultilineTextView2.Coordinator(text: $text, isFirstResponder: $isFirstResponder, maxLength: _maxLength)
+    }
+    
+    func makeUIView(context: Context) -> UITextView {
+        let view = UITextView()
+        view.isScrollEnabled = true
+        view.isEditable = true
+        view.isUserInteractionEnabled = true
+        view.layer.cornerRadius = 5
+//        view.layer.borderWidth = 1
+//        view.layer.borderColor = UIColor.lightGray.cgColor
+        view.delegate = context.coordinator
+        view.font = .systemFont(ofSize: UIScreen.main.bounds.width * 0.045)
+        return view
+    }
+
+    func updateUIView(_ uiView: UITextView, context: Context) {
         uiView.text = text
         if isFirstResponder ?? false && !context.coordinator.didBecomeFirstResponder  {
             uiView.becomeFirstResponder()

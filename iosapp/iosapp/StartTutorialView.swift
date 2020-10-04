@@ -73,161 +73,164 @@ struct StartTutorialView: View {
                 }
                 Spacer()
             }
-            ZStack {
-                VStack {
-                    ZStack {
-                        Intro1(name: $name, nameLength: $optionSelected[0], firstResponder: $firstResponder)
-                            .offset(x: offsets[0])
-                            .opacity(step == 0 ? 1 : 0)
-                        Intro2(age: $age, gender: $gender, hideInfo: $hideInfo, optionSelected: $optionSelected[step], firstResponder: $firstResponder)
-                            .offset(x: offsets[1])
-                            .opacity(step == 1 ? 1 : 0)
-                        Intro3(optionSelected: $optionSelected[step], filter: filter).environmentObject(FilterData2())
-                            .offset(x: offsets[2])
-                            .opacity(step == 2 ? 1 : 0)
-                        Intro4(filter: filter, categories: $categories, optionSelected: $optionSelected[step])
-                            .offset(x: offsets[3])
-                            .opacity(step == 3 ? 1 : 0)
-                        Intro5(optionSelected: $optionSelected[step])
-                            .offset(x: offsets[4])
-                            .opacity(step == 4 ? 1 : 0)
-                    }
-                    HStack (spacing: 5) {
-                        Capsule()
-                            .frame(width: (UIScreen.main.bounds.width - 50) / 35 * firstCapsule, height: 12)
-                            .foregroundColor(Color("black")).opacity(0.1)
-                        Capsule()
-                            .frame(width: (UIScreen.main.bounds.width - 50) / 35 * secondCapsule, height: 12)
-                            .foregroundColor(Color("blue"))
-                        Capsule()
-                            .frame(width: (UIScreen.main.bounds.width - 50) / 35 * thirdCapsule, height: 12)
-                            .foregroundColor(Color("black")).opacity(0.1)
-                    }
-                    .padding(.top)
-                    .padding(.bottom, 5)
-                    .animation(.spring())
-                    HStack {
-                        Button (action: {
-                            
-                            if (step == 1) {
-                                self.firstResponder = true
-                                self.secondCapsule -= 1
-                                self.thirdCapsule += 1
-                            }
-                            else if (step == 2) {
-                                self.secondCapsule += 1
-                                self.thirdCapsule -= 1
-                            }
-                            
-                            impact(style: .medium)
-                            self.step -= 1
-                            self.firstCapsule -= 2
-                            self.thirdCapsule += 2
-                            
-                            self.back(i: step)
-                        }) {
-                            Image(systemName: "arrow.left")
-                                .foregroundColor(.primary)
-                                .font(.headline)
-                                .padding(5)
-                                .frame(width: 80, height: 40)
-                        }.disabled(firstCapsule < 2)
-                        Spacer()
-                        Button(action: {
-                            impact(style: .medium)
-                            
-                            if (step == 0) {
-                                self.user.name = self.name
-                                UserDefaults.standard.set(self.name, forKey: "userName")
-                                self.hideKeyboard()
-                                self.firstResponder = false
-                                self.hideKeyboard()
-                                self.secondCapsule += 1
-                                self.thirdCapsule -= 1
-                            } else if (step == 1) {
-                                self.secondCapsule -= 1
-                                self.thirdCapsule += 1
-                            } else if (step == 3){
-                                UserDefaults.standard.set(self.categories, forKey: "notCategory")
-                            }
-                            
-                            if (step < 4) {
-                                self.step += 1
-                                self.firstCapsule += 2
-                                self.thirdCapsule -= 2
-                                
-                                self.next(i: step)
-                            } else if (step == 4) {
-                                self.loading = true
-                                self.postUserData()
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                                    self.loadingAnimation = true
-                                }
-                            }
-                        }) {
-                            Image(systemName: step == 4 ? "checkmark" : "arrow.right")
-                                .font(.headline)
-                                .accentColor(Color(optionSelected[step] > 0 ? "white" :"white"))
-                                .padding(5)
-                                .frame(width: 80, height: 40)
-                                .background(Color(optionSelected[step] > 0 ? "blue" : "blueDisabled"))
-                                .cornerRadius(15)
-                        }.disabled(optionSelected[step] < 1)
-                    }
-                    .padding(.horizontal)
-                    .padding(.bottom, 30)
+            VStack {
+                ZStack {
+                    Intro1(name: $name, nameLength: $optionSelected[0], firstResponder: $firstResponder)
+                        .offset(x: offsets[0])
+                        .opacity(step == 0 ? 1 : 0)
+                    Intro2(age: $age, gender: $gender, hideInfo: $hideInfo, optionSelected: $optionSelected[step], firstResponder: $firstResponder)
+                        .offset(x: offsets[1])
+                        .opacity(step == 1 ? 1 : 0)
+                    Intro3(optionSelected: $optionSelected[step], filter: filter).environmentObject(FilterData2())
+                        .offset(x: offsets[2])
+                        .opacity(step == 2 ? 1 : 0)
+                    Intro4(filter: filter, categories: $categories, optionSelected: $optionSelected[step])
+                        .offset(x: offsets[3])
+                        .opacity(step == 3 ? 1 : 0)
+                    Intro5(optionSelected: $optionSelected[step])
+                        .offset(x: offsets[4])
+                        .opacity(step == 4 ? 1 : 0)
                 }
-                .offset(y: -keyboard.currentHeight)
-//                .padding(.bottom, keyboard.currentHeight)
-                .padding(.bottom, 0)
-                .blur(radius: loading ? 5 : 0)
-                if (loading) {
-                    ZStack {
-                        if (success) {
-                            VStack {
-                                LottieView(filename: "success", loop: false)
-                                    .frame(width: successScale ? 250 : 180, height: successScale ? 250 : 180)
-                                    .animation(.spring())
-                            }
-                            .onAppear(){
-                                haptic(type: .success)
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-                                    self.successScale = true
-                                }
+//                .frame(height: (firstResponder ?? false) ? UIScreen.main.bounds.height / 3 : .infinity)
+                .offset(y: (firstResponder ?? false) ? -UIScreen.main.bounds.height / 3.5 : 0)
+                HStack (spacing: 5) {
+                    Capsule()
+                        .frame(width: (UIScreen.main.bounds.width - 50) / 35 * firstCapsule, height: 12)
+                        .foregroundColor(Color("black")).opacity(0.1)
+                    Capsule()
+                        .frame(width: (UIScreen.main.bounds.width - 50) / 35 * secondCapsule, height: 12)
+                        .foregroundColor(Color("blue"))
+                    Capsule()
+                        .frame(width: (UIScreen.main.bounds.width - 50) / 35 * thirdCapsule, height: 12)
+                        .foregroundColor(Color("black")).opacity(0.1)
+                }
+                .padding(.top)
+                .padding(.bottom, 5)
+                .animation(.spring())
+                .offset(y: (firstResponder ?? false) ? -UIScreen.main.bounds.height / 2.5 : 0)
+                HStack {
+                    Button (action: {
+                        
+                        if (step == 1) {
+//                            self.firstResponder = true
+                            self.secondCapsule -= 1
+                            self.thirdCapsule += 1
+                        }
+                        else if (step == 2) {
+                            self.secondCapsule += 1
+                            self.thirdCapsule -= 1
+                        }
+                        
+                        impact(style: .medium)
+                        self.step -= 1
+                        self.firstCapsule -= 2
+                        self.thirdCapsule += 2
+                        
+                        self.back(i: step)
+                    }) {
+                        Image(systemName: "arrow.left")
+                            .foregroundColor(.primary)
+                            .font(.headline)
+                            .padding(5)
+                            .frame(width: 80, height: 40)
+                    }.disabled(firstCapsule < 2)
+                    .opacity(step == 0 ? 0 : 1)
+                    Spacer()
+                    Button(action: {
+                        impact(style: .medium)
+                        
+                        if (step == 0) {
+                            self.user.name = self.name
+                            UserDefaults.standard.set(self.name, forKey: "userName")
+                            self.hideKeyboard()
+                            self.firstResponder = false
+                            self.hideKeyboard()
+                            self.secondCapsule += 1
+                            self.thirdCapsule -= 1
+                        } else if (step == 1) {
+                            self.secondCapsule -= 1
+                            self.thirdCapsule += 1
+                        } else if (step == 3){
+                            UserDefaults.standard.set(self.categories, forKey: "notCategory")
+                        }
+                        
+                        if (step < 4) {
+                            self.step += 1
+                            self.firstCapsule += 2
+                            self.thirdCapsule -= 2
+                            
+                            self.next(i: step)
+                        } else if (step == 4) {
+                            self.loading = true
+                            self.postUserData()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                                self.loadingAnimation = true
                             }
                         }
-                        if (!success) {
-                            VStack {
-                                LottieView(filename: "loadingCircle", loop: true)
-                                    .frame(width: 80, height: 80)
-                                    .background(Color("white"))
-                                    .cornerRadius(50)
-                            }
-                            .onAppear(){
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                    self.success = true
-                                }
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-                                    self.animation = false
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                        self.show = true
-                                        impact(style: .medium)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    .frame(width: successScale ? 200 : 150, height: successScale ? 200 : 150)
-                    .background(Color("white"))
-                    .cornerRadius(50)
-                    .scaleEffect(loadingAnimation ? 1 : 0.5)
-                    .shadow(radius: 5)
-                    .animation(.spring())
+                    }) {
+                        Image(systemName: step == 4 ? "checkmark" : "arrow.right")
+                            .font(.headline)
+                            .accentColor(Color(optionSelected[step] > 0 ? "white" :"white"))
+                            .padding(5)
+                            .frame(width: 80, height: 40)
+                            .background(Color(optionSelected[step] > 0 ? "blue" : "blueDisabled"))
+                            .cornerRadius(15)
+                    }.disabled(optionSelected[step] < 1)
                 }
+                .padding(.horizontal)
+                .padding(.bottom, 30)
+                .offset(y: (firstResponder ?? false) ? -UIScreen.main.bounds.height / 2.5 : 0)
+                Spacer()
             }
+//            .offset(y: -keyboard.currentHeight)
+            //                .padding(.bottom, keyboard.currentHeight)
+            .blur(radius: loading ? 5 : 0)
             .scaleEffect(CGSize(width: launchScreen ? 0.7 : 0.95, height: launchScreen ? 0.7 : 0.95))
             .animation(.spring())
             .accentColor(.black)
+            if (loading) {
+                ZStack {
+                    if (success) {
+                        VStack {
+                            LottieView(filename: "success", loop: false)
+                                .frame(width: successScale ? 250 : 180, height: successScale ? 250 : 180)
+                                .animation(.spring())
+                        }
+                        .onAppear(){
+                            haptic(type: .success)
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
+                                self.successScale = true
+                            }
+                        }
+                    }
+                    if (!success) {
+                        VStack {
+                            LottieView(filename: "loadingCircle", loop: true)
+                                .frame(width: 80, height: 80)
+                                .background(Color("white"))
+                                .cornerRadius(50)
+                        }
+                        .onAppear(){
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                self.success = true
+                            }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+                                self.animation = false
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                    self.show = true
+                                    impact(style: .medium)
+                                }
+                            }
+                        }
+                    }
+                }
+                .frame(width: successScale ? 200 : 150, height: successScale ? 200 : 150)
+                .background(Color("white"))
+                .cornerRadius(50)
+                .scaleEffect(loadingAnimation ? 1 : 0.5)
+                .shadow(radius: 5)
+                .animation(.spring())
+            }
         }
     }
     
@@ -290,14 +293,16 @@ struct Intro1: View {
     
     @EnvironmentObject var user: UserObserv
     
+    var maxLength = 13
+    
     var body: some View {
         
         let binding = Binding<String>(get: {
             self.name
         }, set: {
-            self.user.name = $0
-            self.name = $0
-            UserDefaults.standard.set($0, forKey: "userName")
+            self.user.name = String($0.prefix(maxLength))
+            self.name = String($0.prefix(maxLength))
+            UserDefaults.standard.set(String($0.prefix(maxLength)), forKey: "userName")
             nameLength = self.name.count
         })
         
@@ -319,30 +324,40 @@ struct Intro1: View {
                 .multilineTextAlignment(.center)
                 .font(.footnote)
             Section {
-                TextField("", text: binding, onEditingChanged: { (editingchanged) in
-                    if (editingchanged) {
-                        self.firstResponder = true
-                    } else {
-                        self.firstResponder = false
-                    }
+                
+                ZStack{
+                    MultilineTextView2(text: binding, isFirstResponder: $firstResponder, maxLength: maxLength)
+                        .frame(height: 40)
                     
-                } , onCommit: {
-                    user.name = user.name
-                    UserDefaults.standard.set(user.name, forKey: "userName")
-                    
-                })
-                .lineLimit(1)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .frame(maxWidth: UIScreen.main.bounds.width - 30)
+//                    TextField("", text: binding, onEditingChanged: { (editingchanged) in
+//                        if (editingchanged) {
+//                            self.firstResponder = true
+//                        } else {
+//                            self.firstResponder = false
+//                        }
+//
+//                    } , onCommit: {
+//                        user.name = user.name
+//                        self.firstResponder = false
+//                        UserDefaults.standard.set(user.name, forKey: "userName")
+//
+//                    })
+//                    .lineLimit(1)
+//                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    VStack {
+                        HStack {
+                            Spacer()
+                            Text("\(name.count)/\(maxLength)")
+                                .padding(10)
+                                .font(.system(size: UIScreen.main.bounds.width * 0.03))
+                                .opacity(0.5)
+                        }
+                    }.frame(height: 40)
+                }
+                .frame(maxWidth: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width - 30 : 450)
                 .padding(.horizontal)
             }
             Spacer()
-            //            CustomTextField(text: binding,
-//                            nextResponder: .constant(false),
-//                            isResponder: $firstResponder,
-//                            isSecured: false,
-//                            keyboard: .default)
-//                .frame(height: 40)
         }
         .padding(.horizontal)
         .onTapGesture(perform: {
@@ -394,37 +409,37 @@ struct Intro2 : View {
                 self.hideKeyboard()
             })
             if (keyboard.currentHeight < 10) {
-            GeometryReader { bounds in
-                ScrollView (.horizontal, showsIndicators: false) {
-                    HStack {
-                        Spacer()
-                        ForEach(ages.indices, id: \.self) { index in
-                            Button(action: {
-                                self.age = ages[index]
-                                impact(style: .medium)
-                                for (i, _) in isSelected.enumerated() {
-                                    isSelected[i] = false
+                GeometryReader { bounds in
+                    ScrollView (.horizontal, showsIndicators: false) {
+                        HStack {
+                            Spacer()
+                            ForEach(ages.indices, id: \.self) { index in
+                                Button(action: {
+                                    self.age = ages[index]
+                                    impact(style: .medium)
+                                    for (i, _) in isSelected.enumerated() {
+                                        isSelected[i] = false
+                                    }
+                                    self.isSelected[index] = true
+                                    
+                                    if (gender.count > 0) {
+                                        self.optionSelected = 1
+                                    }
+                                }){
+                                    Text(ages[index])
+                                        .font(.system(size: 14))
+                                        .padding()
+                                        .foregroundColor(Color(isSelected[index] ? "white" : "black"))
+                                        .background(Color(isSelected[index] ? "blue" : "background"))
+                                        .cornerRadius(15)
                                 }
-                                self.isSelected[index] = true
-                                
-                                if (gender.count > 0) {
-                                    self.optionSelected = 1
-                                }
-                            }){
-                                Text(ages[index])
-                                    .font(.system(size: 14))
-                                    .padding()
-                                    .foregroundColor(Color(isSelected[index] ? "white" : "black"))
-                                    .background(Color(isSelected[index] ? "blue" : "background"))
-                                    .cornerRadius(15)
                             }
-                        }
-                        Spacer()
-                    }.frame(minWidth: bounds.size.width)
+                            Spacer()
+                        }.frame(minWidth: bounds.size.width)
+                    }
                 }
-            }
-            .frame(maxHeight: 50)
-            .opacity(hideInfo ? 0.5 : 1)
+                .frame(maxHeight: 50)
+                .opacity(hideInfo ? 0.5 : 1)
             }
             Spacer()
                 .frame(minHeight: 5, idealHeight: 15, maxHeight: 25)
