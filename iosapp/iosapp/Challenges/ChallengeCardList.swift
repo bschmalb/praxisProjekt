@@ -21,7 +21,7 @@ struct ChallengeCardList: View {
     
     @State var loading: Bool = false
     
-    @State var filterCategory2: [String] = ["Ernährung", "Transport", "Recycling", "Ressourcen"]
+    @State var filterCategory2: [String] = ["Ernährung", "Transport", "Haushalt", "Ressourcen"]
     @State var filterLevel2: [String] = ["Leicht", "Mittel", "Schwer"]
     @State var filterPoster: [String] = ["Offiziell", "Community"]
     
@@ -107,7 +107,7 @@ struct ChallengeCardList: View {
     }
     
     func filterTipps(filterName: String){
-        if (filterName == "Ernährung" || filterName == "Transport" || filterName == "Recycling" || filterName == "Ressourcen") {
+        if (filterName == "Ernährung" || filterName == "Transport" || filterName == "Haushalt" || filterName == "Ressourcen") {
             if (!filterCategory2.contains(filterName)){
                 filterCategory2.append(filterName)
             } else {

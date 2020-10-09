@@ -42,7 +42,8 @@ class UserApi {
     @State var id = UserDefaults.standard.string(forKey: "id")
     
     func fetchUser(completion: @escaping (User) -> ()) {
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
+        
+        guard let url = URL(string: "https://sustainablelife.herokuapp.com/users/" + (id ?? "")) else { return }
         
         URLSession.shared.dataTask(with: url) { (data, _, _) in
             

@@ -23,6 +23,7 @@ struct TippView: View {
     
     @EnvironmentObject var levelEnv: UserLevel
     @EnvironmentObject var overlay: Overlay
+    @EnvironmentObject var myUrl: ApiUrl
     
     @State var firstUseTipp = UserDefaults.standard.bool(forKey: "firstUseTipp")
     
@@ -49,7 +50,7 @@ struct TippView: View {
                                 .font(.title)
                                 .padding(10)
                                 .padding(.trailing, 15)
-                        }.sheet(isPresented: $showAddTipps, content: { AddTippView(showAddTipps: self.$showAddTipps).environmentObject(self.levelEnv).environmentObject(self.overlay)})
+                        }.sheet(isPresented: $showAddTipps, content: { AddTippView(showAddTipps: self.$showAddTipps).environmentObject(self.levelEnv).environmentObject(self.overlay).environmentObject(self.myUrl)})
                     }
                     .padding(.top, UIScreen.main.bounds.height / 81)
                     .offset(y: 10)
@@ -75,7 +76,7 @@ struct TippView: View {
                                     Spacer()
                                 }.frame(width: UIScreen.main.bounds.width - 30, height: 20 + UIScreen.main.bounds.height / 30)
                             }
-                            .sheet(isPresented: $showAddTipps, content: { AddTippView(showAddTipps: self.$showAddTipps).environmentObject(self.levelEnv).environmentObject(self.overlay) })
+                            .sheet(isPresented: $showAddTipps, content: { AddTippView(showAddTipps: self.$showAddTipps).environmentObject(self.levelEnv).environmentObject(self.overlay).environmentObject(self.myUrl) })
                             .background(Color("buttonWhite"))
                             .cornerRadius(15)
                             .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)

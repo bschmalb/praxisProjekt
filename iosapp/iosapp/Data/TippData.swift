@@ -29,7 +29,7 @@ struct Tipp: Codable, Hashable, Identifiable{
 
 class Api {
     func fetchTipps(completion: @escaping ([Tipp]) -> ()) {
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/tipps?minscore=20") else { return }
+        guard let url = URL(string: "https://sustainablelife.herokuapp.com/tipps?minscore=20") else { return }
         
         URLSession.shared.dataTask(with: url) { (data, _, _) in
             guard let data = data else { return }

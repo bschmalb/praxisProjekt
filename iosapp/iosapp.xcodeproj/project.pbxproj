@@ -31,7 +31,6 @@
 		B762F589251B3685001050A1 /* loadingWhite.json in Resources */ = {isa = PBXBuildFile; fileRef = B762F588251B3685001050A1 /* loadingWhite.json */; };
 		B7649E312490F3AB0079984A /* TippController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7649E302490F3AB0079984A /* TippController.swift */; };
 		B7649E33249105540079984A /* TippView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7649E32249105540079984A /* TippView.swift */; };
-		B77784E5248BDB7500C58AEE /* TippCardsCustom.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77784E4248BDB7500C58AEE /* TippCardsCustom.swift */; };
 		B77784E7248BDBA600C58AEE /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77784E6248BDBA600C58AEE /* PageViewController.swift */; };
 		B77784E9248BDC7700C58AEE /* PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77784E8248BDC7700C58AEE /* PageView.swift */; };
 		B77C7E0D252A369E00677C12 /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B77C7E0C252A369E00677C12 /* FeedbackView.swift */; };
@@ -51,6 +50,7 @@
 		B7919AF224981C1900014240 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = B7919AF124981C1900014240 /* Lottie */; };
 		B7919AF424981C5B00014240 /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7919AF324981C5B00014240 /* LottieView.swift */; };
 		B7919AF624981E3F00014240 /* SuccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7919AF524981E3F00014240 /* SuccessView.swift */; };
+		B7934861252F136A00D8FC25 /* ProfilProfil.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7934860252F136A00D8FC25 /* ProfilProfil.swift */; };
 		B7A8CBDC242C10C50036FD6E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A8CBDB242C10C50036FD6E /* AppDelegate.swift */; };
 		B7A8CBDE242C10C50036FD6E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A8CBDD242C10C50036FD6E /* SceneDelegate.swift */; };
 		B7A8CBE0242C10C50036FD6E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A8CBDF242C10C50036FD6E /* ContentView.swift */; };
@@ -129,7 +129,6 @@
 		B762F588251B3685001050A1 /* loadingWhite.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loadingWhite.json; sourceTree = "<group>"; };
 		B7649E302490F3AB0079984A /* TippController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippController.swift; sourceTree = "<group>"; };
 		B7649E32249105540079984A /* TippView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippView.swift; sourceTree = "<group>"; };
-		B77784E4248BDB7500C58AEE /* TippCardsCustom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippCardsCustom.swift; sourceTree = "<group>"; };
 		B77784E6248BDBA600C58AEE /* PageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
 		B77784E8248BDC7700C58AEE /* PageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageView.swift; sourceTree = "<group>"; };
 		B77C7E0C252A369E00677C12 /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
@@ -148,6 +147,7 @@
 		B7919AEE24981BBD00014240 /* success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = success.json; sourceTree = "<group>"; };
 		B7919AF324981C5B00014240 /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
 		B7919AF524981E3F00014240 /* SuccessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessView.swift; sourceTree = "<group>"; };
+		B7934860252F136A00D8FC25 /* ProfilProfil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilProfil.swift; sourceTree = "<group>"; };
 		B7A8CBD8242C10C50036FD6E /* Sustainable Life.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sustainable Life.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7A8CBDB242C10C50036FD6E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B7A8CBDD242C10C50036FD6E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -252,7 +252,6 @@
 				B7B50CEE250F9AD500DD2FE6 /* TippCard2.swift */,
 				B7B50CEC250E57AC00DD2FE6 /* SmallTippCard.swift */,
 				B7252189248FDF9C00C43507 /* TippCardList.swift */,
-				B77784E4248BDB7500C58AEE /* TippCardsCustom.swift */,
 			);
 			path = Tipps;
 			sourceTree = "<group>";
@@ -266,6 +265,7 @@
 				B74727C024B268B300775E16 /* ProfilChallengeView.swift */,
 				B7598B6B24A8BF1B000436B8 /* ProfilEntwicklung.swift */,
 				B7598B6D24A8C22B000436B8 /* ProfilEinstellungen.swift */,
+				B7934860252F136A00D8FC25 /* ProfilProfil.swift */,
 				B77C7E0C252A369E00677C12 /* FeedbackView.swift */,
 				B7DB1E2C24AA138E00F28B07 /* ProfilFilter.swift */,
 				B762F583251AC118001050A1 /* ProfilData.swift */,
@@ -567,7 +567,6 @@
 				B7649E33249105540079984A /* TippView.swift in Sources */,
 				B7A8CBDC242C10C50036FD6E /* AppDelegate.swift in Sources */,
 				B7C19F6525096F6000E0D77D /* WebLinkView.swift in Sources */,
-				B77784E5248BDB7500C58AEE /* TippCardsCustom.swift in Sources */,
 				B7C2285324AD1DC60075360D /* AddTagebuchCard3.swift in Sources */,
 				B7B50CEB250C170200DD2FE6 /* FactCard.swift in Sources */,
 				B7874C0B249D3E8C0045D609 /* ProfilTippView.swift in Sources */,
@@ -582,6 +581,7 @@
 				B7598B6A24A803B8000436B8 /* UserDataStore.swift in Sources */,
 				B7598B6E24A8C22B000436B8 /* ProfilEinstellungen.swift in Sources */,
 				B7CF0F6F2497C0C300595EB2 /* RateTippDataStore.swift in Sources */,
+				B7934861252F136A00D8FC25 /* ProfilProfil.swift in Sources */,
 				B7B50CF12510D5F700DD2FE6 /* QuelleView.swift in Sources */,
 				B7DB1E2D24AA138E00F28B07 /* ProfilFilter.swift in Sources */,
 				B784696E248D2C13000A4331 /* AddTippCard4.swift in Sources */,

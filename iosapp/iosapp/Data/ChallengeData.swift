@@ -27,7 +27,7 @@ struct Challenge: Codable, Hashable, Identifiable{
 
 class ChallengeApi {
     func fetchChallenges(completion: @escaping ([Challenge]) -> ()) {
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/challenges?minscore=20") else { return }
+        guard let url = URL(string: "https://sustainablelife.herokuapp.com/challenges?minscore=20") else { return }
         
         URLSession.shared.dataTask(with: url) { (data, _, _) in
             guard let data = data else { return }

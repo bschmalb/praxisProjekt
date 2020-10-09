@@ -10,7 +10,7 @@ import SwiftUI
 
 class AllApi {
     func fetchAllTipps(completion: @escaping ([Tipp]) -> ()) {
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/tipps") else { return }
+        guard let url = URL(string: "https://sustainablelife.herokuapp.com/tipps") else { return }
         
         URLSession.shared.dataTask(with: url) { (data, _, _) in
             guard let data = data else { return }

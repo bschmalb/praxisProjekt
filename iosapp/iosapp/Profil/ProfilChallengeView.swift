@@ -193,7 +193,6 @@ struct ProfilChallengeView: View {
                 Api().fetchTipps { (filteredTipps) in
                     self.filteredTipps = filteredTipps
                 }
-                impact(style: .medium)
             }
         }
         .accentColor(.black)

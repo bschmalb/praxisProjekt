@@ -61,7 +61,7 @@ struct ProfilFilter: View {
                                 ProfilFilterView(filter: filter, index: 1, category: "Transport", categories: $categories, isSelected: true, optionSelected: $optionSelected)
                             }
                             HStack (spacing: 0){
-                                ProfilFilterView(filter: filter, index: 2, category: "Recycling", categories: $categories, isSelected: true, optionSelected: $optionSelected)
+                                ProfilFilterView(filter: filter, index: 2, category: "Haushalt", categories: $categories, isSelected: true, optionSelected: $optionSelected)
                                 Spacer()
                                 ProfilFilterView(filter: filter, index: 3, category: "Ressourcen", categories: $categories, isSelected: true, optionSelected: $optionSelected)
                             }

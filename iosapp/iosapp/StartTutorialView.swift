@@ -219,6 +219,7 @@ struct StartTutorialView: View {
                                 self.animation = false
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                     self.show = true
+                                    UserDefaults.standard.set(show, forKey: "showTutorial")
                                     impact(style: .medium)
                                 }
                             }
@@ -294,6 +295,8 @@ struct Intro1: View {
     
     @EnvironmentObject var user: UserObserv
     
+    var screen = UIScreen.main.bounds
+    
     var maxLength = 13
     
     var body: some View {
@@ -350,7 +353,7 @@ struct Intro1: View {
                             Spacer()
                             Text("\(name.count)/\(maxLength)")
                                 .padding(10)
-                                .font(.system(size: UIScreen.main.bounds.width * 0.03))
+                                .font(.system(size: screen.width < 500 ? screen.width * 0.03 : 12))
                                 .opacity(0.5)
                         }
                     }.frame(height: 40)
@@ -562,7 +565,7 @@ struct Intro4 : View {
                 HStack (spacing: 15) {
                     categoryButton(filter: filter, category: "Ernährung", categories: $categories, isSelected: true, optionSelected: $optionSelected)
                     categoryButton(filter: filter, category: "Transport", categories: $categories, isSelected: true, optionSelected: $optionSelected)
-                    categoryButton(filter: filter, category: "Recycling", categories: $categories, isSelected: true, optionSelected: $optionSelected)
+                    categoryButton(filter: filter, category: "Haushalt", categories: $categories, isSelected: true, optionSelected: $optionSelected)
                 }
                 .padding(.bottom, 10)
                 HStack {
@@ -670,7 +673,7 @@ struct categoryButton: View {
     @State var isSelected: Bool
     @Binding var optionSelected: Int
     
-    var categoriesArray = ["Ernährung", "Transport", "Recycling", "Ressourcen"]
+    var categoriesArray = ["Ernährung", "Transport", "Haushalt", "Ressourcen"]
     
     var body: some View {
         Button(action: {
@@ -812,7 +815,7 @@ struct ProfilFilterView: View {
     
     var screen = UIScreen.main.bounds.width
     
-    var categoriesArray = ["Ernährung", "Transport", "Recycling", "Ressourcen"]
+    var categoriesArray = ["Ernährung", "Transport", "Haushalt", "Ressourcen"]
     
     var body: some View {
         Button(action: {

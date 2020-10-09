@@ -64,7 +64,7 @@ struct FeedbackView: View {
                     .resizable()
                     .scaledToFit()
                     .scaleEffect(1.3)
-                    .frame(minHeight: 70, idealHeight: 150, maxHeight: 200)
+                    .frame(minHeight: 50, idealHeight: 100, maxHeight: 200)
                     .layoutPriority(1)
                 
                 Text("Gebe hier dein Feedback ein und wähle eine Kategorie zu welcher dieses zählt.")
@@ -80,8 +80,9 @@ struct FeedbackView: View {
                         self.feedbackType = feedbackOptions[0]
                     }){
                         Text(feedbackOptions[0])
-                            .font(.system(size: screen.width < 500 ? screen.width * 0.035 : 14))
-                            .padding()
+                            .font(.system(size: screen.width < 500 ? screen.width * 0.035 : 14, weight: Font.Weight.medium))
+                            .padding(15)
+                            .frame(height: 25 + UIScreen.main.bounds.height / 50)
                             .foregroundColor(Color(feedbackOptionSelected == 0 ? "white" : "black"))
                             .background(Color(feedbackOptionSelected == 0 ? "blue" : "background"))
                             .cornerRadius(15)
@@ -91,8 +92,9 @@ struct FeedbackView: View {
                         self.feedbackType = feedbackOptions[1]
                     }){
                         Text(feedbackOptions[1])
-                            .font(.system(size: screen.width < 500 ? screen.width * 0.035 : 14))
-                            .padding()
+                            .font(.system(size: screen.width < 500 ? screen.width * 0.035 : 14, weight: Font.Weight.medium))
+                            .padding(15)
+                            .frame(height: 25 + UIScreen.main.bounds.height / 50)
                             .foregroundColor(Color(feedbackOptionSelected == 1 ? "white" : "black"))
                             .background(Color(feedbackOptionSelected == 1 ? "blue" : "background"))
                             .cornerRadius(15)
@@ -102,8 +104,9 @@ struct FeedbackView: View {
                         self.feedbackType = feedbackOptions[2]
                     }){
                         Text(feedbackOptions[2])
-                            .font(.system(size: screen.width < 500 ? screen.width * 0.035 : 14))
-                            .padding()
+                            .font(.system(size: screen.width < 500 ? screen.width * 0.035 : 14, weight: Font.Weight.medium))
+                            .padding(15)
+                            .frame(height: 25 + UIScreen.main.bounds.height / 50)
                             .foregroundColor(Color(feedbackOptionSelected == 2 ? "white" : "black"))
                             .background(Color(feedbackOptionSelected == 2 ? "blue" : "background"))
                             .cornerRadius(15)
@@ -120,13 +123,14 @@ struct FeedbackView: View {
                             Spacer()
                             Text("\(feedback.count)/250")
                                 .padding(10)
-                                .font(.system(size: UIScreen.main.bounds.width * 0.03))
+                                .font(.system(size: screen.width < 500 ? screen.width * 0.03 : 12))
                                 .opacity(0.5)
                         }
                     }
                 }
                 .frame(minHeight: screen.height / 20, idealHeight: screen.height / 10, maxHeight: screen.height / 5)
                 .frame(maxWidth: UIScreen.main.bounds.width - 30)
+                .padding(.vertical, 5)
                 
                 Button(action: {
                     impact(style: .rigid)
@@ -145,7 +149,7 @@ struct FeedbackView: View {
                     }
                     .foregroundColor(.white)
                     .padding(15)
-                    .frame(height: 25 + UIScreen.main.bounds.height / 30)
+                    .frame(height: 30 + UIScreen.main.bounds.height / 50)
                     .background(Color(feedback.count < 5 || feedbackOptionSelected == -1 ? "blueDisabled" : "blue"))
                     .cornerRadius(15)
                 }.disabled(feedback.count < 5 || feedbackOptionSelected == -1)
@@ -184,7 +188,15 @@ struct FeedbackView: View {
                 .shadow(radius: 5)
                 .animation(.spring())
             }
-        }.animation(.spring())
+        }
+        .gesture(DragGesture()
+                    .onChanged({ (value) in
+                        if value.translation.width > 40 {
+                            self.mode.wrappedValue.dismiss()
+                        }
+                    })
+        )
+        .animation(.spring())
     }
     
     func postFeedback(){
@@ -205,24 +217,52 @@ struct FeedbackView: View {
         URLSession.shared.dataTask(with: request) { data, response, error in
             
             if let data = data {
-                if (try? JSONDecoder().decode(Feedback.self, from: data)) != nil {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        self.success = true
-                        self.successScale = true
+                if let decoded = try? JSONDecoder().decode(Message.self, from: data) {
+                    if decoded.message.contains("erfolgreich"){
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            self.success = true
+                            self.successScale = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                self.feedback = ""
+                                self.feedbackType = ""
+                                self.feedbackOptionSelected = -1
+                                self.loadingAnimation = false
+                                self.successScale = false
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                    self.loading = false
+                                    self.success = false
+                                }
+                            }
+                        }
+                        return
+                    }
+                    else {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                                self.loading = false
+                                self.success = false
+                                self.loadingAnimation = false
+                                self.successScale = false
+                        }
+                        return
+                    }
+                }
+                else {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                             self.loading = false
                             self.success = false
                             self.loadingAnimation = false
                             self.successScale = false
-                            self.feedback = ""
-                            self.feedbackType = ""
-                            self.feedbackOptionSelected = -1
-                        }
                     }
                     return
                 }
             } else {
                 print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        self.loading = false
+                        self.success = false
+                        self.loadingAnimation = false
+                        self.successScale = false
+                }
                 return
             }
         }.resume()

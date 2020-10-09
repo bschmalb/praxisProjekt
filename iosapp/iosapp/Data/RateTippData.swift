@@ -10,7 +10,7 @@ import SwiftUI
 
 class RateApi {
     func fetchRateTipps(completion: @escaping ([Tipp]) -> ()) {
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/tipps?maxscore=20") else { return }
+        guard let url = URL(string: "https://sustainablelife.herokuapp.com/tipps?maxscore=20") else { return }
         
         URLSession.shared.dataTask(with: url) { (data, _, _) in
             guard let data = data else { return }

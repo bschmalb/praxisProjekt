@@ -29,18 +29,18 @@ class UserLevel: ObservableObject {
 }
 
 class ApiUrl: ObservableObject {
-    @Published var tipps: String = UserDefaults.standard.string(forKey: "urlTipps") ?? "http://bastianschmalbach.ddns.net/tipps/"
-    @Published var users: String = UserDefaults.standard.string(forKey: "urlUsers") ?? "http://bastianschmalbach.ddns.net/users/"
-    @Published var feedbacks: String = UserDefaults.standard.string(forKey: "urlFeedbacks") ?? "http://bastianschmalbach.ddns.net/feedbacks/"
-    @Published var facts: String = UserDefaults.standard.string(forKey: "urlFacts") ?? "http://bastianschmalbach.ddns.net/facts/"
-    @Published var tippsNoSlash: String = UserDefaults.standard.string(forKey: "tippsNoSlash") ?? "http://bastianschmalbach.ddns.net/tipps"
+    @Published var tipps: String = UserDefaults.standard.string(forKey: "urlTipps") ?? "https://sustainablelife.herokuapp.com/tipps/"
+    @Published var users: String = UserDefaults.standard.string(forKey: "urlUsers") ?? "https://sustainablelife.herokuapp.com/users/"
+    @Published var feedbacks: String = UserDefaults.standard.string(forKey: "urlFeedbacks") ?? "https://sustainablelife.herokuapp.com/feedbacks/"
+    @Published var facts: String = UserDefaults.standard.string(forKey: "urlFacts") ?? "https://sustainablelife.herokuapp.com/facts/"
+    @Published var tippsNoSlash: String = UserDefaults.standard.string(forKey: "tippsNoSlash") ?? "https://sustainablelife.herokuapp.com/tipps"
     
     init() {
-        UserDefaults.standard.set("http://bastianschmalbach.ddns.net/tipps/", forKey: "urlTipps")
-        UserDefaults.standard.set("http://bastianschmalbach.ddns.net/users/", forKey: "urlUsers")
-        UserDefaults.standard.set("http://bastianschmalbach.ddns.net/feedbacks/", forKey: "urlFeedbacks")
-        UserDefaults.standard.set("http://bastianschmalbach.ddns.net/facts", forKey: "urlFacts")
-        UserDefaults.standard.set("http://bastianschmalbach.ddns.net/tipps", forKey: "tippsNoSlash")
+        UserDefaults.standard.set("https://sustainablelife.herokuapp.com/tipps/", forKey: "urlTipps")
+        UserDefaults.standard.set("https://sustainablelife.herokuapp.com/users/", forKey: "urlUsers")
+        UserDefaults.standard.set("https://sustainablelife.herokuapp.com/feedbacks/", forKey: "urlFeedbacks")
+        UserDefaults.standard.set("https://sustainablelife.herokuapp.com/facts", forKey: "urlFacts")
+        UserDefaults.standard.set("https://sustainablelife.herokuapp.com/tipps", forKey: "tippsNoSlash")
     }
 }
 
@@ -64,9 +64,9 @@ class FilterString: ObservableObject {
         }
     }
     init() {
-        self.filterString = UserDefaults.standard.stringArray(forKey: "filterString") ?? ["Ernährung", "Transport", "Recycling", "Ressourcen", "Leicht", "Mittel", "Schwer", "Offiziell", "Community"]
+        self.filterString = UserDefaults.standard.stringArray(forKey: "filterString") ?? ["Ernährung", "Transport", "Haushalt", "Ressourcen", "Leicht", "Mittel", "Schwer", "Offiziell", "Community"]
         if (self.filterString.count < 2) {
-            self.filterString = ["Ernährung", "Transport", "Recycling", "Ressourcen", "Leicht", "Mittel", "Schwer", "Offiziell", "Community"]
+            self.filterString = ["Ernährung", "Transport", "Haushalt", "Ressourcen", "Leicht", "Mittel", "Schwer", "Offiziell", "Community"]
             UserDefaults.standard.set(filterString, forKey: "filterString")
         }
     }
@@ -120,8 +120,8 @@ struct ContentView: View {
 //    @State var tutorialAnimation = false
 //    @State var launchScreen: Bool = false
     
-    @State var showTutorial = false
-    @State var tutorialAnimation = true
+    @State var showTutorial = UserDefaults.standard.bool(forKey: "showTutorial")
+    @State var tutorialAnimation = !UserDefaults.standard.bool(forKey: "showTutorial")
     @State var launchScreen: Bool = true
     @State var launchScale: CGFloat = 1
     @State var tabViewSelected = 0
@@ -318,7 +318,7 @@ struct ContentView: View {
         if !objectLoaded {
             filter.addItem(Filter(id: UUID(), icon: "blackFruits", name: "Ernährung", isSelected: true))
             filter.addItem(Filter(id: UUID(), icon: "blackTransport", name: "Transport", isSelected: true))
-            filter.addItem(Filter(id: UUID(), icon: "blackRecycle", name: "Recycling", isSelected: true))
+            filter.addItem(Filter(id: UUID(), icon: "Haushalt", name: "Haushalt", isSelected: true))
             filter.addItem(Filter(id: UUID(), icon: "blackRessourcen", name: "Ressourcen", isSelected: true))
             filter.addItem(Filter(id: UUID(), icon: "blackStar", name: "Leicht", isSelected: true))
             filter.addItem(Filter(id: UUID(), icon: "blackHalfStar", name: "Mittel", isSelected: true))

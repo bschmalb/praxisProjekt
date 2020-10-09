@@ -14,6 +14,7 @@ struct SmallTippCard: View {
     
     @EnvironmentObject var levelEnv: UserLevel
     @EnvironmentObject var myUrl: ApiUrl
+    @EnvironmentObject var changeFilter: ChangeFilter
     
     @ObservedObject var user = UserDataStore()
     
@@ -29,6 +30,8 @@ struct SmallTippCard: View {
     @State var reportClicked: Bool = false
     @State var likeClicked: Bool = false
     @State var dislikeClicked: Bool = false
+    
+    @State var showYouSure: Bool = false
     
     @State var userLevelLocal = 0
     
@@ -80,78 +83,133 @@ struct SmallTippCard: View {
                             }
                         }
                         .foregroundColor(Color("alwaysblack"))
-                        HStack (spacing: 20){
-                            Button(action: {
-                                impact(style: .medium)
-                                if (self.likeClicked) {
-                                    self.patchScore(thumb: "down")
-                                } else {
-                                    if (self.reportClicked) {
-                                        self.reportClicked = false
-                                        self.patchScore(thumb: "unreport")
+                        if (tipp.postedBy == id) {
+                            //                            if (false) {
+                            Group {
+                                ZStack {
+                                    HStack {
+                                        Spacer()
+                                        Image(systemName: "trash")
+                                            .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+                                            .foregroundColor(.red)
+                                            .opacity(0.8)
+                                            .padding(10)
+                                            .onTapGesture(){
+                                                impact(style: .medium)
+                                                changeFilter.changeFilter = true
+                                                self.deleteTipp()
+                                            }
+                                        Spacer()
+                                        Image(systemName: "xmark")
+                                            .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+                                            .opacity(0.8)
+                                            .padding(10)
+                                            .onTapGesture(){
+                                                impact(style: .medium)
+                                                self.showYouSure = false
+                                            }
+                                        Spacer()
                                     }
-                                    if (self.dislikeClicked) {
-                                        self.dislikeClicked = false
+                                    .offset(y: showYouSure ? 0 : 30)
+                                    .opacity(showYouSure ? 1 : 0)
+                                    
+                                    HStack (spacing: 20){
+                                        Image(systemName: dislikeClicked ? "trash.fill" : "trash")
+                                            .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+                                            .foregroundColor(.red)
+                                            .opacity(0.8)
+                                        Text("Tipp löschen")
+                                            .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
+                                            .foregroundColor(.red)
+                                            .opacity(0.8)
+                                    }
+                                    .padding(10)
+                                    .offset(y: showYouSure ? -30 : 0)
+                                    .opacity(showYouSure ? 0 : 1)
+                                    .cornerRadius(15)
+                                    .onTapGesture(){
+                                        impact(style: .medium)
+                                        
+                                        self.showYouSure = true
+                                    }
+                                }
+                                .animation(.spring())
+                                Spacer()
+                            }
+                        } else {
+                            HStack (spacing: 20){
+                                Button(action: {
+                                    impact(style: .medium)
+                                    if (self.likeClicked) {
+                                        self.patchScore(thumb: "down")
+                                    } else {
+                                        if (self.reportClicked) {
+                                            self.reportClicked = false
+                                            self.patchScore(thumb: "unreport")
+                                        }
+                                        if (self.dislikeClicked) {
+                                            self.dislikeClicked = false
+                                            self.patchScore(thumb: "up")
+                                        }
                                         self.patchScore(thumb: "up")
                                     }
-                                    self.patchScore(thumb: "up")
+                                    self.likeClicked.toggle()
+                                }) {
+                                    Image(systemName: likeClicked ? "hand.thumbsup.fill" : "hand.thumbsup")
+                                        .font(.system(size: 20, weight: Font.Weight.medium))
+                                        .opacity(0.8)
+                                        .padding()
+                                        .padding(.horizontal, 5)
+                                        .cornerRadius(15)
                                 }
-                                self.likeClicked.toggle()
-                            }) {
-                                Image(systemName: likeClicked ? "hand.thumbsup.fill" : "hand.thumbsup")
-                                    .font(.system(size: 20, weight: Font.Weight.medium))
-                                    .opacity(0.8)
-                                    .padding()
-                                    .padding(.horizontal, 5)
-                                    .cornerRadius(15)
-                            }
-                            Button(action: {
-                                impact(style: .medium)
-                                
-                                if (!self.dislikeClicked && self.likeClicked) {
-                                    self.patchScore(thumb: "down")
-                                    self.patchScore(thumb: "down")
-                                } else if (self.dislikeClicked) {
-                                    self.patchScore(thumb: "up")
-                                } else {
-                                    self.patchScore(thumb: "down")
-                                }
-                                self.likeClicked = false
-                                self.dislikeClicked.toggle()
-                            }) {
-                                Image(systemName: dislikeClicked ? "hand.thumbsdown.fill" : "hand.thumbsdown")
-                                    .font(.system(size: 20, weight: Font.Weight.medium))
-                                    .opacity(0.8)
-                                    .padding()
-                                    .padding(.horizontal, 5)
-                                    .cornerRadius(15)
-                            }
-                            Button(action: {
-                                impact(style: .medium)
-                                if (self.reportClicked) {
-                                    self.patchScore(thumb: "unreport")
-                                    self.patchScoreUser(reportedTipps: "unreport")
-                                } else {
-                                    self.patchScore(thumb: "report")
-                                    self.patchScoreUser(reportedTipps: "unreport")
-                                    if (!self.dislikeClicked) {
-                                        self.dislikeClicked = true
+                                Button(action: {
+                                    impact(style: .medium)
+                                    
+                                    if (!self.dislikeClicked && self.likeClicked) {
+                                        self.patchScore(thumb: "down")
+                                        self.patchScore(thumb: "down")
+                                    } else if (self.dislikeClicked) {
+                                        self.patchScore(thumb: "up")
+                                    } else {
                                         self.patchScore(thumb: "down")
                                     }
-                                    if (self.likeClicked) {
-                                        self.likeClicked = false
-                                        self.patchScore(thumb: "down")
-                                    }
+                                    self.likeClicked = false
+                                    self.dislikeClicked.toggle()
+                                }) {
+                                    Image(systemName: dislikeClicked ? "hand.thumbsdown.fill" : "hand.thumbsdown")
+                                        .font(.system(size: 20, weight: Font.Weight.medium))
+                                        .opacity(0.8)
+                                        .padding()
+                                        .padding(.horizontal, 5)
+                                        .cornerRadius(15)
                                 }
-                                self.reportClicked.toggle()
-                            }) {
-                                Image(systemName: reportClicked ? "flag.fill" : "flag")
-                                    .font(.system(size: 20, weight: Font.Weight.medium))
-                                    .foregroundColor(.red)
-                                    .opacity(0.8)
-                                    .padding()
-                                    .padding(.horizontal, 5)
-                                    .cornerRadius(15)
+                                Button(action: {
+                                    impact(style: .medium)
+                                    if (self.reportClicked) {
+                                        self.patchScore(thumb: "unreport")
+                                        self.patchScoreUser(reportedTipps: "unreport")
+                                    } else {
+                                        self.patchScore(thumb: "report")
+                                        self.patchScoreUser(reportedTipps: "unreport")
+                                        if (!self.dislikeClicked) {
+                                            self.dislikeClicked = true
+                                            self.patchScore(thumb: "down")
+                                        }
+                                        if (self.likeClicked) {
+                                            self.likeClicked = false
+                                            self.patchScore(thumb: "down")
+                                        }
+                                    }
+                                    self.reportClicked.toggle()
+                                }) {
+                                    Image(systemName: reportClicked ? "flag.fill" : "flag")
+                                        .font(.system(size: 20, weight: Font.Weight.medium))
+                                        .foregroundColor(.red)
+                                        .opacity(0.8)
+                                        .padding()
+                                        .padding(.horizontal, 5)
+                                        .cornerRadius(15)
+                                }
                             }
                         }
                     }.frame(width: size.size.width / 1.3)
@@ -371,6 +429,23 @@ struct SmallTippCard: View {
         }.resume()
     }
     
+    func deleteTipp(){
+        
+//        self.changeFilter.changeFilter = true
+        
+        guard let url = URL(string: myUrl.tipps + (tipp._id)) else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+//                self.loading = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+//                    self.changeFilter.changeFilter = false
+                }
+            }
+        }.resume()
+    }
 }
 
 struct SmallTippCard_Previews: PreviewProvider {

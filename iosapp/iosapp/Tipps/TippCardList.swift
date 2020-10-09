@@ -16,17 +16,13 @@ struct TippCardList: View {
     
     @Environment(\.horizontalSizeClass) var horizontalSize
     
-//    @State var filter = filterData
-    
-//    @State var filteredTipps: [Tipp] = [Tipp(_id: "asdas", title: "asdsadasdsadasdsadasdsadasdsadasdsadasdsadasdsadasdsadasdsadasdsadasdsad", source: "https://www.google.com", level: "Leicht", category: "Ernährung", score: 0, postedBy: "", isChecked: true, isBookmarked: true, official: "Offiziell")]
-    
     @State var filteredTipps: [Tipp] = []
-    
+
     @State var loading: Bool = false
     @State var dataLoading: Bool = true
     @ObservedObject var filter: FilterData2
     
-    @State var filterCategory2: [String] = ["Ernährung", "Transport", "Recycling", "Ressourcen"]
+    @State var filterCategory2: [String] = ["Ernährung", "Transport", "Haushalt", "Ressourcen"]
     @State var filterLevel2: [String] = ["Leicht", "Mittel", "Schwer"]
     @State var filterPoster: [String] = ["Offiziell", "Community"]
     
@@ -58,11 +54,8 @@ struct TippCardList: View {
                             HStack {
                                 FilterView(isSelected: self.$filter.filter[index].isSelected, filter: self.filter.filter[index])
                                     .onTapGesture {
-//                                        self.filter.filter[index].isSelected.toggle()
-                                        
                                         self.filterTipps2(index: index)
                                         
-//                                        self.filterTipps(filterName: self.filter.filter[index].name)
                                         impact(style: .heavy)
                                         self.loading = true
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -86,11 +79,17 @@ struct TippCardList: View {
 //                Text("Wähle mehr Kategorien aus")
 //                    .padding()
                 VStack {
-                    if (dataLoading) {
+                    if (dataLoading || changeFilter.changeFilter) {
                         VStack {
                             LottieView(filename: "loadingCircle", loop: true)
                                 .shadow(color: Color(.white), radius: 1, x: 0, y: 0)
                                 .frame(width: 100, height: 100)
+                        }
+                        .onAppear(){
+                            Api().fetchTipps { (filteredTipps) in
+                                self.filteredTipps = filteredTipps
+                                self.changeFilter.changeFilter = false
+                            }
                         }
                         .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2.1 + 20)
                     }
@@ -154,9 +153,26 @@ struct TippCardList: View {
             .offset(y: -3)
         }
         .onAppear(){
+            
+            do {
+                let storedObjTipp = UserDefaults.standard.object(forKey: "offlineTipps")
+                if storedObjTipp != nil {
+                    self.filteredTipps = try JSONDecoder().decode([Tipp].self, from: storedObjTipp as! Data)
+                    self.dataLoading = false
+                    print("Retrieved items: \(filteredTipps)")
+                }
+            } catch let err {
+                print(err)
+            }
+            
             Api().fetchTipps { (filteredTipps) in
                 self.filteredTipps = filteredTipps
                 self.dataLoading = false
+                
+                if let encoded = try? JSONEncoder().encode(filteredTipps) {
+                    UserDefaults.standard.set(encoded.prefix(20), forKey: "offlineTipps")
+                    print("items saved")
+                }
             }
         }
     }
@@ -177,7 +193,7 @@ struct TippCardList: View {
     }
     
     func filterTipps(filterName: String){
-        if (filterName == "Ernährung" || filterName == "Transport" || filterName == "Recycling" || filterName == "Ressourcen") {
+        if (filterName == "Ernährung" || filterName == "Transport" || filterName == "Haushalt" || filterName == "Ressourcen") {
             if (!filterCategory2.contains(filterName)){
                 filterCategory2.append(filterName)
             } else {
@@ -358,7 +374,7 @@ class FilterData2: ObservableObject {
 var filterData = [
     Filter(id: UUID(), icon: "blackFruits", name: "Ernährung", isSelected: true),
     Filter(id: UUID(), icon: "blackTransport", name: "Transport", isSelected: true),
-    Filter(id: UUID(), icon: "blackRecycle", name: "Recycling", isSelected: true),
+    Filter(id: UUID(), icon: "Haushalt", name: "Haushalt", isSelected: true),
     Filter(id: UUID(), icon: "blackRessourcen", name: "Ressourcen", isSelected: true),
     Filter(id: UUID(), icon: "blackStar", name: "Leicht", isSelected: true),
     Filter(id: UUID(), icon: "blackHalfStar", name: "Mittel", isSelected: true),

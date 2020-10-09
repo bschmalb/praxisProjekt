@@ -70,9 +70,7 @@ struct ProfilEntwicklung: View {
                         }
                     }))
         .onAppear {
-            impact(style: .medium)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                haptic(type: .success)
                 self.loading2 = false
             }
         }

@@ -247,7 +247,7 @@ struct ChallengeCard: View {
             } else {
                 encoded = try? JSONEncoder().encode(patchData2)
             }
-            guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + uuid) else { return }
+            guard let url = URL(string: "https://sustainablelife.herokuapp.com/users/" + uuid) else { return }
             var request = URLRequest(url: url)
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpMethod = "PATCH"

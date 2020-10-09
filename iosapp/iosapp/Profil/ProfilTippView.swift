@@ -14,6 +14,7 @@ struct ProfilTippView: View {
     @EnvironmentObject var myUrl: ApiUrl
     
     @ObservedObject var store = AllTippDataStore()
+    @EnvironmentObject var changeFilter: ChangeFilter
     
     let uuid = UIDevice.current.identifierForVendor?.uuidString
     
@@ -66,122 +67,148 @@ struct ProfilTippView: View {
                 VStack{
                     SliderView(slidingText: $slidingText, selectWidth: $selectWidth, tippOffset: $tippOffset, tabSelected: $tabSelected, geoMidChecked: $geoMidChecked, geoMidSaved: $geoMidSaved, geoMidOwn: $geoMidOwn)
                         .offset(y: -10)
-                    
-                    ZStack {
-                        VStack {
-                            if (!self.allTipps.isEmpty) {
-                                ScrollView(.vertical, showsIndicators: false) {
-                                    ForEach(self.allTipps.indices, id: \.self) { index in
-                                        VStack (spacing: 0) {
-                                            if(self.allTipps[index].isChecked) {
-                                                SmallTippCard(
-                                                    isChecked: self.$allTipps[index].isChecked,
-                                                    isBookmarked: self.$allTipps[index].isBookmarked,
-                                                    tipp: self.allTipps[index],
-                                                    color: self.cardColor[index % 8])
-                                                    .frame(height: 140)
-                                                    .padding(.vertical, 5)
+                        .opacity(loading ? 0 : 1)
+                    if (!changeFilter.changeFilter){
+                        ZStack {
+                            VStack {
+                                if (!self.allTipps.isEmpty) {
+                                    ScrollView(.vertical, showsIndicators: false) {
+                                        ForEach(self.allTipps.indices, id: \.self) { index in
+                                            VStack (spacing: 0) {
+                                                if(self.allTipps[index].isChecked) {
+                                                    SmallTippCard(
+                                                        isChecked: self.$allTipps[index].isChecked,
+                                                        isBookmarked: self.$allTipps[index].isBookmarked,
+                                                        tipp: self.allTipps[index],
+                                                        color: self.cardColor[index % 8])
+                                                        .frame(height: 140)
+                                                        .padding(.vertical, 5)
+                                                }
                                             }
                                         }
+                                        .padding(.bottom, 10)
                                     }
-                                    .padding(.bottom, 10)
                                 }
                             }
-                        }
-                        .gesture(DragGesture()
-                                    .onEnded({ (value) in
-                                        if (value.translation.width < -60) {
-                                            self.tabSelected = 1
-                                            self.tippOffset = UIScreen.main.bounds.width / 2
-                                            self.selectWidth = 120
-                                            
-                                            self.slidingText = "Gespeicherte"
-                                        } else if (value.translation.width > 60) {
-                                            self.mode.wrappedValue.dismiss()
-                                        }
-                                    }))
-                        .offset(x: self.tabSelected == 0 ? 0 : -UIScreen.main.bounds.width)
-                        .frame(maxWidth: UIScreen.main.bounds.width)
-                        VStack {
-                            if (!self.allTipps.isEmpty) {
-                                ScrollView(.vertical, showsIndicators: false) {
-                                    ForEach(self.allTipps.indices, id: \.self) { index in
-                                        VStack (spacing: 0) {
-                                            if(self.allTipps[index].isBookmarked) {
-                                                SmallTippCard(
-                                                    isChecked: self.$allTipps[index].isChecked,
-                                                    isBookmarked: self.$allTipps[index].isBookmarked,
-                                                    tipp: self.allTipps[index],
-                                                    color: self.cardColor[index % 8])
-                                                    .frame(height: 140)
-                                                    .padding(.vertical, 5)
+                            .gesture(DragGesture()
+                                        .onEnded({ (value) in
+                                            if (value.translation.width < -60) {
+                                                self.tabSelected = 1
+                                                self.tippOffset = UIScreen.main.bounds.width / 2
+                                                self.selectWidth = 120
+                                                
+                                                self.slidingText = "Gespeicherte"
+                                            } else if (value.translation.width > 60) {
+                                                self.mode.wrappedValue.dismiss()
+                                            }
+                                        }))
+                            .offset(x: self.tabSelected == 0 ? 0 : -UIScreen.main.bounds.width)
+                            .frame(maxWidth: UIScreen.main.bounds.width)
+                            VStack {
+                                if (!self.allTipps.isEmpty) {
+                                    ScrollView(.vertical, showsIndicators: false) {
+                                        ForEach(self.allTipps.indices, id: \.self) { index in
+                                            VStack (spacing: 0) {
+                                                if(self.allTipps[index].isBookmarked) {
+                                                    SmallTippCard(
+                                                        isChecked: self.$allTipps[index].isChecked,
+                                                        isBookmarked: self.$allTipps[index].isBookmarked,
+                                                        tipp: self.allTipps[index],
+                                                        color: self.cardColor[index % 8])
+                                                        .frame(height: 140)
+                                                        .padding(.vertical, 5)
+                                                }
                                             }
                                         }
+                                        .padding(.bottom, 10)
                                     }
-                                    .padding(.bottom, 10)
                                 }
                             }
-                        }
-                        .gesture(DragGesture()
-                                    .onEnded({ (value) in
-                                        if value.translation.width < -60 {
-                                            
-                                            self.tabSelected = 2
-                                            self.tippOffset = geoMidOwn
-                                            self.selectWidth = 80
-                                            
-                                            self.slidingText = "Eigene"
-                                        } else if (value.translation.width > 60) {
-                                            self.tabSelected = 0
-                                            self.tippOffset = geoMidChecked
-                                            self.selectWidth = 90
-                                            
-                                            self.slidingText = "Abgehakte"
-                                        }
-                                    }))
-                        .frame(maxWidth: UIScreen.main.bounds.width)
-                        .offset(x: self.tabSelected == 0 ? UIScreen.main.bounds.width : 0)
-                        .offset(x: self.tabSelected == 2 ? -UIScreen.main.bounds.width : 0)
-                        VStack {
-                            if (!self.allTipps.isEmpty) {
-                                ScrollView(.vertical, showsIndicators: false) {
-                                    ForEach(self.allTipps.indices, id: \.self) { index in
-                                        VStack (spacing: 0) {
-                                            if(self.id == self.allTipps[index].postedBy) {
-                                                SmallTippCard(
-                                                    isChecked: self.$allTipps[index].isChecked,
-                                                    isBookmarked: self.$allTipps[index].isBookmarked,
-                                                    tipp: self.allTipps[index],
-                                                    color: self.cardColor[index % 8])
-                                                    .frame(height: 140)
-                                                    .padding(.vertical, 5)
+                            .gesture(DragGesture()
+                                        .onEnded({ (value) in
+                                            if value.translation.width < -60 {
+                                                
+                                                self.tabSelected = 2
+                                                self.tippOffset = geoMidOwn
+                                                self.selectWidth = 80
+                                                
+                                                self.slidingText = "Eigene"
+                                            } else if (value.translation.width > 60) {
+                                                self.tabSelected = 0
+                                                self.tippOffset = geoMidChecked
+                                                self.selectWidth = 90
+                                                
+                                                self.slidingText = "Abgehakte"
+                                            }
+                                        }))
+                            .frame(maxWidth: UIScreen.main.bounds.width)
+                            .offset(x: self.tabSelected == 0 ? UIScreen.main.bounds.width : 0)
+                            .offset(x: self.tabSelected == 2 ? -UIScreen.main.bounds.width : 0)
+                            VStack {
+                                if (!self.allTipps.isEmpty) {
+                                    ScrollView(.vertical, showsIndicators: false) {
+                                        ForEach(self.allTipps.indices, id: \.self) { index in
+                                            VStack (spacing: 0) {
+                                                if(self.id == self.allTipps[index].postedBy) {
+                                                    SmallTippCard(
+                                                        isChecked: self.$allTipps[index].isChecked,
+                                                        isBookmarked: self.$allTipps[index].isBookmarked,
+                                                        tipp: self.allTipps[index],
+                                                        color: self.cardColor[index % 8])
+                                                        .frame(height: 140)
+                                                        .padding(.vertical, 5)
+                                                }
                                             }
                                         }
+                                        .padding(.bottom, 10)
                                     }
-                                    .padding(.bottom, 10)
                                 }
                             }
+                            .gesture(DragGesture()
+                                        .onEnded({ (value) in
+                                            if value.translation.width > 60 {
+                                                self.tabSelected = 1
+                                                self.tippOffset = UIScreen.main.bounds.width / 2
+                                                self.selectWidth = 120
+                                                
+                                                self.slidingText = "Gespeicherte"
+                                            }
+                                        }))
+                            .frame(maxWidth: UIScreen.main.bounds.width)
+                            .offset(x: self.tabSelected == 2 ? 0 : UIScreen.main.bounds.width)
                         }
-                        .gesture(DragGesture()
-                                    .onEnded({ (value) in
-                                        if value.translation.width > 60 {
-                                            self.tabSelected = 1
-                                            self.tippOffset = UIScreen.main.bounds.width / 2
-                                            self.selectWidth = 120
-                                            
-                                            self.slidingText = "Gespeicherte"
-                                        }
-                                    }))
-                        .frame(maxWidth: UIScreen.main.bounds.width)
-                        .offset(x: self.tabSelected == 2 ? 0 : UIScreen.main.bounds.width)
+                        .opacity(loading2 ? 0 : 1)
+                        .animation(.spring())
+                    } else {
+                        VStack{
+                            LottieView(filename: "loadingCircle", loop: true)
+                                .frame(width: 50, height: 50)
+                        }.frame(maxHeight: UIScreen.main.bounds.height * 0.8)
+                        .onAppear(){
+                            AllApi().fetchAllTipps { (allTipps) in
+                                self.allTipps = allTipps
+                                if (self.allTipps.count > 0) {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                                        self.changeFilter.changeFilter = false
+                                    }
+                                }
+                                for (index, test) in self.allTipps.enumerated() {
+                                    if (userObject.checkedTipps.contains(test._id)){
+                                        self.allTipps[index].isChecked = true
+                                    }
+                                    if (userObject.savedTipps.contains(test._id)){
+                                        self.allTipps[index].isBookmarked = true
+                                    }
+                                }
+                                
+                            }
+                        }
                     }
-                    .animation(.spring())
                     Spacer()
                 }
-                .opacity(loading2 ? 0 : 1)
             }
             VStack {
-                if (loading2) {
+                if (loading || loading2) {
                     VStack{
                         LottieView(filename: "loadingCircle", loop: true)
                             .frame(width: 50, height: 50)
@@ -189,6 +216,9 @@ struct ProfilTippView: View {
                 }
             }
             .onAppear{
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                    self.loading = false
+                }
                 guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
                     let request = URLRequest(url: url)
                     
@@ -206,7 +236,6 @@ struct ProfilTippView: View {
                     self.allTipps = allTipps
                     if (self.allTipps.count > 0) {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                            haptic(type: .success)
                             self.loading2 = false
                         }
                     }
@@ -220,7 +249,6 @@ struct ProfilTippView: View {
                     }
                     
                 }
-                impact(style: .medium)
             }
         }
         .accentColor(.black)

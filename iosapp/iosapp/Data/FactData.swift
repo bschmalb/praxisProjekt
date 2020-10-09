@@ -27,7 +27,7 @@ struct Fact: Codable, Hashable, Identifiable{
 
 class FactApi {
     func fetchFacts(completion: @escaping ([Fact]) -> ()) {
-        guard let url = URL(string: "http://bastianschmalbach.ddns.net/facts") else { return }
+        guard let url = URL(string: "https://sustainablelife.herokuapp.com/facts") else { return }
         
         URLSession.shared.dataTask(with: url) { (data, _, _) in
             guard let data = data else { return }

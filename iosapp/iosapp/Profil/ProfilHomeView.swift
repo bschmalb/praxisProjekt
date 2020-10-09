@@ -18,6 +18,7 @@ struct ProfilHomeView: View {
     
     @State var offsetTipps = UIScreen.main.bounds.width
     @Binding var selection: Int?
+    @Binding var selectionProfil: Int?
     
     @ObservedObject var filter: FilterData2
     
@@ -33,7 +34,7 @@ struct ProfilHomeView: View {
             ZStack {
                 Color("background")
                     .edgesIgnoringSafeArea(.all)
-                VStack (spacing: screenWidth < 350 ? 3 : 15) {
+                VStack (spacing: screenWidth < 350 ? 3 : 10) {
                     Image("ProfileImage")
                             .resizable()
                             .scaledToFit()
@@ -44,7 +45,12 @@ struct ProfilHomeView: View {
                                     .navigationBarHidden(true)
                                     .navigationBarBackButtonHidden(true)
                                    , tag: 1, selection: $selection) {
-                        ProfilLink(image: "lightbulb", name: "Deine Gewohnheiten")
+                        Button(action: {
+                            impact(style: .medium)
+                            self.selection = 1
+                        }) {
+                            ProfilLink(image: "lightbulb", name: "Deine Gewohnheiten")
+                        }
                     }.navigationBarTitle("Navigation")
                     
                     NavigationLink(destination: ProfilChallengeView()
@@ -52,7 +58,12 @@ struct ProfilHomeView: View {
                                         .navigationBarHidden(true)
                                         .navigationBarBackButtonHidden(true)
                                    , tag: 2, selection: $selection) {
-                        ProfilLink(image: "doc.plaintext", name: "Deine Fakten")
+                        Button(action: {
+                            impact(style: .medium)
+                            self.selection = 2
+                        }) {
+                            ProfilLink(image: "doc.plaintext", name: "Deine Fakten")
+                        }
                         }.navigationBarTitle("Navigation")
                     
                     NavigationLink(destination: ProfilEntwicklung()
@@ -60,15 +71,38 @@ struct ProfilHomeView: View {
                                         .navigationBarHidden(true)
                                         .navigationBarBackButtonHidden(true)
                                    , tag: 3, selection: $selection) {
+                        Button(action: {
+                            impact(style: .medium)
+                            self.selection = 3
+                        }) {
                             ProfilLink(image: "arrow.up.right", name: "Deine Entwicklung")
+                        }
                         }.navigationBarTitle("Navigation")
-                        
-                    NavigationLink(destination: ProfilEinstellungen(isDark: $isDark, appearenceDark: $appearenceDark, offsetChangeName: $offsetChangeName, offsetLevel: $offsetLevel, filter: filter, isChanged: $isChanged)
+                    
+                    NavigationLink(destination: ProfilProfil(selection: $selectionProfil, isDark: $isDark, appearenceDark: $appearenceDark, offsetChangeName: $offsetChangeName, offsetLevel: $offsetLevel, filter: filter, isChanged: $isChanged)
                                     .navigationBarTitle("")
                                     .navigationBarHidden(true)
                                     .navigationBarBackButtonHidden(true)
                                    , tag: 4, selection: $selection) {
-                        ProfilLink(image: "gear", name: "Einstellungen")
+                        Button(action: {
+                            impact(style: .medium)
+                            self.selection = 4
+                        }) {
+                            ProfilLink(image: "person", name: "Profil")
+                        }
+                    }.navigationBarTitle("Navigation")
+                    
+                    NavigationLink(destination: ProfilEinstellungen(isDark: $isDark, appearenceDark: $appearenceDark, offsetChangeName: $offsetChangeName, offsetLevel: $offsetLevel, filter: filter, isChanged: $isChanged)
+                                    .navigationBarTitle("")
+                                    .navigationBarHidden(true)
+                                    .navigationBarBackButtonHidden(true)
+                                   , tag: 5, selection: $selection) {
+                        Button(action: {
+                            impact(style: .medium)
+                            self.selection = 5
+                        }) {
+                            ProfilLink(image: "gear", name: "Einstellungen")
+                        }
                     }.navigationBarTitle("Navigation")
                     Spacer()
                 }.padding(.top, 30)
@@ -92,8 +126,8 @@ struct ProfilHomeView: View {
 struct ProfilHomeView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-        ProfilHomeView(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), selection: .constant(0), filter: FilterData2(), isChanged: .constant(false))
-            ProfilHomeView(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), selection: .constant(0), filter: FilterData2(), isChanged: .constant(false))
+            ProfilHomeView(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), selection: .constant(0), selectionProfil: .constant(1), filter: FilterData2(), isChanged: .constant(false))
+            ProfilHomeView(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), selection: .constant(0), selectionProfil: .constant(1), filter: FilterData2(), isChanged: .constant(false))
                 .previewDevice(PreviewDevice(rawValue: "iPhone 11"))
                 .previewDisplayName("iPhone 11")
         }

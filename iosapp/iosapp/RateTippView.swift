@@ -73,85 +73,69 @@ struct RateTippView: View {
                             TippCard2(isChecked: self.$rateTipps[counter].isChecked, isBookmarked: self.$rateTipps[counter].isBookmarked, tipp: rateTipps[counter], color: cardColors[counter % 9])
                                 .animation(.spring())
                             HStack {
-                                Button(action: {
-                                    
-                                }) {
-                                    Image(systemName: "hand.thumbsup")
-                                        .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.06 : 24, weight: Font.Weight.medium))
-                                        .accentColor(Color("black"))
-                                        .padding(10)
-                                        .frame(width: UIScreen.main.bounds.width > 600 ? 275 : UIScreen.main.bounds.width / 2 - 20, height: screenHeight > 700 ? 50 : screenHeight * 0.075)
-                                        .background(Color("buttonWhite"))
-                                        .cornerRadius(15)
-                                        .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
-                                        //                                    .shadow(color: Color(.green).opacity(thumbUp ? 0.5 : 0.1), radius: 5, x: 4, y: 3)
-                                        .scaleEffect(thumbUp ? 1.1 : 1)
-                                        .gesture(
-                                            LongPressGesture().onChanged{ value in
-                                                self.levelEnv.level += 35
-                                                UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
-                                                
-                                                self.alreadyRated.append(self.rateTipps[counter]._id)
-                                                UserDefaults.standard.set(self.alreadyRated, forKey: "alreadyRated")
-                                                
-                                                patchScore(id: self.rateTipps[self.counter]._id, thumb: "up")
-                                                if (self.counter < self.rateTipps.count - 1){
-                                                    withAnimation(){self.counter += 1}
-                                                }
-                                                else {
-                                                    withAnimation(){self.endReached = true}
-                                                }
-                                                self.thumbUp = true
-                                                impact(style: .medium)
-                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                                                    self.thumbUp = false
-                                                }
-                                            }
-                                        )
-                                }
-                                Button(action: {
-                                    
-                                }) {
-                                    Image(systemName: "hand.thumbsdown")
-                                        .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.06 : 24, weight: Font.Weight.medium))
-                                        .accentColor(Color("black"))
-                                        .padding(10)
-                                        .frame(width: UIScreen.main.bounds.width > 600 ? 275 : UIScreen.main.bounds.width / 2 - 20, height: screenHeight > 700 ? 50 : screenHeight * 0.075)
-                                        .background(Color("buttonWhite"))
-                                        .cornerRadius(15)
-                                        .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
-                                        //                                    .shadow(color: Color(.red).opacity(thumbDown ? 0.3 : 0.05), radius: 5, x: 4, y: 3)
-                                        .scaleEffect(thumbDown ? 1.1 : 1)
-                                        .gesture(
-                                            LongPressGesture().onChanged(){ value in
-                                                self.levelEnv.level += 35
-                                                UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
-                                                
-                                                self.alreadyRated.append(self.rateTipps[counter]._id)
-                                                UserDefaults.standard.set(self.alreadyRated, forKey: "alreadyRated")
-                                                
-                                                patchScore(id: self.rateTipps[self.counter]._id, thumb: "down")
-                                                if (self.counter < self.rateTipps.count - 1){
-                                                    withAnimation(){self.counter += 1}
-                                                }
-                                                else {
-                                                    withAnimation(){self.endReached = true}
-                                                }
-                                                self.thumbDown = true
-                                                impact(style: .medium)
-                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                                                    self.thumbDown = false
-                                                }
-                                            }
-                                        )
-                                }
+                                Image(systemName: "hand.thumbsup")
+                                    .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.06 : 24, weight: Font.Weight.medium))
+                                    .accentColor(Color("black"))
+                                    .padding(10)
+                                    .frame(width: UIScreen.main.bounds.width > 600 ? 275 : UIScreen.main.bounds.width / 2 - 20, height: screenHeight > 700 ? 50 : screenHeight * 0.075)
+                                    .background(Color("buttonWhite"))
+                                    .cornerRadius(15)
+                                    .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
+                                    .scaleEffect(thumbUp ? 1.1 : 1)
+                                    .onTapGesture(){
+                                        self.levelEnv.level += 35
+                                        UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
+                                        
+                                        self.alreadyRated.append(self.rateTipps[counter]._id)
+                                        UserDefaults.standard.set(self.alreadyRated, forKey: "alreadyRated")
+                                        
+                                        patchScore(id: self.rateTipps[self.counter]._id, thumb: "up")
+                                        if (self.counter < self.rateTipps.count - 1){
+                                            withAnimation(){self.counter += 1}
+                                        }
+                                        else {
+                                            withAnimation(){self.endReached = true}
+                                        }
+                                        self.thumbUp = true
+                                        impact(style: .medium)
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                                            self.thumbUp = false
+                                        }
+                                    }
+                                Image(systemName: "hand.thumbsdown")
+                                    .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.06 : 24, weight: Font.Weight.medium))
+                                    .accentColor(Color("black"))
+                                    .padding(10)
+                                    .frame(width: UIScreen.main.bounds.width > 600 ? 275 : UIScreen.main.bounds.width / 2 - 20, height: screenHeight > 700 ? 50 : screenHeight * 0.075)
+                                    .background(Color("buttonWhite"))
+                                    .cornerRadius(15)
+                                    .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
+                                    .scaleEffect(thumbDown ? 1.1 : 1)
+                                    .onTapGesture(){
+                                        self.levelEnv.level += 35
+                                        UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
+                                        
+                                        self.alreadyRated.append(self.rateTipps[counter]._id)
+                                        UserDefaults.standard.set(self.alreadyRated, forKey: "alreadyRated")
+                                        
+                                        patchScore(id: self.rateTipps[self.counter]._id, thumb: "down")
+                                        if (self.counter < self.rateTipps.count - 1){
+                                            withAnimation(){self.counter += 1}
+                                            print(rateTipps[counter].title)
+                                        }
+                                        else {
+                                            withAnimation(){self.endReached = true}
+                                            print("endReached")
+                                        }
+                                        self.thumbDown = true
+                                        impact(style: .medium)
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                                            self.thumbDown = false
+                                        }
+                                    }
                             }.padding(.top, 10)
                             .animation(.spring())
                         }
-                        //                    else if (self.rateTipps2.count < 1) {
-                        //                        CustomCard(image: "Fix website (man)", text: "Stelle sicher, dass du mit dem Internet verbunden bist", color: "buttonWhite")
-                        //                            .animation(.spring())
-                        //                    }
                         else {
                             CustomCard(image: "PersonSofa", text: "Vorerst keine weiteren Tipps mehr zum bewerten verfügbar", color: "cardgreen2")
                                 .animation(.spring())
@@ -186,14 +170,16 @@ struct RateTippView: View {
         .accentColor(.primary)
         .onAppear(){
             impact(style: .medium)
+            alreadyRated = []
+            UserDefaults.standard.set(alreadyRated, forKey: "alreadyRated")
             RateApi().fetchRateTipps { (rateTipps2) in
+                print(rateTipps2)
                 self.rateTipps2 = rateTipps2
                 self.rateTipps = rateTipps2.filter({!alreadyRated.contains($0._id)})
+                print(rateTipps)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    if (self.rateTipps.count > 0) {
-                        self.loading = false
-                    } else {
-                        self.loading = false
+                    self.loading = false
+                    if (self.rateTipps.count < 1) {
                         self.endReached = true
                     }
                 }

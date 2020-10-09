@@ -43,7 +43,7 @@ struct AddTippView: View {
     @State var category: String = "Transport"
     @State var level: String = "Leicht"
     @State var name: String = ""
-    @State var quelle: String = "https://www."
+    @State var quelle: String = ""
     
     @State var offsets: [CGFloat] = [0, UIScreen.main.bounds.width, UIScreen.main.bounds.width, UIScreen.main.bounds.width, UIScreen.main.bounds.width]
     
@@ -425,7 +425,7 @@ struct AddTippView: View {
                     self.isLoading = false
                     self.isSuccess = true
                 }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 9, execute: {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 15, execute: {
                     self.showAddTipps = false;
                     self.isSuccess = false
                     self.overlay.overlayLog = false
@@ -480,10 +480,9 @@ struct AddTipp1: View {
                 .padding()
             
             HStack (spacing: 20) {
-                
-                SelectButton(categorySelected: $categorySelected, category: $category, selectAmount: 0, categoryLocal: "Nahrung", icon: "Pie")
+                SelectButton(categorySelected: $categorySelected, category: $category, selectAmount: 0, categoryLocal: "Ernährung", icon: "Fruits")
                 SelectButton(categorySelected: $categorySelected, category: $category, selectAmount: 1, categoryLocal: "Transport", icon: "Transport")
-                SelectButton(categorySelected: $categorySelected, category: $category, selectAmount: 2, categoryLocal: "Recycling", icon: "Recycle")
+                SelectButton(categorySelected: $categorySelected, category: $category, selectAmount: 2, categoryLocal: "Haushalt", icon: "Haushalt")
             }
             HStack {
                 SelectButton(categorySelected: $categorySelected, category: $category, selectAmount: 3, categoryLocal: "Ressourcen", icon: "Ressourcen")
@@ -529,7 +528,7 @@ struct AddTipp3: View {
     
     @Binding var firstResponder: Bool?
     
-    var screenWidth = UIScreen.main.bounds.width
+    var screen = UIScreen.main.bounds
     
     var body: some View {
         
@@ -545,7 +544,7 @@ struct AddTipp3: View {
                 .resizable()
                 .scaledToFit()
             Text("Gebe deinen Tipp ein")
-                .font(.system(size: screenWidth < 500 ? screenWidth * 0.06 : 24))
+                .font(.system(size: screen.width < 500 ? screen.width * 0.06 : 24))
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding()
@@ -553,15 +552,6 @@ struct AddTipp3: View {
             VStack {
                 HStack (alignment: .center){
                     Section {
-                        //                        CustomTextField(text: binding,
-                        //                                        nextResponder: .constant(false),
-                        //                                        isResponder: $firstResponder,
-                        //                                        isSecured: false,
-                        //                                        keyboard: .default)
-                        //                            .frame(height: 40)
-//                        CustomTextField2(text: binding, isFirstResponder: $firstResponder, maxLength: 65)
-//                            .frame(height: 40)
-//                            .frame(maxWidth: UIScreen.main.bounds.width - 30)
                         ZStack{
                             MultilineTextView(text: binding, isFirstResponder: $firstResponder, maxLength: 70)
                             VStack {
@@ -570,7 +560,7 @@ struct AddTipp3: View {
                                     Spacer()
                                     Text("\(category.count)/70")
                                         .padding(5)
-                                        .font(.system(size: UIScreen.main.bounds.width * 0.03))
+                                        .font(.system(size: screen.width < 500 ? screen.width * 0.03 : 12))
                                         .opacity(0.5)
                                 }
                             }

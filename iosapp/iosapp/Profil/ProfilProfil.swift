@@ -1,18 +1,17 @@
 //
-//  ProfilEinstellungen.swift
+//  ProfilProfil.swift
 //  iosapp
 //
-//  Created by Bastian Schmalbach on 28.06.20.
+//  Created by Bastian Schmalbach on 08.10.20.
 //  Copyright © 2020 Bastian Schmalbach. All rights reserved.
 //
 
 import SwiftUI
 
-struct ProfilEinstellungen: View {
-
+struct ProfilProfil: View {
     @State var logDate = ""
     
-    @State var selection: Int? = nil
+    @Binding var selection: Int?
     
     @EnvironmentObject var levelEnv: UserLevel
     @EnvironmentObject var overlay: Overlay
@@ -54,20 +53,35 @@ struct ProfilEinstellungen: View {
                     .padding(.vertical, 10)
                 }
                 VStack (spacing: screenWidth < 350 ? 5 : 15) {
-                    NavigationLink(destination: FeedbackView()
+                    
+                    NavigationLink(destination: ProfilData(isChanged: $isChanged)
                                     .navigationBarTitle("")
                                     .navigationBarHidden(true)
-                                    .navigationBarBackButtonHidden(true), tag: 3, selection: $selection) {
+                                    .navigationBarBackButtonHidden(true), tag: 1, selection: $selection) {
                         Button(action: {
                             impact(style: .medium)
-                            self.selection = 3
+                            self.selection = 1
+                        }) {
+                            ProfilLink(image: "person", name: "Deine Daten")
+                        }
+                                    }.navigationBarTitle("Navigation")
+                    
+                    NavigationLink(destination: ProfilFilter(filter: filter)
+                                    .navigationBarTitle("")
+                                    .navigationBarHidden(true)
+                                    .navigationBarBackButtonHidden(true), tag: 2, selection: $selection) {
+                        Button(action: {
+                            impact(style: .medium)
+                            self.selection = 2
                         }) {
                             HStack (spacing: 5){
-                                Image(systemName: "plus.bubble")
+                                Image(systemName: "arrow.merge")
                                     .font(.system(size: screenWidth < 500 ? screenWidth * 0.055 : 20))
                                     .padding(.leading, 10)
+                                    .rotationEffect(.degrees(90))
+                                    .offset(x: 4, y: -4)
                                     .frame(width: screenWidth < 500 ? screenWidth * 0.16 : 50, height: 20)
-                                Text("Feedback geben")
+                                Text("Deine Filter")
                                     .font(.system(size: screenWidth < 500 ? screenWidth * 0.050 : 20, weight: .medium))
                                 Spacer()
                                 Image(systemName: "chevron.right")
@@ -75,41 +89,8 @@ struct ProfilEinstellungen: View {
                                     .padding(.trailing, 28)
                             }.padding(10)
                         }
-                                    }.navigationBarTitle("Navigation")
-                    
-                    Button(action: {
-                        self.isDark.toggle()
-                        self.appearenceDark.toggle()
-                        UserDefaults.standard.set(self.appearenceDark, forKey: "appearenceDark")
-                        impact(style: .rigid)
-                    }) {
-                        HStack (spacing: 5){
-                            Image(systemName: "moon.circle")
-                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.055 : 20))
-                                .padding(.leading, 10)
-                                .frame(width: screenWidth < 500 ? screenWidth * 0.16 : 50, height: 20)
-                            Text("Nachtmodus")
-                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.050 : 20, weight: .medium))
-                            Spacer()
-                        }.padding(10)
-                    }
+                    }.navigationBarTitle("Navigation")
                     Spacer()
-                    Button(action: {
-                        UserDefaults.standard.set(self.logDate, forKey: "logDate")
-                        UserDefaults.standard.set(false, forKey: "firstUseTipp")
-                        UserDefaults.standard.set(false, forKey: "firstUseLog")
-                        impact(style: .rigid)
-                    }) {
-                        HStack (spacing: 5){
-                            Image(systemName: "delete.left")
-                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.035 : 14))
-                                .padding(.leading, 10)
-                                .frame(width: screenWidth < 500 ? screenWidth * 0.16 : 50, height: 20)
-                            Text("Reset to First App Use")
-                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.030 : 14, weight: .medium))
-                            Spacer()
-                        }.padding(10)
-                    }
                 }
                 .padding(.bottom, 20)
                 .padding(.top, screenWidth < 350 ? 0 : 20)
@@ -129,13 +110,8 @@ struct ProfilEinstellungen: View {
     }
 }
 
-struct ProfilEinstellungen_Previews: PreviewProvider {
+struct ProfilProfil_Previews: PreviewProvider {
     static var previews: some View {
-        Group {
-            ProfilEinstellungen(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), filter: FilterData2(), isChanged: .constant(false)).environmentObject(UserLevel())
-            ProfilEinstellungen(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), filter: FilterData2(), isChanged: .constant(false)).environmentObject(UserLevel())
-                .previewDevice(PreviewDevice(rawValue: "iPhone 11"))
-                .previewDisplayName("iPhone 11")
-        }
+        ProfilProfil(selection: .constant(1), isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), filter: FilterData2(), isChanged: .constant(false)).environmentObject(UserLevel())
     }
 }

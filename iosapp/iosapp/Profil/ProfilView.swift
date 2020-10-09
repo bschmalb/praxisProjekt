@@ -19,6 +19,7 @@ struct ProfilView: View {
     @Binding var isDark: Bool
     @Binding var appearenceDark: Bool
     @Binding var selection: Int?
+    @State var selectionProfil: Int?
     
     @EnvironmentObject var overlay: Overlay
     @EnvironmentObject var user: UserObserv
@@ -65,12 +66,13 @@ struct ProfilView: View {
                             Text("Hallo \(user.name)")
                                 .font(.system(size: 24, weight: Font.Weight.semibold))
                                 .lineLimit(1)
-//                            TextField("", text: $user.name, onCommit: {
-//                                user.name = user.name
-//                                UserDefaults.standard.set(user.name, forKey: "userName")
-//                                self.postUserName()
-//                            }).font(.system(size: 24, weight: Font.Weight.semibold))
-//                            .lineLimit(1)
+                                .onTapGesture {
+                                    impact(style: .medium)
+                                    self.selection = 4
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                                        self.selectionProfil = 1
+                                    }
+                                }
                             Text("Wilkommen in deinem Profil")
                                 .font(.system(size: screen < 500 ? screen * 0.04 : 18))
                                 .padding(.top, 1)
@@ -82,7 +84,7 @@ struct ProfilView: View {
                     .padding(.top, 10.0)
                     .offset(y: 10)
                     
-                    ProfilHomeView(isDark: $isDark, appearenceDark: $appearenceDark, offsetChangeName: $offsetChangeName, offsetLevel: $offsetLevel, selection: $selection, filter: filter, isChanged: $isChanged)
+                    ProfilHomeView(isDark: $isDark, appearenceDark: $appearenceDark, offsetChangeName: $offsetChangeName, offsetLevel: $offsetLevel, selection: $selection, selectionProfil: $selectionProfil, filter: filter, isChanged: $isChanged)
                         .navigationBarTitle("")
                         .navigationBarHidden(true)
                         .navigationBarBackButtonHidden(true)
@@ -155,7 +157,7 @@ struct UserNamePatch: Encodable, Decodable {
 
 struct ProfilView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilView(isDark: .constant(false), appearenceDark: .constant(false), selection: .constant(0), filter: FilterData2()).environmentObject(UserLevel()).environmentObject(Overlay()).environmentObject(UserObserv())
+        ProfilView(isDark: .constant(false), appearenceDark: .constant(false), selection: .constant(0), selectionProfil: 1, filter: FilterData2()).environmentObject(UserLevel()).environmentObject(Overlay()).environmentObject(UserObserv())
     }
 }
 
