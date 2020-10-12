@@ -17,6 +17,7 @@ struct TippCardList: View {
     @Environment(\.horizontalSizeClass) var horizontalSize
     
     @State var filteredTipps: [Tipp] = []
+    @State var offlineTipps: [Tipp] = []
 
     @State var loading: Bool = false
     @State var dataLoading: Bool = true
@@ -159,7 +160,7 @@ struct TippCardList: View {
                 if storedObjTipp != nil {
                     self.filteredTipps = try JSONDecoder().decode([Tipp].self, from: storedObjTipp as! Data)
                     self.dataLoading = false
-                    print("Retrieved items: \(filteredTipps)")
+                    print("Retrieved Tipps: \(filteredTipps)")
                 }
             } catch let err {
                 print(err)
@@ -169,9 +170,18 @@ struct TippCardList: View {
                 self.filteredTipps = filteredTipps
                 self.dataLoading = false
                 
-                if let encoded = try? JSONEncoder().encode(filteredTipps) {
-                    UserDefaults.standard.set(encoded.prefix(20), forKey: "offlineTipps")
-                    print("items saved")
+                for (i, _) in filteredTipps.enumerated() {
+                    if i < 10 {
+                        offlineTipps.append(filteredTipps[i])
+                    }
+                    else {
+                        return
+                    }
+                }
+                
+                if let encoded = try? JSONEncoder().encode(offlineTipps) {
+                    UserDefaults.standard.set(encoded, forKey: "offlineTipps")
+                    print("Tipps saved")
                 }
             }
         }

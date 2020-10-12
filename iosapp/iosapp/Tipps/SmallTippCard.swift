@@ -395,13 +395,9 @@ struct SmallTippCard: View {
             
             if let data = data {
                 if let user = try? JSONDecoder().decode(User.self, from: data) {
-                    // we have good data – go back to the main thread
                     DispatchQueue.main.async {
-                        // update our UI
                         self.user2 = user
                     }
-                    
-                    // everything is good, so we can exit
                     return
                 }
             }
@@ -430,22 +426,21 @@ struct SmallTippCard: View {
     }
     
     func deleteTipp(){
-        
-//        self.changeFilter.changeFilter = true
-        
         guard let url = URL(string: myUrl.tipps + (tipp._id)) else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
         
         URLSession.shared.dataTask(with: request) { data, response, error in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-//                self.loading = false
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-//                    self.changeFilter.changeFilter = false
-                }
-            }
         }.resume()
     }
+}
+
+struct TippPatchSave: Encodable {
+    var savedTipps: String
+}
+
+struct TippPatchCheck: Encodable {
+    var checkedTipps: String
 }
 
 struct SmallTippCard_Previews: PreviewProvider {

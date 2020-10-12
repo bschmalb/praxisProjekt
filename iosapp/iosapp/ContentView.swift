@@ -39,7 +39,7 @@ class ApiUrl: ObservableObject {
         UserDefaults.standard.set("https://sustainablelife.herokuapp.com/tipps/", forKey: "urlTipps")
         UserDefaults.standard.set("https://sustainablelife.herokuapp.com/users/", forKey: "urlUsers")
         UserDefaults.standard.set("https://sustainablelife.herokuapp.com/feedbacks/", forKey: "urlFeedbacks")
-        UserDefaults.standard.set("https://sustainablelife.herokuapp.com/facts", forKey: "urlFacts")
+        UserDefaults.standard.set("https://sustainablelife.herokuapp.com/facts/", forKey: "urlFacts")
         UserDefaults.standard.set("https://sustainablelife.herokuapp.com/tipps", forKey: "tippsNoSlash")
     }
 }
@@ -111,7 +111,9 @@ struct ContentView: View {
     @EnvironmentObject var overlay: Overlay
     @EnvironmentObject var levelEnv: UserLevel
     @ObservedObject var filter = FilterData2()
+    @ObservedObject var filterFacts = FilterDataFacts()
     @State var objectLoaded: Bool = false
+    @State var objectLoaded2: Bool = false
     
     @State var notca: [String] = []
     
@@ -144,15 +146,25 @@ struct ContentView: View {
                     .edgesIgnoringSafeArea(.all)
                 VStack {
                     ZStack {
-                        TippView(isDark: $model.isDark, appearenceDark: $appearenceDark, filter: filter).offset(x: tippOffset).opacity(tabViewSelected == 0 ? 1 : 0).environmentObject(UserObserv()).environmentObject(FilterData2())
+                        TippView(filter: filter)
+                            .offset(x: tippOffset)
+                            .opacity(tabViewSelected == 0 ? 1 : 0)
                             .padding(.top, 1)
                             .padding(.bottom, UIScreen.main.bounds.height / 12)
-                        FactView().offset(x: challengeOffset).opacity(tabViewSelected == 1 ? 1 : 0)
+                            .environmentObject(UserObserv()).environmentObject(FilterData2())
+                        FactView(filter: filterFacts)
+                            .offset(x: challengeOffset)
+                            .opacity(tabViewSelected == 1 ? 1 : 0)
                             .padding(.top, 1)
                             .padding(.bottom, UIScreen.main.bounds.height / 12)
-                        TagebuchView(tabViewSelected: $tabViewSelected).offset(x: logOffset).opacity(tabViewSelected == 2 ? 1 : 0)
+                            .environmentObject(FilterDataFacts())
+                        TagebuchView(tabViewSelected: $tabViewSelected)
+                            .offset(x: logOffset)
+                            .opacity(tabViewSelected == 2 ? 1 : 0)
                             .padding(.bottom, UIScreen.main.bounds.height / 12)
-                        ProfilView(isDark: $model.isDark, appearenceDark: $appearenceDark, selection: $selection, filter: filter).offset(x: profileOffset).opacity(tabViewSelected == 3 ? 1 : 0)
+                        ProfilView(isDark: $model.isDark, appearenceDark: $appearenceDark, selection: $selection, filter: filter)
+                            .offset(x: profileOffset)
+                            .opacity(tabViewSelected == 3 ? 1 : 0)
                             .environmentObject(UserObserv()).environmentObject(FilterString())
                     }
                 }
@@ -289,6 +301,7 @@ struct ContentView: View {
                 .animation(.spring())
                 .onAppear(){
                     loadObject()
+                    loadObjectFacts()
                     
                     if (!self.isUser2) {
                         self.createUser()
@@ -326,6 +339,18 @@ struct ContentView: View {
             filter.addItem(Filter(id: UUID(), icon: "blackVerified", name: "Offiziell", isSelected: true))
             filter.addItem(Filter(id: UUID(), icon: "blackCommunity", name: "Community", isSelected: true))
             objectLoaded = true
+        }
+    }
+    
+    func loadObjectFacts() {
+        if !objectLoaded2 {
+            filterFacts.addItem(Filter(id: UUID(), icon: "blackFruits", name: "Ernährung", isSelected: true))
+            filterFacts.addItem(Filter(id: UUID(), icon: "blackTransport", name: "Transport", isSelected: true))
+            filterFacts.addItem(Filter(id: UUID(), icon: "Haushalt", name: "Haushalt", isSelected: true))
+            filterFacts.addItem(Filter(id: UUID(), icon: "blackRessourcen", name: "Ressourcen", isSelected: true))
+            filterFacts.addItem(Filter(id: UUID(), icon: "blackVerified", name: "Offiziell", isSelected: true))
+            filterFacts.addItem(Filter(id: UUID(), icon: "blackCommunity", name: "Community", isSelected: true))
+            objectLoaded2 = true
         }
     }
     

@@ -1,8 +1,8 @@
 //
-//  FactCard.swift
+//  TippCard2.swift
 //  iosapp
 //
-//  Created by Bastian Schmalbach on 11.09.20.
+//  Created by Bastian Schmalbach on 14.09.20.
 //  Copyright © 2020 Bastian Schmalbach. All rights reserved.
 //
 
@@ -10,12 +10,11 @@ import SwiftUI
 
 struct FactCard: View {
     
-    @EnvironmentObject var levelEnv: UserLevel
-    @EnvironmentObject var myUrl: ApiUrl
-    
-    @Binding var isChecked: Bool
+    @State var isLoved: Bool = false
+    @State var isSurprised: Bool = false
+    @State var isAngry: Bool = false
     @Binding var isBookmarked: Bool
-    var fact: Fact
+    @State var fact: Fact
     
     @State var userLevelLocal = 0
     
@@ -23,290 +22,655 @@ struct FactCard: View {
     
     @State var options: Bool = false
     
-    var cardColors2: [String]  = [
-        "cardgreen2", "cardblue2", "cardyellow2", "cardpurple2", "cardorange2", "cardred2", "cardturqouise2", "cardyelgre2", "cardpink2"
-    ]
+    @State var loading: Bool = false
+    
+    var color: String
+    
+    @State var user2: User = User(_id: "", phoneId: "", level: 2, checkedTipps: [], savedTipps: [], checkedFacts: [], savedFacts: [], log: [])
     
     var body: some View {
+        
         ZStack {
-            VStack{
-                Spacer()
-                Image("I"+fact.category)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(minHeight: 100, maxHeight: 200)
-                Text(fact.title)
-                    .font(.system(size: 24, weight: .medium))
-                    .foregroundColor(Color("alwaysblack"))
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
-                Text("Quelle")
-                    .foregroundColor(.gray)
-                    .font(.footnote)
-                    .multilineTextAlignment(.center)
-                    .padding(.top, 5)
-                    .onLongPressGesture {
-                        if (self.verifyUrl(urlString: self.fact.source)){
-                            
-                        }
-                        print(self.fact.source)
-                        self.quelleShowing = true
-                }
-                .sheet(isPresented: $quelleShowing) {
-                    WebLinkView(url: self.fact.source)
-                }
-                HStack {
-                    Button(action: {
-                        self.isChecked.toggle()
-                        self.addToProfile(factId: self.fact.id, method: 0)
-                        
-                        self.levelEnv.level += 5
-                        UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
-                        
-                        impact(style: .medium)
-                    }) {
-                        Text("😍")
-                            .font(Font.system(size: 30, weight: isChecked ? .medium : .regular))
-                            .foregroundColor(Color(isChecked ? .white : .black))
-                            .scaleEffect(isBookmarked ? 1.3 : 1)
-//                            .opacity(isChecked ? 1 : 0.5)
-                            .padding(10)
-                            .padding(.bottom, 10)
-                            .padding(.leading, 40)
-                        
-                    }
-                    Spacer()
-                    Button(action: {
-                        self.isBookmarked.toggle()
-                        self.addToProfile(factId: self.fact.id, method: 1)
-                        
-                        self.levelEnv.level += 5
-                        UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
-                        
-                        impact(style: .medium)
-                    }) {
-                        Text("🤯")
-                            .font(Font.system(size: 30, weight: isBookmarked ? .medium : .regular))
-                            .foregroundColor(Color(isBookmarked ? .white : .black))
-                            .padding(20)
-                            .padding(.bottom, 10)
-                    }
-                    Spacer()
-                    Button(action: {
-                        self.isBookmarked.toggle()
-                        self.addToProfile(factId: self.fact.id, method: 1)
-                        
-                        self.levelEnv.level += 5
-                        UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
-                        
-                        impact(style: .medium)
-                    }) {
-                        Text("😠")
-                            .font(Font.system(size: 30, weight: isBookmarked ? .medium : .regular))
-                            .foregroundColor(Color(isBookmarked ? .white : .black))
-//                            .opacity(isBookmarked ? 1 : 0.5)
-                            .scaleEffect(isBookmarked ? 1.3 : 1)
-                            .padding(10)
-                            .padding(.bottom, 10)
-                            .padding(.trailing, 40)
-                    }
-                }
-                
-            }
-            .opacity(options ? 0 : 1)
-            .animation(options ? .easeIn(duration: 0.15) : Animation.easeOut(duration: 0.15).delay(0.15))
-            .background(Color(cardColors2.randomElement() ?? cardColors2[0]))
-            .cornerRadius(15)
-            VStack {
-                HStack(alignment: .top) {
-                    Image(fact.category)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 30, height: 30)
-                        .opacity(0.1)
-                        .padding(.leading, 20)
-                        .padding(.vertical)
-                    Image(fact.level)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 30, height: 30)
-                        .opacity(0.1)
-                        .padding(.vertical)
-                    Image(fact.official)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 30, height: 30)
-                        .opacity(0.1)
-                        .padding(.vertical)
-                    Spacer()
-                    Button(action: {
-                        impact(style: .heavy)
-                        self.options.toggle()
-                    }) {
-                        Text("...")
-                            .font(.system(size: 30, weight: Font.Weight.bold))
-                            .opacity(0.1)
-                            .padding(10)
-                            .padding(.trailing, 15)
-                    }
-                }
-                Spacer()
-            }
-            .frame(width: UIScreen.main.bounds.width - 30, height:
-                UIScreen.main.bounds.height / 2.1)
-                .opacity(options ? 0 : 1)
-                .animation(options ? .easeIn(duration: 0.15) : Animation.easeOut(duration: 0.15).delay(0.15))
-            VStack {
-                HStack(alignment: .top) {
-                    Spacer()
-                    Button(action: {
-                        impact(style: .medium)
-                        self.options.toggle()
-                    }) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 24, weight: Font.Weight.medium))
-                            .opacity(0.1)
-                            .padding(20)
-                            .padding(.trailing, 5)
-                    }
-                }
-                Spacer()
-                Button(action: {
-                    impact(style: .medium)
-                }) {
-                    HStack (spacing: 20){
-                        Image(systemName: "hand.thumbsup")
-                            .font(.system(size: 20, weight: Font.Weight.medium))
-                            .opacity(0.8)
-                        Text("Positiv bewerten")
-                            .font(.system(size: 18))
-                            .opacity(0.8)
-                    }
-                    .padding()
-                    .padding(.horizontal, 20)
-                    .frame(width: UIScreen.main.bounds.width - 50, height: 55)
-                    .background(Color(.white).opacity(0.2))
-                    .cornerRadius(15)
-                }
-                Button(action: {
-                    impact(style: .medium)
-                }) {
-                    HStack (spacing: 20){
-                        Image(systemName: "hand.thumbsdown")
-                            .font(.system(size: 20, weight: Font.Weight.medium))
-                            .opacity(0.8)
-                        Text("Negativ bewerten")
-                            .font(.system(size: 18))
-                            .opacity(0.8)
-                    }
-                    .padding()
-                    .padding(.horizontal, 20)
-                    .frame(width: UIScreen.main.bounds.width - 50, height: 55)
-                    .background(Color(.white).opacity(0.2))
-                    .cornerRadius(15)
-                }
-                Button(action: {
-                    impact(style: .medium)
-                }) {
-                    HStack (spacing: 20){
-                        Image(systemName: "flag")
-                            .font(.system(size: 20, weight: Font.Weight.medium))
-                            .opacity(0.8)
-                        Text("Diesen Fakt melden")
-                            .font(.system(size: 18))
-                            .opacity(0.8)
-                    }
-                    .padding()
-                    .padding(.horizontal, 20)
-                    .frame(width: UIScreen.main.bounds.width - 50, height: 55)
-                    .background(Color(.white).opacity(0.2))
-                    .cornerRadius(15)
-                }
-                Spacer()
-            }.frame(width: UIScreen.main.bounds.width - 30, height:
-                UIScreen.main.bounds.height / 2.1)
-                .rotation3DEffect(Angle(degrees: 180), axis: (x: 0, y: 1, z: 0))
-                .opacity(options ? 1 : 0)
-                .animation(options ? Animation.easeOut(duration: 0.15).delay(0.15) : .easeIn(duration: 0.15))
-            
+            FactCardBackground(fact: fact, isBookmarked: $fact.isBookmarked, quelleShowing: $quelleShowing, color: color, options: $options, user2: $user2)
+            FactCardMain(user2: $user2, fact: fact, isBookmarked: $fact.isBookmarked, quelleShowing: $quelleShowing, color: color, options: $options)
         }
-        .rotation3DEffect(Angle(degrees: options ? 180 : 0), axis: (x: 0, y: 1, z: 0))
         .animation(.spring())
         .accentColor(.black)
-        .frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height/2.1)
-        .onAppear(){
-            self.getUserFacts()
-        }
+        .frame(width: UIScreen.main.bounds.width > 600 ? 600 - 30 : UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height/2.1)
     }
-    func getUserFacts(){
-        
-        if let uuid = UIDevice.current.identifierForVendor?.uuidString {
-            guard let url = URL(string: myUrl.users + uuid) else { return }
-            let request = URLRequest(url: url)
-            
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                guard let data = data else {
-                    print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
-                    return
-                }
-                DispatchQueue.main.async {
-                    if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
-                        if ((decodedResponse.checkedFacts?.contains(self.fact.id) ) != nil) {
-                            self.isChecked = true
-                        }
-                        if ((decodedResponse.savedFacts?.contains(self.fact.id) ) != nil) {
-                            self.isBookmarked = true
-                        }
-                    }
-                }
-            }.resume()
-        }
-    }
-    
-    func verifyUrl (urlString: String?) -> Bool {
-        if let urlString = urlString {
-            if let url = NSURL(string: urlString) {
-                return UIApplication.shared.canOpenURL(url as URL)
-            }
-        }
-        return false
-    }
-    
-    func addToProfile(factId: String, method: Int) {
-        let patchData = FactPatchCheck(checkedFacts: factId)
-        let patchData2 = FactPatchSave(savedFacts: factId)
-        
-        if let uuid = UIDevice.current.identifierForVendor?.uuidString {
-            
-            var encoded: Data?
-            if (method == 0) {
-                encoded = try? JSONEncoder().encode(patchData)
-            } else {
-                encoded = try? JSONEncoder().encode(patchData2)
-            }
-            guard let url = URL(string: myUrl.users + uuid) else { return }
-            var request = URLRequest(url: url)
-            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-            request.httpMethod = "PATCH"
-            request.httpBody = encoded
-            
-            URLSession.shared.dataTask(with: request) { data, response, error in
-                
-            }.resume()
-        }
-    }
-    
-}
-
-struct FactPatchCheck : Encodable{
-    var checkedFacts: String
-}
-struct FactPatchSave : Encodable{
-    var savedFacts: String
 }
 
 struct FactCard_Previews: PreviewProvider {
     static var previews: some View {
-        FactCard(isChecked: .constant(false), isBookmarked: .constant(false), fact: .init(id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", level: "Leicht", category: "Ernährung", score: 25, postedBy: "123", official: "Community"))
+        FactCard(isBookmarked: .constant(false), fact: .init(_id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", category: "Ernährung", score: 25, postedBy: "123", official: "Community"), color: "cardblue2")
+    }
+}
+
+struct FactCardMain: View {
+    
+    @State var id = UserDefaults.standard.string(forKey: "id")
+    
+    @ObservedObject var user = UserDataStore()
+    
+    @EnvironmentObject var changeFilter: ChangeFilter
+    @EnvironmentObject var levelEnv: UserLevel
+    @EnvironmentObject var myUrl: ApiUrl
+    
+    
+    @Binding var user2: User
+    @State var fact: Fact
+    @Binding var isBookmarked: Bool
+    @Binding var quelleShowing: Bool
+    
+    var color: String
+    @Binding var options: Bool
+    @State var isLoved: Bool = false
+    @State var isSurprised: Bool = false
+    @State var isAngry: Bool = false
+    
+    @State var loveScale: CGFloat = 1
+    @State var surprisedScale: CGFloat = 1
+    @State var angryScale: CGFloat = 1
+    @State var bookmarkScale: CGFloat = 1
+    @State var correctUrl: String = ""
+    
+    var body: some View {
+        GeometryReader { size in
+            ZStack {
+                VStack{
+                    Spacer()
+                    Image("I"+fact.category)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(minHeight: 100, idealHeight: 200, maxHeight: 300)
+                        .drawingGroup()
+                    Text(fact.title)
+                        .font(.system(size: size.size.width < 500 ? size.size.width * 0.07  - CGFloat(fact.title.count / 25) : 26, weight: .medium))
+                        .fixedSize(horizontal: false, vertical: true)
+                        .foregroundColor(Color("alwaysblack"))
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal)
+                    if (fact.source.count > 3) {
+                        Text("Quelle")
+                            .foregroundColor(.gray)
+                            .font(.system(size: size.size.width * 0.03, weight: .medium))
+                            .multilineTextAlignment(.center)
+                            .padding(.top, 5)
+                            .onTapGesture {
+                                //                                self.verifyUrl(urlString: fact.source)
+                            }
+                            .sheet(isPresented: $quelleShowing) {
+                                QuelleView(quelle: correctUrl, quelleShowing: self.$quelleShowing)
+                            }
+                    }
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        ReactionButton(width: size.size.width, isSelected: $isLoved, scale: $loveScale, emoji: "😍", amount: fact.isLoved, fact: fact)
+                        Spacer()
+                        ReactionButton(width: size.size.width, isSelected: $isSurprised, scale: $surprisedScale, emoji: "🤯", amount: fact.isSurprised, fact: fact)
+                        Spacer()
+                        ReactionButton(width: size.size.width, isSelected: $isAngry, scale: $angryScale, emoji: "😠", amount: fact.isAngry, fact: fact)
+                        Spacer()
+                        Image(systemName: "bookmark")
+                            .font(Font.system(size: size.size.width < 500 ? size.size.width * 0.06 : 22, weight: isBookmarked ? .medium : .regular))
+                            .foregroundColor(Color(isBookmarked ? .white : .black))
+                            .scaleEffect(bookmarkScale)
+                            .animation(.spring())
+                            .padding(10)
+                            .onTapGesture(){
+                                self.isBookmarked.toggle()
+                                self.addToProfile(tippId: self.fact._id, method: 1)
+
+                                self.bookmarkScale = 1.2
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                    self.bookmarkScale = 1
+                                }
+
+                                self.levelEnv.level += 5
+                                UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
+
+                                impact(style: .medium)
+                            }
+                        Spacer()
+                    }
+                    Spacer()
+                        .frame(maxHeight: 10)
+                    
+                }
+                VStack {
+                    HStack(alignment: .top) {
+                        Image(fact.category)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: size.size.width < 500 ? size.size.width * 0.09 : 40, height: size.size.width < 500 ? size.size.width * 0.09 : 40)
+                            .opacity(0.1)
+                            .padding(.leading, 20)
+                            .padding(.vertical)
+                        Image(fact.official)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: size.size.width < 500 ? size.size.width * 0.09 : 40, height: size.size.width < 500 ? size.size.width * 0.09 : 40)
+                            .opacity(0.1)
+                            .padding(.vertical)
+                        Spacer()
+                        Image(systemName: "ellipsis")
+                            .font(.system(size: size.size.width < 400 ? size.size.width * 0.07 : 25, weight: Font.Weight.medium))
+                            .padding(25)
+                            .padding(.trailing, 5)
+                            .background(Color(color))
+                            .opacity(0.1)
+                            .onTapGesture(){
+                                impact(style: .heavy)
+                                self.options.toggle()
+                                self.getPoster()
+                            }
+                    }
+                    Spacer()
+                }
+                .frame(width: UIScreen.main.bounds.width > 600 ? 600 - 30 : UIScreen.main.bounds.width - 30, height:
+                        UIScreen.main.bounds.height / 2.1)
+            }
+            .background(Color(color))
+            .cornerRadius(15)
+            .offset(x: options ? -size.size.width / 1.3 : 0)
+        }
+        .onTapGesture(){}
+        .gesture(DragGesture()
+                    .onChanged({ (value) in
+                        self.options = false
+                    }))
+        .onAppear(){
+            self.getUserTipps()
+        }
+    }
+    
+    func getUserTipps(){
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            if (user.user.savedFacts != nil) {
+                if (user.user.savedFacts!.contains(self.fact._id) ) {
+                    self.isBookmarked = true
+                }
+            }
+        }
+    }
+    
+    
+    func getPoster() {
+        guard let url = URL(string: myUrl.users + fact.postedBy) else { return }
+        
+        URLSession.shared.dataTask(with: url) { (data, _, _) in
+            if let data = data {
+                if let user = try? JSONDecoder().decode(User.self, from: data) {
+                    DispatchQueue.main.async {
+                        self.user2 = user
+                    }
+                    return
+                }
+            }
+        }
+        .resume()
+    }
+    
+    func verifyUrl (urlString: String) {
+        if (urlString.contains("http://www.") || urlString.contains("https://www.")){
+            self.correctUrl = urlString
+        } else if (urlString.contains("www.")){
+            self.correctUrl = "http://" + urlString
+        } else {
+            let temp = "http://www.google.com/search?p=" + urlString
+            correctUrl = temp.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "http://www.google.de"
+        }
+        print(self.correctUrl)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.quelleShowing = true
+        }
+    }
+    
+    func addToProfile(tippId: String, method: Int) {
+        let patchData = TippPatchCheck(checkedTipps: tippId)
+        let patchData2 = TippPatchSave(savedTipps: tippId)
+        
+        var encoded: Data?
+        if (method == 0) {
+            encoded = try? JSONEncoder().encode(patchData)
+        } else {
+            encoded = try? JSONEncoder().encode(patchData2)
+        }
+        guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "PATCH"
+        request.httpBody = encoded
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            
+        }.resume()
+    }
+    
+    func patchScoreUser(reportedTipps: String) {
+        
+        let rating = ReportedTipps(reportedTipps: reportedTipps)
+        
+        guard let encoded = try? JSONEncoder().encode(rating) else {
+            print("Failed to encode order")
+            return
+        }
+        
+        guard let url = URL(string: myUrl.users + fact.postedBy) else { return }
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "PATCH"
+        request.httpBody = encoded
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            
+        }.resume()
+    }
+    
+    func patchScore(thumb: String) {
+        
+        let rating = Rate(thumb: thumb)
+        
+        guard let encoded = try? JSONEncoder().encode(rating) else {
+            print("Failed to encode order")
+            return
+        }
+        
+        guard let url = URL(string: myUrl.facts + fact._id) else { return }
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "PATCH"
+        request.httpBody = encoded
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            
+        }.resume()
+    }
+    
+}
+
+struct ReactionButton: View {
+    
+    @EnvironmentObject var levelEnv: UserLevel
+    @EnvironmentObject var myUrl: ApiUrl
+    
+    var width: CGFloat
+    @Binding var isSelected: Bool
+    @Binding var scale: CGFloat
+    var emoji: String
+    @State var amount: Int
+    var fact: Fact
+    
+    @State var lock = false
+    
+    var body: some View {
+        VStack (spacing: 5) {
+            Text(emoji)
+                .font(Font.system(size: width < 500 ? width * 0.07 : 25, weight: isSelected ? .medium : .regular))
+            Text(String(amount))
+                .font(Font.system(size: width < 500 ? width * 0.03 : 14))
+        }
+        .saturation(isSelected ? 1 : 0.5)
+        .scaleEffect(isSelected ? scale * 1.1 : scale)
+        .padding(10)
+        .foregroundColor(.black)
+        .onTapGesture(){
+            lock = true
+            self.isSelected.toggle()
+            scale = 1.4
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                scale = 1
+            }
+            
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                if (!isSelected) {
+                    self.amount -= 1
+                    self.levelEnv.level -= 5
+                    UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
+                    self.patchScore(emoji: emoji, patchAmount: -1)
+                    lock = false
+                } else {
+                    self.amount += 1
+                    self.levelEnv.level += 5
+                    UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
+                    self.patchScore(emoji: emoji, patchAmount: 1)
+                    lock = false
+                }
+            }
+            
+            impact(style: .medium)
+        }
+        .animation(.spring())
+        .disabled(lock)
+    }
+    
+    func patchScore(emoji: String, patchAmount: Int) {
+        
+        var encoded: Data?
+        if (emoji == "😍") {
+            let patchData = PatchLoved(isLoved: patchAmount)
+            encoded = try? JSONEncoder().encode(patchData)
+        } else if (emoji == "🤯") {
+            let patchData = PatchSurprised(isSurprised: patchAmount)
+            encoded = try? JSONEncoder().encode(patchData)
+        } else if (emoji == "😠") {
+            let patchData = PatchAngry(isAngry: patchAmount)
+            encoded = try? JSONEncoder().encode(patchData)
+        } else {
+            return
+        }
+        
+        guard let url = URL(string: myUrl.facts + fact._id) else { return }
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "PATCH"
+        request.httpBody = encoded
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+        }.resume()
+    }
+    
+    struct PatchLoved: Encodable {
+        var isLoved: Int
+    }
+    struct PatchSurprised: Encodable {
+        var isSurprised: Int
+    }
+    struct PatchAngry: Encodable {
+        var isAngry: Int
+    }
+}
+
+struct FactCardBackground: View {
+
+    @State var id = UserDefaults.standard.string(forKey: "id")
+
+    @ObservedObject var user = UserDataStore()
+
+    @EnvironmentObject var changeFilter: ChangeFilter
+    @EnvironmentObject var levelEnv: UserLevel
+    @EnvironmentObject var myUrl: ApiUrl
+
+    var fact: Fact
+    @Binding var isBookmarked: Bool
+    @Binding var quelleShowing: Bool
+
+    var color: String
+    @Binding var options: Bool
+
+    @State var showYouSure: Bool = false
+
+    @State var reportClicked: Bool = false
+    @State var likeClicked: Bool = false
+    @State var dislikeClicked: Bool = false
+
+    @Binding var user2: User
+
+
+    var body: some View {
+        GeometryReader { size in
+            if (options) {
+                VStack (spacing: 0){
+                    HStack(alignment: .top) {
+                        Spacer()
+                        Button(action: {
+                            impact(style: .medium)
+                            self.options.toggle()
+                        }) {
+                            Image(systemName: "xmark")
+                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.06 : 25, weight: Font.Weight.medium))
+                                .opacity(0.1)
+                                .padding(.top, 25)
+                                .padding(.trailing, 25)
+                        }
+                    }
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        VStack (spacing: 0){
+                            Group {
+                                Spacer()
+                                Text("Geposted von:")
+                                    .foregroundColor(.secondary)
+                                    .font(.caption)
+                                    .multilineTextAlignment(.center)
+                                Text("\(user2.name ?? "User")")
+                                    .multilineTextAlignment(.center)
+                                    .foregroundColor(Color("black"))
+                                    .padding(5)
+                                Text("\(user2.gender ?? "")  \(user2.age ?? "")")
+                                    .font(.footnote)
+                                    .multilineTextAlignment(.center)
+                                    .foregroundColor(Color("black"))
+                                    .opacity(user2.hideInfo ?? false ? 0 : 1)
+                                Spacer()
+                            }
+                            if (fact.postedBy == id) {
+                                Group {
+                                    ZStack {
+                                        HStack {
+                                            Spacer()
+                                            Image(systemName: "trash")
+                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+                                                .foregroundColor(.red)
+                                                .opacity(0.8)
+                                                .padding(10)
+                                                .onTapGesture(){
+                                                    impact(style: .medium)
+                                                    self.deleteTipp()
+                                                }
+                                            Spacer()
+                                            Image(systemName: "xmark")
+                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+                                                .opacity(0.8)
+                                                .padding(10)
+                                                .onTapGesture(){
+                                                    impact(style: .medium)
+                                                    self.showYouSure = false
+                                                }
+                                            Spacer()
+                                        }
+                                        .offset(y: showYouSure ? 0 : 30)
+                                        .opacity(showYouSure ? 1 : 0)
+
+                                        HStack (spacing: 20){
+                                            Image(systemName: dislikeClicked ? "trash.fill" : "trash")
+                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+                                                .foregroundColor(.red)
+                                                .opacity(0.8)
+                                            Text("Tipp löschen")
+                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
+                                                .foregroundColor(.red)
+                                                .opacity(0.8)
+                                        }
+                                        .padding(10)
+                                        .offset(y: showYouSure ? -30 : 0)
+                                        .opacity(showYouSure ? 0 : 1)
+                                        .cornerRadius(15)
+                                        .onTapGesture(){
+                                            impact(style: .medium)
+
+                                            self.showYouSure = true
+                                        }
+                                    }
+                                    .animation(.spring())
+                                    Spacer()
+                                }
+                            } else {
+                                Group {
+                                    HStack (spacing: 15){
+                                        Image(systemName: likeClicked ? "hand.thumbsup.fill" : "hand.thumbsup")
+                                            .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+                                            .opacity(0.8)
+                                        Text("Positiv bewerten")
+                                            .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
+                                            .opacity(0.8)
+                                    }
+                                    .padding(10)
+                                    .cornerRadius(15)
+                                    .onTapGesture(){
+                                        impact(style: .medium)
+                                        if (self.likeClicked) {
+                                            self.patchScore(thumb: "down")
+                                        } else {
+                                            if (self.reportClicked) {
+                                                self.reportClicked = false
+                                                self.patchScore(thumb: "unreport")
+                                            }
+                                            if (self.dislikeClicked) {
+                                                self.dislikeClicked = false
+                                                self.patchScore(thumb: "up")
+                                            }
+                                            self.patchScore(thumb: "up")
+                                        }
+                                        self.likeClicked.toggle()
+                                    }
+                                    .onTapGesture(){}
+                                    .gesture(DragGesture()
+                                                .onChanged({ (value) in
+                                                    self.options = false
+                                                }))
+                                    Spacer()
+                                        .frame(maxHeight: 5)
+                                    HStack (spacing: 20){
+                                        Image(systemName: dislikeClicked ? "hand.thumbsdown.fill" : "hand.thumbsdown")
+                                            .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+                                            .opacity(0.8)
+                                        Text("Negativ bewerten")
+                                            .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
+                                            .opacity(0.8)
+                                    }
+                                    .padding(10)
+                                    .cornerRadius(15)
+                                    .onTapGesture(){
+                                        impact(style: .medium)
+
+                                        if (!self.dislikeClicked && self.likeClicked) {
+                                            self.patchScore(thumb: "down")
+                                            self.patchScore(thumb: "down")
+                                        } else if (self.dislikeClicked) {
+                                            self.patchScore(thumb: "up")
+                                        } else {
+                                            self.patchScore(thumb: "down")
+                                        }
+                                        self.likeClicked = false
+                                        self.dislikeClicked.toggle()
+                                    }
+                                    Spacer()
+                                        .frame(maxHeight: 5)
+                                    HStack (spacing: 20){
+                                        Image(systemName: reportClicked ? "flag.fill" : "flag")
+                                            .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+                                            .foregroundColor(.red)
+                                            .opacity(0.8)
+                                        Text("Diesen Tipp melden")
+                                            .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
+                                            .foregroundColor(.red)
+                                            .opacity(0.8)
+                                    }
+                                    .padding(10)
+                                    .cornerRadius(15)
+                                    .animation(.spring())
+                                    .onTapGesture(){
+                                        impact(style: .medium)
+                                        if (self.reportClicked) {
+                                            self.patchScore(thumb: "unreport")
+                                            self.patchScoreUser(reportedTipps: "unreport")
+                                        } else {
+                                            self.patchScore(thumb: "report")
+                                            self.patchScoreUser(reportedTipps: "report")
+                                            if (!self.dislikeClicked) {
+                                                self.dislikeClicked = true
+                                                self.patchScore(thumb: "down")
+                                            }
+                                            if (self.likeClicked) {
+                                                self.likeClicked = false
+                                                self.patchScore(thumb: "down")
+                                            }
+                                        }
+                                        self.reportClicked.toggle()
+                                    }
+                                    Spacer()
+                                }
+                            }
+                        }
+                        .frame(width: size.size.width / 1.3)
+                        .gesture(DragGesture()
+                                    .onChanged({ (value) in
+                                        self.options = false
+                                    }))
+                    }
+                }
+                .frame(width: UIScreen.main.bounds.width > 600 ? 600 - 30 : UIScreen.main.bounds.width - 30, height:
+                        UIScreen.main.bounds.height / 2.1)
+                .background(Color.black.opacity(0.05))
+                .background(Color(color))
+                .cornerRadius(25)
+                .onTapGesture(){}
+                .gesture(DragGesture()
+                            .onChanged({ (value) in
+                                self.options = false
+                            }))
+                .animation(.spring())
+            }
+        }
+    }
+
+    func patchScore(thumb: String) {
+
+        let rating = Rate(thumb: thumb)
+
+        guard let encoded = try? JSONEncoder().encode(rating) else {
+            print("Failed to encode order")
+            return
+        }
+
+        guard let url = URL(string: myUrl.facts + fact._id) else { return }
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "PATCH"
+        request.httpBody = encoded
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+
+        }.resume()
+    }
+
+    func patchScoreUser(reportedTipps: String) {
+
+        let rating = ReportedTipps(reportedTipps: reportedTipps)
+
+        guard let encoded = try? JSONEncoder().encode(rating) else {
+            print("Failed to encode order")
+            return
+        }
+
+        guard let url = URL(string: myUrl.users + fact.postedBy) else { return }
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "PATCH"
+        request.httpBody = encoded
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+
+        }.resume()
+    }
+
+    func deleteTipp(){
+        
+        self.changeFilter.changeFilter = true
+        
+        guard let url = URL(string: myUrl.facts + (fact._id)) else { return }
+        var request = URLRequest(url: url)
+        request.httpMethod = "DELETE"
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+//                self.loading = false
+            }
+        }.resume()
     }
 }

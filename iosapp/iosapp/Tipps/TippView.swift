@@ -15,8 +15,6 @@ struct TippView: View {
     @State var tipps: [Tipp] = []
     @State var showAddTipps = false
     @State var showRateTipps = false
-    @Binding var isDark: Bool
-    @Binding var appearenceDark: Bool
     @ObservedObject var filter: FilterData2
     
     @ObservedObject var storeTipps = TippDataStore()
@@ -180,6 +178,6 @@ struct TippView: View {
 struct TippView_Previews: PreviewProvider {
     var model = ToggleModel()
     static var previews: some View {
-        TippView(isDark: .constant(false), appearenceDark: .constant(false), filter: FilterData2())
+        TippView(filter: FilterData2())
     }
 }

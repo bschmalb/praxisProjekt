@@ -9,25 +9,61 @@
 import SwiftUI
 
 struct Fact: Codable, Hashable, Identifiable{
-    let id: String
+    var id = UUID()
+    let _id: String
     let title: String
     let source: String
-    let level: String
     let category: String
-    var score: Int16
+    var isLoved: Int = 0
+    var isSurprised: Int = 0
+    var isAngry: Int = 0
+    var score: Int
     var postedBy: String
     var isChecked: Bool = false
     var isBookmarked: Bool = false
     var official: String
+    var __v: Int?
     
     enum CodingKeys: String, CodingKey {
-        case id, title, source, level, category, score, postedBy, official
+        case _id, title, source, category, isLoved, isSurprised, isAngry, score, postedBy, official
     }
 }
 
 class FactApi {
-    func fetchFacts(completion: @escaping ([Fact]) -> ()) {
+    func fetchAll(completion: @escaping ([Fact]) -> ()) {
         guard let url = URL(string: "https://sustainablelife.herokuapp.com/facts") else { return }
+        
+        URLSession.shared.dataTask(with: url) { (data, _, _) in
+            guard let data = data else { return }
+            
+            if let facts = try? JSONDecoder().decode([Fact].self, from: data) {
+                DispatchQueue.main.async {
+                    completion(facts)
+                }
+                return
+            }
+        }
+        .resume()
+    }
+    
+    func fetchRate(completion: @escaping ([Fact]) -> ()) {
+        guard let url = URL(string: "https://sustainablelife.herokuapp.com/facts?maxscore=20") else { return }
+        
+        URLSession.shared.dataTask(with: url) { (data, _, _) in
+            guard let data = data else { return }
+            
+            if let facts = try? JSONDecoder().decode([Fact].self, from: data) {
+                DispatchQueue.main.async {
+                    completion(facts)
+                }
+                return
+            }
+        }
+        .resume()
+    }
+    
+    func fetchApproved(completion: @escaping ([Fact]) -> ()) {
+        guard let url = URL(string: "https://sustainablelife.herokuapp.com/facts?minscore=20") else { return }
         
         URLSession.shared.dataTask(with: url) { (data, _, _) in
             guard let data = data else { return }

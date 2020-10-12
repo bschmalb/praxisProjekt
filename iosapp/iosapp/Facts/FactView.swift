@@ -10,12 +10,18 @@ import SwiftUI
 
 struct FactView: View {
     
-    @State var showAddFact = false
     
-    @State var showRateTipps: Bool = false
+    @State var show: Bool = false
+    @State var facts: [Fact] = []
+    @State var showAddFacts = false
+    @State var showRateFacts = false
+    @ObservedObject var filter: FilterDataFacts
     
     @EnvironmentObject var levelEnv: UserLevel
     @EnvironmentObject var overlay: Overlay
+    @EnvironmentObject var myUrl: ApiUrl
+    
+    var screen = UIScreen.main.bounds
     
     var body: some View {
         NavigationView {
@@ -24,7 +30,8 @@ struct FactView: View {
                     Color("background")
                         .edgesIgnoringSafeArea(.all)
                 }
-                VStack {
+                
+                VStack (spacing: screen.height < 700 ? 5 : 10) {
                     HStack {
                         Text("Fakten über die Natur")
                             .font(.title)
@@ -32,65 +39,67 @@ struct FactView: View {
                             .padding(.leading, 20)
                         Spacer()
                         Button(action: {
-                            self.showAddFact.toggle()
+                            self.showAddFacts.toggle()
+                            impact(style: .medium)
                         }) {
                             Image(systemName: "plus.circle")
                                 .font(.title)
                                 .padding(10)
                                 .padding(.trailing, 15)
-                        }.sheet(isPresented: $showAddFact, content: { AddTippView(showAddTipps: self.$showAddFact)})
+                        }.sheet(isPresented: $showAddFacts, content: { AddFactView(showAddFacts: self.$showAddFacts).environmentObject(self.levelEnv).environmentObject(self.overlay).environmentObject(self.myUrl)})
                     }
-                    .padding(.top, 10.0)
+                    .padding(.top, screen.height / 81)
                     .offset(y: 10)
                     
-                    FactCardList()
+                    FactCardList(filter: filter).environmentObject(UserObserv()).environmentObject(FilterDataFacts())
                     
-                    VStack {
+                    VStack (spacing: 10) {
                         HStack {
                             Button(action: {
-                                self.showAddFact.toggle()
+                                self.showAddFacts.toggle()
                                 impact(style: .medium)
                             }) {
                                 HStack {
                                     HStack {
                                         Image(systemName: "plus.circle")
-                                            .font(.system(size: 22))
+                                            .font(.system(size: screen.width < 500 ? screen.width * 0.05 : 20, weight: Font.Weight.medium))
                                         Text("Selbst Fakten hinzufügen")
-                                            .font(.headline)
+                                            .font(.system(size: screen.width < 500 ? screen.width * 0.045 : 20))
                                             .fontWeight(.medium)
                                     }
                                     .padding(13)
                                     .padding(.leading, 10)
                                     Spacer()
-                                }.frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height / 16)
+                                }.frame(width: screen.width - 30, height: 20 + screen.height / 30)
                             }
-                            .sheet(isPresented: $showAddFact, content: { AddTippView(showAddTipps: self.$showAddFact).environmentObject(self.levelEnv).environmentObject(self.overlay) })
+                            .sheet(isPresented: $showAddFacts, content: { AddFactView(showAddFacts: self.$showAddFacts).environmentObject(self.levelEnv).environmentObject(self.overlay).environmentObject(self.myUrl) })
                             .background(Color("buttonWhite"))
                             .cornerRadius(15)
                             .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
                         }
                         HStack {
-                            NavigationLink (destination: RateTippView(showRateTipps: $showRateTipps)
-                                .navigationBarBackButtonHidden(false)
-                                .navigationBarTitle("")
-                                .navigationBarHidden(true)
-                            ){
+                            Button(action: {
+                                self.showRateFacts.toggle()
+                                impact(style: .medium)
+                            }) {
                                 HStack {
                                     Image(systemName: "hand.thumbsup")
-                                        .font(.system(size: 20, weight: .medium))
-                                    Text("Challenges von Nutzern bewerten")
-                                        .font(.headline)
+                                        .font(.system(size: screen.width < 500 ? screen.width * 0.05 : 20, weight: Font.Weight.medium))
+                                    Text("Fakten von Nutzern bewerten")
+                                        .font(.system(size: screen.width < 500 ? screen.width * 0.045 : 20))
                                         .fontWeight(.medium)
                                 }
                                 .padding(13)
                                 .padding(.leading, 10)
                                 Spacer()
-                            }.frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height / 16)
-                                .background(Color("buttonWhite"))
-                                .cornerRadius(15)
-                                .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
+                            }
+                            .frame(width: screen.width - 30, height: 20 + screen.height / 30)
+                            .background(Color("buttonWhite"))
+                            .cornerRadius(15)
+                            .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
+                        .sheet(isPresented: $showRateFacts, content: { RateFactView(showRateFacts: self.$showRateFacts).environmentObject(self.levelEnv).environmentObject(self.overlay)})
                         }
-                    }.offset(y: -UIScreen.main.bounds.height / 81)
+                    }.offset(y: -screen.height / 81)
                     Spacer()
                 }
             }.accentColor(.primary)
@@ -102,6 +111,6 @@ struct FactView: View {
 
 struct FactView_Previews: PreviewProvider {
     static var previews: some View {
-        FactView()
+        FactView(filter: FilterDataFacts())
     }
 }

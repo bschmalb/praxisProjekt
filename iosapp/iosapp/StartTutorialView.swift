@@ -483,8 +483,10 @@ struct Intro2 : View {
                     UserDefaults.standard.set(value, forKey: "hideInfo")
                 }
                 .font(.footnote)
-                .padding()
-                .frame(width: 300)
+                .foregroundColor(.black)
+                .frame(maxWidth: 500)
+                .padding(.bottom)
+                .padding(.horizontal, 30)
             Spacer()
         }
         .animation(.spring())
@@ -561,17 +563,16 @@ struct Intro4 : View {
                 .font(.system(size: 20, weight: Font.Weight.medium))
                 .fixedSize(horizontal: false, vertical: true)
                 .padding()
-            ScrollView (.vertical, showsIndicators: false) {
-                HStack (spacing: 15) {
-                    categoryButton(filter: filter, category: "Ernährung", categories: $categories, isSelected: true, optionSelected: $optionSelected)
-                    categoryButton(filter: filter, category: "Transport", categories: $categories, isSelected: true, optionSelected: $optionSelected)
-                    categoryButton(filter: filter, category: "Haushalt", categories: $categories, isSelected: true, optionSelected: $optionSelected)
-                }
-                .padding(.bottom, 10)
-                HStack {
-                    categoryButton(filter: filter, category: "Ressourcen", categories: $categories, isSelected: true, optionSelected: $optionSelected)
-                }
+            HStack (spacing: 15) {
+                categoryButton(filter: filter, category: "Ernährung", categories: $categories, isSelected: true, optionSelected: $optionSelected)
+                categoryButton(filter: filter, category: "Transport", categories: $categories, isSelected: true, optionSelected: $optionSelected)
+                categoryButton(filter: filter, category: "Haushalt", categories: $categories, isSelected: true, optionSelected: $optionSelected)
             }
+            .padding(.bottom, 10)
+            HStack {
+                categoryButton(filter: filter, category: "Ressourcen", categories: $categories, isSelected: true, optionSelected: $optionSelected)
+            }
+            Spacer()
         }
         .animation(.spring())
         .onTapGesture(perform: {

@@ -218,7 +218,7 @@ struct TippCard2: View {
                                                 self.patchScoreUser(reportedTipps: "unreport")
                                             } else {
                                                 self.patchScore(thumb: "report")
-                                                self.patchScoreUser(reportedTipps: "unreport")
+                                                self.patchScoreUser(reportedTipps: "report")
                                                 if (!self.dislikeClicked) {
                                                     self.dislikeClicked = true
                                                     self.patchScore(thumb: "down")
@@ -358,9 +358,10 @@ struct TippCard2: View {
                             Spacer()
                             Image(systemName: "ellipsis")
                                 .font(.system(size: size.size.width < 400 ? size.size.width * 0.07 : 25, weight: Font.Weight.medium))
-                                .opacity(0.1)
                                 .padding(25)
                                 .padding(.trailing, 5)
+                                .background(Color(color))
+                                .opacity(0.1)
                                 .onTapGesture(){
                                     impact(style: .heavy)
                                     self.options.toggle()
@@ -404,8 +405,6 @@ struct TippCard2: View {
     }
     func getUserTipps(){
         
-        print("getUserTipps")
-        
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             if (user.user.checkedTipps.contains(self.tipp._id) ) {
                 self.isChecked = true
@@ -414,26 +413,6 @@ struct TippCard2: View {
                 self.isBookmarked = true
             }
         }
-        
-        //        guard let url = URL(string: "http://bastianschmalbach.ddns.net/users/" + (id ?? "")) else { return }
-        //        let request = URLRequest(url: url)
-        //
-        //        URLSession.shared.dataTask(with: request) { data, response, error in
-        //            guard let data = data else {
-        //                print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
-        //                return
-        //            }
-        //            DispatchQueue.main.async {
-        //                if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
-        //                    if (decodedResponse.checkedTipps.contains(self.tipp._id) ) {
-        //                        self.isChecked = true
-        //                    }
-        //                    if (decodedResponse.savedTipps.contains(self.tipp._id) ) {
-        //                        self.isBookmarked = true
-        //                    }
-        //                }
-        //            }
-        //        }.resume()
     }
     
     func patchScore(thumb: String) {
