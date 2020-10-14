@@ -51,7 +51,7 @@ struct LevelView: View {
                     .font(.system(size: 12 * multiplier))
                     .foregroundColor(Color("black"))
                 Text("\(levelEnv.level/100+1)")
-                    .font(.system(size: 28 * multiplier))
+                    .font(.system(size: 24 * multiplier))
                     .bold()
                     .foregroundColor(Color("black"))
             }.offset(y: 2 * multiplier)

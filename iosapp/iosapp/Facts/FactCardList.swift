@@ -86,7 +86,12 @@ struct FactCardList: View {
                             if changeFilter.changeFilter {
                                 FactApi().fetchApproved { (filteredFacts) in
                                     self.filteredFacts = filteredFacts
-                                    self.changeFilter.changeFilter = false
+                                    
+                                    if (self.filteredFacts.count > 0) {
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                                            self.changeFilter.changeFilter = false
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -151,13 +156,14 @@ struct FactCardList: View {
                 if storedObjTipp != nil {
                     self.filteredFacts = try JSONDecoder().decode([Fact].self, from: storedObjTipp as! Data)
                     self.dataLoading = false
-                    print("Retrieved Facts: \(filteredFacts)")
+                    print("Retrieved Facts: filteredFacts")
                 }
             } catch let err {
                 print(err)
             }
             
             FactApi().fetchApproved { (filteredFacts) in
+                self.filteredFacts = []
                 self.filteredFacts = filteredFacts
                 self.dataLoading = false
                 

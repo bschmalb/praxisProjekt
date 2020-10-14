@@ -13,6 +13,8 @@ import Combine
 struct TippCardList: View {
     
     @ObservedObject var store = TippDataStore()
+    @EnvironmentObject var myUrl: ApiUrl
+    @State var id = UserDefaults.standard.string(forKey: "id")
     
     @Environment(\.horizontalSizeClass) var horizontalSize
     
@@ -31,6 +33,8 @@ struct TippCardList: View {
     @State var notDifficulty: [String] = UserDefaults.standard.stringArray(forKey: "notDifficulty") ?? []
     
     @EnvironmentObject var user: UserObserv
+    
+    @State var userObject: User = User(_id: "", phoneId: "", level: 0, checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
     
     @EnvironmentObject var changeFilter: ChangeFilter
     @EnvironmentObject var filterString: FilterString
@@ -87,9 +91,31 @@ struct TippCardList: View {
                                 .frame(width: 100, height: 100)
                         }
                         .onAppear(){
+                            guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
+                            let request = URLRequest(url: url)
+                            
+                            URLSession.shared.dataTask(with: request) { data, response, error in
+                                guard let data = data else {
+                                    print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
+                                    return
+                                }
+                                if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
+                                    userObject = decodedResponse
+                                }
+                            }.resume()
+                            
                             Api().fetchTipps { (filteredTipps) in
                                 self.filteredTipps = filteredTipps
-                                self.changeFilter.changeFilter = false
+                                self.dataLoading = false
+                                
+                                for (index, test) in self.filteredTipps.enumerated() {
+                                    if (userObject.checkedTipps.contains(test._id)){
+                                        self.filteredTipps[index].isChecked = true
+                                    }
+                                    if (userObject.savedTipps.contains(test._id)){
+                                        self.filteredTipps[index].isBookmarked = true
+                                    }
+                                }
                             }
                         }
                         .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2.1 + 20)
@@ -99,8 +125,7 @@ struct TippCardList: View {
                             GeometryReader { proxy in
                                 UIScrollViewWrapper {
                                     HStack (spacing: 0) {
-                                        if (!changeFilter.changeFilter){
-                                            ForEach(self.filteredTipps.indices, id: \.self) { index in
+                                        ForEach(self.filteredTipps.indices, id: \.self) { index in
                                                 HStack {
                                                     if ([self.filteredTipps[index].category, self.filteredTipps[index].level, self.filteredTipps[index].official].allSatisfy(self.filterString.filterString.contains)){
                                                         GeometryReader { geometry in
@@ -115,15 +140,6 @@ struct TippCardList: View {
                                                             }
                                                         }
                                                         .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2.1 + 20)
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            Text("")
-                                                .onAppear(){
-                                                    Api().fetchTipps { (filteredTipps) in
-                                                        self.filteredTipps = filteredTipps
-                                                        self.dataLoading = false
                                                     }
                                                 }
                                         }
@@ -160,13 +176,14 @@ struct TippCardList: View {
                 if storedObjTipp != nil {
                     self.filteredTipps = try JSONDecoder().decode([Tipp].self, from: storedObjTipp as! Data)
                     self.dataLoading = false
-                    print("Retrieved Tipps: \(filteredTipps)")
+                    print("Retrieved Tipps: filteredTipps")
                 }
             } catch let err {
                 print(err)
             }
             
             Api().fetchTipps { (filteredTipps) in
+                self.filteredTipps = []
                 self.filteredTipps = filteredTipps
                 self.dataLoading = false
                 

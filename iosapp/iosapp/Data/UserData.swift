@@ -18,7 +18,6 @@ struct User: Encodable, Decodable {
     var level: Int16?
     var checkedTipps: [String]
     var savedTipps: [String]
-    var checkedFacts: [String]?
     var savedFacts: [String]?
     var log: [Log]
     var __v: Int?

@@ -25,9 +25,3 @@ class RateApi {
         .resume()
     }
 }
-
-struct RateTippData_Previews: PreviewProvider {
-    static var previews: some View {
-        Text("Hello, World!")
-    }
-}

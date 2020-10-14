@@ -24,15 +24,13 @@ struct TippCard2: View {
     @State var isClicked2: Bool = false
     @State var tipp: Tipp
     
-    @State var user2: User = User(_id: "", phoneId: "", level: 2, checkedTipps: [], savedTipps: [], checkedFacts: [], savedFacts: [], log: [])
+    @State var user2: User = User(_id: "", phoneId: "", level: 2, checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
     
     @State var userLevelLocal = 0
     
     @State var quelleShowing = false
     
     @State var options: Bool = false
-    
-    @State var loading: Bool = false
     
     @State var reportClicked: Bool = false
     @State var likeClicked: Bool = false
@@ -84,7 +82,8 @@ struct TippCard2: View {
                                         .opacity(user2.hideInfo ?? false ? 0 : 1)
                                     Spacer()
                                 }
-                                if (tipp.postedBy == id) {
+//                                if (tipp.postedBy == id) {
+                                if (false) {
                                     Group {
                                         ZStack {
                                             HStack {
@@ -96,7 +95,6 @@ struct TippCard2: View {
                                                     .padding(10)
                                                     .onTapGesture(){
                                                         impact(style: .medium)
-                                                        self.loading = true
                                                         self.deleteTipp()
                                                     }
                                                 Spacer()
@@ -382,19 +380,6 @@ struct TippCard2: View {
                         .onChanged({ (value) in
                             self.options = false
                         }))
-            if loading {
-                VStack {
-                    LottieView(filename: "loadingCircle", loop: true)
-                        .frame(width: 80, height: 80)
-                        .background(Color("white"))
-                        .cornerRadius(50)
-                }
-                .frame(width: 150, height: 150)
-                .background(Color("white"))
-                .cornerRadius(50)
-                .shadow(radius: 5)
-                .animation(.spring())
-            }
         }
         .animation(.spring())
         .accentColor(.black)
@@ -521,11 +506,13 @@ struct TippCard2: View {
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
         
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                self.loading = false
-            }
-        }.resume()
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+//            URLSession.shared.dataTask(with: request) { data, response, error in
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+//                    self.changeFilter.changeFilter = false
+//                }
+//            }.resume()
+//        }
     }
 }
 

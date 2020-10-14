@@ -19,7 +19,7 @@ struct ProfilData: View {
     
     @State var optionSelected: Int = 1
     
-    @State var user: User = User(_id: "", phoneId: "", level: 2, checkedTipps: [], savedTipps: [], checkedFacts: [], savedFacts: [], log: [])
+    @State var user: User = User(_id: "", phoneId: "", level: 2, checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
     
     @State var posting: Bool = false
     

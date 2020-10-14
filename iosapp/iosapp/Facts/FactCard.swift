@@ -26,7 +26,7 @@ struct FactCard: View {
     
     var color: String
     
-    @State var user2: User = User(_id: "", phoneId: "", level: 2, checkedTipps: [], savedTipps: [], checkedFacts: [], savedFacts: [], log: [])
+    @State var user2: User = User(_id: "", phoneId: "", level: 2, checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
     
     var body: some View {
         
@@ -230,15 +230,11 @@ struct FactCardMain: View {
     }
     
     func addToProfile(tippId: String, method: Int) {
-        let patchData = TippPatchCheck(checkedTipps: tippId)
-        let patchData2 = TippPatchSave(savedTipps: tippId)
+        let patchData = FactPatchSave(savedFacts: tippId)
         
         var encoded: Data?
-        if (method == 0) {
-            encoded = try? JSONEncoder().encode(patchData)
-        } else {
-            encoded = try? JSONEncoder().encode(patchData2)
-        }
+        encoded = try? JSONEncoder().encode(patchData)
+        
         guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -269,27 +265,10 @@ struct FactCardMain: View {
             
         }.resume()
     }
-    
-    func patchScore(thumb: String) {
-        
-        let rating = Rate(thumb: thumb)
-        
-        guard let encoded = try? JSONEncoder().encode(rating) else {
-            print("Failed to encode order")
-            return
-        }
-        
-        guard let url = URL(string: myUrl.facts + fact._id) else { return }
-        var request = URLRequest(url: url)
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpMethod = "PATCH"
-        request.httpBody = encoded
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            
-        }.resume()
-    }
-    
+}
+
+struct PatchScoreStruct: Encodable {
+    var score: Int
 }
 
 struct ReactionButton: View {
@@ -448,7 +427,8 @@ struct FactCardBackground: View {
                                     .opacity(user2.hideInfo ?? false ? 0 : 1)
                                 Spacer()
                             }
-                            if (fact.postedBy == id) {
+//                            if (fact.postedBy == id) {
+                            if (false) {
                                 Group {
                                     ZStack {
                                         HStack {
@@ -514,7 +494,7 @@ struct FactCardBackground: View {
                                     .onTapGesture(){
                                         impact(style: .medium)
                                         if (self.likeClicked) {
-                                            self.patchScore(thumb: "down")
+                                            self.patchScore2(score: -1)
                                         } else {
                                             if (self.reportClicked) {
                                                 self.reportClicked = false
@@ -522,9 +502,9 @@ struct FactCardBackground: View {
                                             }
                                             if (self.dislikeClicked) {
                                                 self.dislikeClicked = false
-                                                self.patchScore(thumb: "up")
+                                                self.patchScore2(score: 1)
                                             }
-                                            self.patchScore(thumb: "up")
+                                            self.patchScore2(score: 1)
                                         }
                                         self.likeClicked.toggle()
                                     }
@@ -549,12 +529,12 @@ struct FactCardBackground: View {
                                         impact(style: .medium)
 
                                         if (!self.dislikeClicked && self.likeClicked) {
-                                            self.patchScore(thumb: "down")
-                                            self.patchScore(thumb: "down")
+                                            self.patchScore2(score: -1)
+                                            self.patchScore2(score: -1)
                                         } else if (self.dislikeClicked) {
-                                            self.patchScore(thumb: "up")
+                                            self.patchScore2(score: 1)
                                         } else {
-                                            self.patchScore(thumb: "down")
+                                            self.patchScore2(score: -1)
                                         }
                                         self.likeClicked = false
                                         self.dislikeClicked.toggle()
@@ -584,11 +564,11 @@ struct FactCardBackground: View {
                                             self.patchScoreUser(reportedTipps: "report")
                                             if (!self.dislikeClicked) {
                                                 self.dislikeClicked = true
-                                                self.patchScore(thumb: "down")
+                                                self.patchScore2(score: -1)
                                             }
                                             if (self.likeClicked) {
                                                 self.likeClicked = false
-                                                self.patchScore(thumb: "down")
+                                                self.patchScore2(score: -1)
                                             }
                                         }
                                         self.reportClicked.toggle()
@@ -636,6 +616,26 @@ struct FactCardBackground: View {
 
         URLSession.shared.dataTask(with: request) { data, response, error in
 
+        }.resume()
+    }
+    
+    func patchScore2(score: Int) {
+        
+        let rating = PatchScoreStruct(score: score)
+        
+        guard let encoded = try? JSONEncoder().encode(rating) else {
+            print("Failed to encode order")
+            return
+        }
+        
+        guard let url = URL(string: myUrl.facts + fact._id) else { return }
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "PATCH"
+        request.httpBody = encoded
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            
         }.resume()
     }
 

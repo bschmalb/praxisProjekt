@@ -70,8 +70,15 @@ struct RateTippView: View {
                     
                     if (!loading) {
                         if (!endReached && rateTipps.count > 0) {
-                            TippCard2(isChecked: self.$rateTipps[counter].isChecked, isBookmarked: self.$rateTipps[counter].isBookmarked, tipp: rateTipps[counter], color: cardColors[counter % 9])
-                                .animation(.spring())
+                            ZStack {
+                                ForEach(rateTipps.indices, id: \.self) { index in
+                                    TippCard2(isChecked: self.$rateTipps[index].isChecked, isBookmarked: self.$rateTipps[index].isBookmarked, tipp: rateTipps[index], color: cardColors[counter % 9])
+                                        .animation(.spring())
+                                        .offset(x: counter < index ? 500 : 0)
+                                        .offset(x: counter > index ? -500 : 0)
+                                        .opacity(counter == index ? 1 : 0)
+                                }
+                            }
                             HStack {
                                 Image(systemName: "hand.thumbsup")
                                     .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.06 : 24, weight: Font.Weight.medium))
@@ -85,10 +92,10 @@ struct RateTippView: View {
                                     .onTapGesture(){
                                         self.levelEnv.level += 35
                                         UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
-                                        
+
                                         self.alreadyRated.append(self.rateTipps[counter]._id)
                                         UserDefaults.standard.set(self.alreadyRated, forKey: "alreadyRated")
-                                        
+
                                         patchScore(id: self.rateTipps[self.counter]._id, thumb: "up")
                                         if (self.counter < self.rateTipps.count - 1){
                                             withAnimation(){self.counter += 1}
@@ -114,10 +121,10 @@ struct RateTippView: View {
                                     .onTapGesture(){
                                         self.levelEnv.level += 35
                                         UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
-                                        
+
                                         self.alreadyRated.append(self.rateTipps[counter]._id)
                                         UserDefaults.standard.set(self.alreadyRated, forKey: "alreadyRated")
-                                        
+
                                         patchScore(id: self.rateTipps[self.counter]._id, thumb: "down")
                                         if (self.counter < self.rateTipps.count - 1){
                                             withAnimation(){self.counter += 1}
@@ -149,7 +156,7 @@ struct RateTippView: View {
                                 .cornerRadius(50)
                             Spacer()
                         }
-                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
+                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: UIScreen.main.bounds.height / 2)
                     }
                     Spacer()
                     Button(action: {
@@ -163,20 +170,18 @@ struct RateTippView: View {
                     }
                     Spacer(minLength: 5)
                 }
+                .animation(.spring())
                 .navigationBarTitle("")
                 .navigationBarHidden(true)
             }
+            .animation(.spring())
         }
         .accentColor(.primary)
         .onAppear(){
             impact(style: .medium)
-            alreadyRated = []
-            UserDefaults.standard.set(alreadyRated, forKey: "alreadyRated")
             RateApi().fetchRateTipps { (rateTipps2) in
-                print(rateTipps2)
                 self.rateTipps2 = rateTipps2
                 self.rateTipps = rateTipps2.filter({!alreadyRated.contains($0._id)})
-                print(rateTipps)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     self.loading = false
                     if (self.rateTipps.count < 1) {

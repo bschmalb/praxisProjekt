@@ -1,5 +1,5 @@
 //
-//  SmallTippCard.swift
+//  SmallFactCard.swift
 //  iosapp
 //
 //  Created by Bastian Schmalbach on 13.09.20.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct SmallTippCard: View {
+struct SmallFactCard: View {
     
     @State var id = UserDefaults.standard.string(forKey: "id")
     
@@ -18,11 +18,10 @@ struct SmallTippCard: View {
     
     @ObservedObject var user = UserDataStore()
     
-    @Binding var isChecked: Bool
     @Binding var isBookmarked: Bool
     @State var isClicked: Bool = false
     @State var isClicked2: Bool = false
-    var tipp: Tipp
+    var fact: Fact
     var color: String
     
     @State var user2: User = User(_id: "", phoneId: "", level: 2, checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
@@ -83,7 +82,7 @@ struct SmallTippCard: View {
                             }
                         }
                         .foregroundColor(Color("alwaysblack"))
-                        if (tipp.postedBy == id) {
+                        if (fact.postedBy == id) {
                             //                            if (false) {
                             Group {
                                 ZStack {
@@ -118,7 +117,7 @@ struct SmallTippCard: View {
                                             .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
                                             .foregroundColor(.red)
                                             .opacity(0.8)
-                                        Text("Tipp löschen")
+                                        Text("Fakt löschen")
                                             .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
                                             .foregroundColor(.red)
                                             .opacity(0.8)
@@ -141,7 +140,7 @@ struct SmallTippCard: View {
                                 Button(action: {
                                     impact(style: .medium)
                                     if (self.likeClicked) {
-                                        self.patchScore(thumb: "down")
+                                        self.patchScore2(score: -1)
                                     } else {
                                         if (self.reportClicked) {
                                             self.reportClicked = false
@@ -149,9 +148,9 @@ struct SmallTippCard: View {
                                         }
                                         if (self.dislikeClicked) {
                                             self.dislikeClicked = false
-                                            self.patchScore(thumb: "up")
+                                            self.patchScore2(score: 1)
                                         }
-                                        self.patchScore(thumb: "up")
+                                        self.patchScore2(score: 1)
                                     }
                                     self.likeClicked.toggle()
                                 }) {
@@ -166,12 +165,12 @@ struct SmallTippCard: View {
                                     impact(style: .medium)
                                     
                                     if (!self.dislikeClicked && self.likeClicked) {
-                                        self.patchScore(thumb: "down")
-                                        self.patchScore(thumb: "down")
+                                        self.patchScore2(score: -1)
+                                        self.patchScore2(score: -1)
                                     } else if (self.dislikeClicked) {
-                                        self.patchScore(thumb: "up")
+                                        self.patchScore2(score: 1)
                                     } else {
-                                        self.patchScore(thumb: "down")
+                                        self.patchScore2(score: -1)
                                     }
                                     self.likeClicked = false
                                     self.dislikeClicked.toggle()
@@ -193,11 +192,11 @@ struct SmallTippCard: View {
                                         self.patchScoreUser(reportedTipps: "unreport")
                                         if (!self.dislikeClicked) {
                                             self.dislikeClicked = true
-                                            self.patchScore(thumb: "down")
+                                            self.patchScore2(score: -1)
                                         }
                                         if (self.likeClicked) {
                                             self.likeClicked = false
-                                            self.patchScore(thumb: "down")
+                                            self.patchScore2(score: -1)
                                         }
                                     }
                                     self.reportClicked.toggle()
@@ -230,8 +229,8 @@ struct SmallTippCard: View {
             GeometryReader { size in
                 VStack{
                     HStack {
-                        Text(tipp.title)
-                            .font(.system(size: size.size.width < 400 ? size.size.width * 0.05  - CGFloat(tipp.title.count / 40) : 20))
+                        Text(fact.title)
+                            .font(.system(size: size.size.width < 400 ? size.size.width * 0.05  - CGFloat(fact.title.count / 40) : 20))
                             .foregroundColor(Color("alwaysblack"))
 //                            .fixedSize(horizontal: false, vertical: true)
                             .padding(.leading)
@@ -252,15 +251,11 @@ struct SmallTippCard: View {
                     }
                     HStack {
                         HStack(alignment: .top) {
-                            Image(tipp.category)
+                            Image(fact.category)
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: size.size.width < 400 ? size.size.width * 0.09 : 40, height: size.size.width < 500 ? size.size.width * 0.09 : 40)
-                            Image(tipp.level)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: size.size.width < 400 ? size.size.width * 0.09 : 40, height: size.size.width < 500 ? size.size.width * 0.09 : 40)
-                            Image(tipp.official)
+                            Image(fact.official)
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: size.size.width < 400 ? size.size.width * 0.09 : 40, height: size.size.width < 500 ? size.size.width * 0.09 : 40)
@@ -269,29 +264,8 @@ struct SmallTippCard: View {
                         Spacer()
                         HStack {
                             Button(action: {
-                                self.isChecked.toggle()
-                                self.addToProfile(tippId: self.tipp._id, method: 0)
-                                self.isClicked = true
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                    self.isClicked = false
-                                }
-                                
-                                self.levelEnv.level += 5
-                                UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
-                                
-                                impact(style: .medium)
-                            }) {
-                                Image(systemName: isChecked ? "checkmark" : "plus")
-                                    .font(Font.system(size: size.size.width < 400 ? size.size.width * 0.07 : 25, weight: isChecked ? .medium : .regular))
-                                    .foregroundColor(Color(isChecked ? .white : .black))
-                                    .rotationEffect(Angle(degrees: isChecked ? 0 : 180))
-                                    .scaleEffect(isClicked ? 2 : 1)
-                                    .padding(.vertical)
-                                
-                            }
-                            Button(action: {
                                 self.isBookmarked.toggle()
-                                self.addToProfile(tippId: self.tipp._id, method: 1)
+                                self.addToProfile(tippId: self.fact._id, method: 1)
                                 
                                 self.isClicked2 = true
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -329,10 +303,7 @@ struct SmallTippCard: View {
     func getUserTipps(){
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            if (user.user.checkedTipps.contains(self.tipp._id) ) {
-                self.isChecked = true
-            }
-            if (user.user.savedTipps.contains(self.tipp._id) ) {
+            if (user.user.savedFacts!.contains(self.fact._id) ) {
                 self.isBookmarked = true
             }
         }
@@ -347,7 +318,7 @@ struct SmallTippCard: View {
             return
         }
         
-        guard let url = URL(string: myUrl.users + tipp.postedBy) else { return }
+        guard let url = URL(string: myUrl.users + fact.postedBy) else { return }
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "PATCH"
@@ -368,15 +339,11 @@ struct SmallTippCard: View {
     }
     
     func addToProfile(tippId: String, method: Int) {
-        let patchData = TippPatchCheck(checkedTipps: tippId)
-        let patchData2 = TippPatchSave(savedTipps: tippId)
+        let patchData = FactPatchSave(savedFacts: tippId)
         
         var encoded: Data?
-        if (method == 0) {
-            encoded = try? JSONEncoder().encode(patchData)
-        } else {
-            encoded = try? JSONEncoder().encode(patchData2)
-        }
+        encoded = try? JSONEncoder().encode(patchData)
+        
         guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -389,7 +356,7 @@ struct SmallTippCard: View {
     }
     
     func getPoster() {
-        guard let url = URL(string: myUrl.users + tipp.postedBy) else { return }
+        guard let url = URL(string: myUrl.users + fact.postedBy) else { return }
         
         URLSession.shared.dataTask(with: url) { (data, _, _) in
             
@@ -414,7 +381,27 @@ struct SmallTippCard: View {
             return
         }
         
-        guard let url = URL(string: myUrl.tipps + tipp._id) else { return }
+        guard let url = URL(string: myUrl.facts + fact._id) else { return }
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "PATCH"
+        request.httpBody = encoded
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            
+        }.resume()
+    }
+    
+    func patchScore2(score: Int) {
+        
+        let rating = PatchScoreStruct(score: score)
+        
+        guard let encoded = try? JSONEncoder().encode(rating) else {
+            print("Failed to encode order")
+            return
+        }
+        
+        guard let url = URL(string: myUrl.facts + fact._id) else { return }
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "PATCH"
@@ -426,7 +413,7 @@ struct SmallTippCard: View {
     }
     
     func deleteTipp(){
-        guard let url = URL(string: myUrl.tipps + (tipp._id)) else { return }
+        guard let url = URL(string: myUrl.facts + (fact._id)) else { return }
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
         
@@ -435,17 +422,13 @@ struct SmallTippCard: View {
     }
 }
 
-struct TippPatchSave: Encodable {
-    var savedTipps: String
+struct FactPatchSave: Encodable {
+    var savedFacts: String
 }
 
-struct TippPatchCheck: Encodable {
-    var checkedTipps: String
-}
-
-struct SmallTippCard_Previews: PreviewProvider {
+struct SmallFactCard_Previews: PreviewProvider {
     static var previews: some View {
-        SmallTippCard(isChecked: .constant(false), isBookmarked: .constant(false), tipp: .init(_id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", level: "Leicht", category: "Ernährung", score: 25, postedBy: "123", official: "Community"), color: "cardgreen2")
+        SmallFactCard(isBookmarked: .constant(false), fact: .init(_id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", category: "Ernährung", score: 25, postedBy: "123", official: "Community"), color: "cardgreen2")
             .frame(height: 150)
     }
 }

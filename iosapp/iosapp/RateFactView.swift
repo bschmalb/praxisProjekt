@@ -70,11 +70,18 @@ struct RateFactView: View {
                     
                     if (!loading) {
                         if (!endReached && rateFacts.count > 0) {
-                            FactCard(
-                                isBookmarked: self.$rateFacts[counter].isBookmarked,
-                                fact: self.rateFacts[counter],
-                                color: cardColors[0])
-                                .animation(.spring())
+                            ZStack {
+                                ForEach(rateFacts.indices, id: \.self) { index in
+                                    FactCard(
+                                        isBookmarked: self.$rateFacts[counter].isBookmarked,
+                                        fact: self.rateFacts[counter],
+                                        color: cardColors[0])
+                                        .animation(.spring())
+                                        .offset(x: counter < index ? 500 : 0)
+                                        .offset(x: counter > index ? -500 : 0)
+                                        .opacity(counter == index ? 1 : 0)
+                                }
+                            }
                             HStack {
                                 Image(systemName: "hand.thumbsup")
                                     .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.06 : 24, weight: Font.Weight.medium))
@@ -152,7 +159,7 @@ struct RateFactView: View {
                                 .cornerRadius(50)
                             Spacer()
                         }
-                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
+                        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: UIScreen.main.bounds.height / 2)
                     }
                     Spacer()
                     Button(action: {
@@ -169,17 +176,15 @@ struct RateFactView: View {
                 .navigationBarTitle("")
                 .navigationBarHidden(true)
             }
+            .animation(.spring())
         }
         .accentColor(.primary)
         .onAppear(){
             impact(style: .medium)
-            alreadyRated = []
             UserDefaults.standard.set(alreadyRated, forKey: "alreadyRatedFacts")
             FactApi().fetchRate { (rateFacts2) in
-                print(rateFacts2)
                 self.rateFacts2 = rateFacts2
                 self.rateFacts = rateFacts2.filter({!alreadyRated.contains($0._id)})
-                print(rateFacts)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     self.loading = false
                     if (self.rateFacts.count < 1) {

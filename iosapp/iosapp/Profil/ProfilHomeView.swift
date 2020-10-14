@@ -53,7 +53,7 @@ struct ProfilHomeView: View {
                         }
                     }.navigationBarTitle("Navigation")
                     
-                    NavigationLink(destination: ProfilChallengeView()
+                    NavigationLink(destination: ProfilFactView()
                                         .navigationBarTitle("")
                                         .navigationBarHidden(true)
                                         .navigationBarBackButtonHidden(true)

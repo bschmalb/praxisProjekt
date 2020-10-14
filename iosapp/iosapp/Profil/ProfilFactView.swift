@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct ProfilTippView: View {
+struct ProfilFactView: View {
     
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     @EnvironmentObject var myUrl: ApiUrl
@@ -23,9 +23,9 @@ struct ProfilTippView: View {
     @State var loading = true
     @State var loading2 = true
     
-    @State var allTipps: [Tipp] = []
+    @State var allFacts: [Fact] = []
     
-    @State var userObject: User = User(_id: "", phoneId: "", level: 0, checkedTipps: [], savedTipps: [], log: [])
+    @State var userObject: User = User(_id: "", phoneId: "", level: 0, checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
     
     @State var tabSelected = 0
     
@@ -65,21 +65,20 @@ struct ProfilTippView: View {
                     .padding(.top, 10)
                 }
                 VStack{
-                    SliderView(slidingText: $slidingText, selectWidth: $selectWidth, tippOffset: $tippOffset, tabSelected: $tabSelected, geoMidChecked: $geoMidChecked, geoMidSaved: $geoMidSaved, geoMidOwn: $geoMidOwn)
+                    SliderView2(slidingText: $slidingText, selectWidth: $selectWidth, tippOffset: $tippOffset, tabSelected: $tabSelected, geoMidSaved: $geoMidSaved, geoMidOwn: $geoMidOwn)
                         .offset(y: -10)
                         .opacity(loading ? 0 : 1)
                     if (!changeFilter.changeFilter){
                         ZStack {
                             VStack {
-                                if (!self.allTipps.isEmpty) {
+                                if (!self.allFacts.isEmpty) {
                                     ScrollView(.vertical, showsIndicators: false) {
-                                        ForEach(self.allTipps.indices, id: \.self) { index in
+                                        ForEach(self.allFacts.indices, id: \.self) { index in
                                             VStack (spacing: 0) {
-                                                if(self.allTipps[index].isChecked) {
-                                                    SmallTippCard(
-                                                        isChecked: self.$allTipps[index].isChecked,
-                                                        isBookmarked: self.$allTipps[index].isBookmarked,
-                                                        tipp: self.allTipps[index],
+                                                if(self.allFacts[index].isBookmarked) {
+                                                    SmallFactCard(
+                                                        isBookmarked: self.$allFacts[index].isBookmarked,
+                                                        fact: self.allFacts[index],
                                                         color: self.cardColor[index % 8])
                                                         .frame(height: 140)
                                                         .padding(.vertical, 5)
@@ -87,43 +86,6 @@ struct ProfilTippView: View {
                                             }
                                         }
                                         .padding(.bottom, 10)
-                                    }
-                                }
-                            }
-                            .gesture(DragGesture()
-                                        .onEnded({ (value) in
-                                            if (value.translation.width < -60) {
-                                                self.tabSelected = 1
-                                                self.tippOffset = UIScreen.main.bounds.width / 2
-                                                self.selectWidth = 120
-                                                
-                                                self.slidingText = "Gespeicherte"
-                                            } else if (value.translation.width > 60) {
-                                                self.mode.wrappedValue.dismiss()
-                                            }
-                                        }))
-                            .offset(x: self.tabSelected == 0 ? 0 : -UIScreen.main.bounds.width)
-                            .frame(maxWidth: UIScreen.main.bounds.width)
-                            VStack {
-                                if (!self.allTipps.isEmpty) {
-                                    ScrollView(.vertical, showsIndicators: false) {
-                                        ForEach(self.allTipps.indices, id: \.self) { index in
-                                            VStack (spacing: 0) {
-                                                if(self.allTipps[index].isBookmarked) {
-                                                    SmallTippCard(
-                                                        isChecked: self.$allTipps[index].isChecked,
-                                                        isBookmarked: self.$allTipps[index].isBookmarked,
-                                                        tipp: self.allTipps[index],
-                                                        color: self.cardColor[index % 8])
-                                                        .frame(height: 140)
-                                                        .padding(.vertical, 5)
-                                                }
-                                            }
-                                        }
-                                        .padding(.bottom, 10)
-                                    }
-                                    .onAppear(){
-                                        print("showScrollView")
                                     }
                                 }
                             }
@@ -131,32 +93,26 @@ struct ProfilTippView: View {
                                         .onEnded({ (value) in
                                             if value.translation.width < -60 {
                                                 
-                                                self.tabSelected = 2
+                                                self.tabSelected = 1
                                                 self.tippOffset = geoMidOwn
                                                 self.selectWidth = 80
                                                 
                                                 self.slidingText = "Eigene"
                                             } else if (value.translation.width > 60) {
-                                                self.tabSelected = 0
-                                                self.tippOffset = geoMidChecked
-                                                self.selectWidth = 90
-                                                
-                                                self.slidingText = "Abgehakte"
+                                                self.mode.wrappedValue.dismiss()
                                             }
                                         }))
                             .frame(maxWidth: UIScreen.main.bounds.width)
-                            .offset(x: self.tabSelected == 0 ? UIScreen.main.bounds.width : 0)
-                            .offset(x: self.tabSelected == 2 ? -UIScreen.main.bounds.width : 0)
+                            .offset(x: self.tabSelected == 0 ? 0 : -UIScreen.main.bounds.width)
                             VStack {
-                                if (!self.allTipps.isEmpty) {
+                                if (!self.allFacts.isEmpty) {
                                     ScrollView(.vertical, showsIndicators: false) {
-                                        ForEach(self.allTipps.indices, id: \.self) { index in
+                                        ForEach(self.allFacts.indices, id: \.self) { index in
                                             VStack (spacing: 0) {
-                                                if(self.id == self.allTipps[index].postedBy) {
-                                                    SmallTippCard(
-                                                        isChecked: self.$allTipps[index].isChecked,
-                                                        isBookmarked: self.$allTipps[index].isBookmarked,
-                                                        tipp: self.allTipps[index],
+                                                if(self.id == self.allFacts[index].postedBy) {
+                                                    SmallFactCard(
+                                                        isBookmarked: self.$allFacts[index].isBookmarked,
+                                                        fact: self.allFacts[index],
                                                         color: self.cardColor[index % 8])
                                                         .frame(height: 140)
                                                         .padding(.vertical, 5)
@@ -170,15 +126,15 @@ struct ProfilTippView: View {
                             .gesture(DragGesture()
                                         .onEnded({ (value) in
                                             if value.translation.width > 60 {
-                                                self.tabSelected = 1
-                                                self.tippOffset = UIScreen.main.bounds.width / 2
+                                                self.tabSelected = 0
+                                                self.tippOffset = geoMidSaved
                                                 self.selectWidth = 120
                                                 
                                                 self.slidingText = "Gespeicherte"
                                             }
                                         }))
                             .frame(maxWidth: UIScreen.main.bounds.width)
-                            .offset(x: self.tabSelected == 2 ? 0 : UIScreen.main.bounds.width)
+                            .offset(x: self.tabSelected == 1 ? 0 : UIScreen.main.bounds.width)
                         }
                         .opacity(loading2 ? 0 : 1)
                         .animation(.spring())
@@ -188,22 +144,21 @@ struct ProfilTippView: View {
                                 .frame(width: 50, height: 50)
                         }.frame(maxHeight: UIScreen.main.bounds.height * 0.8)
                         .onAppear(){
-                            AllApi().fetchAllTipps { (allTipps) in
-                                self.allTipps = allTipps
-                                if (self.allTipps.count > 0) {
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                            print("wrong fetchall")
+                            FactApi().fetchAll { (allFacts) in
+                                self.allFacts = []
+                                self.allFacts = allFacts
+                                print(allFacts)
+                                if (self.allFacts.count > 0) {
+                                    for (index, test) in self.allFacts.enumerated() {
+                                        if (userObject.savedFacts!.contains(test._id)){
+                                            self.allFacts[index].isBookmarked = true
+                                        }
+                                    }
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
                                         self.changeFilter.changeFilter = false
                                     }
                                 }
-                                for (index, test) in self.allTipps.enumerated() {
-                                    if (userObject.checkedTipps.contains(test._id)){
-                                        self.allTipps[index].isChecked = true
-                                    }
-                                    if (userObject.savedTipps.contains(test._id)){
-                                        self.allTipps[index].isBookmarked = true
-                                    }
-                                }
-                                
                             }
                         }
                     }
@@ -232,18 +187,15 @@ struct ProfilTippView: View {
                         }
                         if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
                             userObject = decodedResponse
-                            AllApi().fetchAllTipps { (allTipps) in
-                                self.allTipps = allTipps
-                                if (self.allTipps.count > 0) {
-                                    for (index, test) in self.allTipps.enumerated() {
-                                        if (userObject.checkedTipps.contains(test._id)){
-                                            self.allTipps[index].isChecked = true
-                                        }
-                                        if (userObject.savedTipps.contains(test._id)){
-                                            self.allTipps[index].isBookmarked = true
+                            FactApi().fetchAll { (allFacts) in
+                                self.allFacts = allFacts
+                                if (self.allFacts.count > 0) {
+                                    for (index, test) in self.allFacts.enumerated() {
+                                        if (userObject.savedFacts!.contains(test._id)){
+                                            self.allFacts[index].isBookmarked = true
                                         }
                                     }
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                                         self.loading2 = false
                                     }
                                 }
@@ -263,19 +215,18 @@ struct ProfilTippView: View {
 }
 
 
-struct ProfilTippView_Previews: PreviewProvider {
+struct ProfilFactView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilTippView()
+        ProfilFactView()
     }
 }
 
-struct SliderView: View {
+struct SliderView2: View {
     
     @Binding var slidingText: String
     @Binding var selectWidth: CGFloat
     @Binding var tippOffset: CGFloat
     @Binding var tabSelected: Int
-    @Binding var geoMidChecked: CGFloat
     @Binding var geoMidSaved: CGFloat
     @Binding var geoMidOwn: CGFloat
     
@@ -291,38 +242,9 @@ struct SliderView: View {
                 .animation(.spring())
             HStack (spacing: 0){
                 Spacer()
-                    .frame(maxWidth: screenWidth / 25)
                 GeometryReader { g in
                     Button(action: {
                         self.tabSelected = 0
-                        self.tippOffset = g.frame(in: .global).midX
-                        self.selectWidth = 90
-                        
-                        self.slidingText = "Abgehakte"
-                        
-                        impact(style: .medium)
-                    }){
-                        Image(systemName: "checkmark")
-                            .multilineTextAlignment(.center)
-                            .font(.system(size: screenWidth < 500 ? screenWidth * 0.06 : 25))
-                            .foregroundColor(self.tabSelected == 0 ? Color("black") : .secondary)
-                            .offset(y: self.tabSelected == 0 ? 0 : 5)
-//                            .frame(width: screenWidth < 500 ? screenWidth * 0.16 : 50, height: 20)
-                            .frame(width: 60, height: 40)
-                    }
-                    .onAppear(){
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            self.tippOffset = g.frame(in: .global).midX
-                            self.geoMidChecked = g.frame(in: .global).midX
-                        }
-                    }
-                }
-                .animation(.spring())
-                .frame(width: 60, height: 40)
-                Spacer()
-                GeometryReader { g in
-                    Button(action: {
-                        self.tabSelected = 1
                         self.tippOffset = g.frame(in: .global).midX
                         self.selectWidth = 120
                         
@@ -333,19 +255,23 @@ struct SliderView: View {
                         Image(systemName: "bookmark")
                             .multilineTextAlignment(.center)
                             .font(.system(size: screenWidth < 500 ? screenWidth * 0.06 : 25))
-                            .foregroundColor(self.tabSelected == 1 ? Color("black") : .secondary)
-                            .offset(y: self.tabSelected == 1 ? 0 : 5)
+                            .foregroundColor(self.tabSelected == 0 ? Color("black") : .secondary)
+                            .offset(y: self.tabSelected == 0 ? 0 : 5)
                             .frame(width: 60, height: 40)
                     }
                     .onAppear(){
-                        self.geoMidSaved = g.frame(in: .global).midX
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            self.tippOffset = g.frame(in: .global).midX
+                            self.geoMidSaved = g.frame(in: .global).midX
+                        }
                     }
                 }.animation(.spring())
                 .frame(width: 60, height: 40)
                 Spacer()
+                Spacer()
                 GeometryReader { g in
                     Button(action: {
-                        self.tabSelected = 2
+                        self.tabSelected = 1
                         self.tippOffset = g.frame(in: .global).midX
                         self.selectWidth = 80
                         
@@ -356,8 +282,8 @@ struct SliderView: View {
                         Image(systemName: "plus.circle")
                             .multilineTextAlignment(.center)
                             .font(.system(size: screenWidth < 500 ? screenWidth * 0.06 : 25))
-                            .foregroundColor(self.tabSelected == 2 ? Color("black") : .secondary)
-                            .offset(y: self.tabSelected == 2 ? 0 : 5)
+                            .foregroundColor(self.tabSelected == 1 ? Color("black") : .secondary)
+                            .offset(y: self.tabSelected == 1 ? 0 : 5)
                             .frame(width: 60, height: 40)
                     }
                     .onAppear(){
@@ -368,7 +294,6 @@ struct SliderView: View {
                 }.animation(.spring())
                 .frame(width: 60, height: 40)
                 Spacer()
-                    .frame(maxWidth: screenWidth / 25)
             }.padding(.horizontal, 10)
         }
     }
