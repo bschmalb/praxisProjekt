@@ -10,6 +10,9 @@ import SwiftUI
 
 struct RateTippView: View {
     
+    @State var user: User = User(_id: "", phoneId: "", level: 0, checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
+    @State var id = UserDefaults.standard.string(forKey: "id")
+    
     //    @ObservedObject var store2 = RateTippDataStore()
     @State var rateTipps: [Tipp] = []
     @State var rateTipps2: [Tipp] = []
@@ -72,7 +75,12 @@ struct RateTippView: View {
                         if (!endReached && rateTipps.count > 0) {
                             ZStack {
                                 ForEach(rateTipps.indices, id: \.self) { index in
-                                    TippCard2(isChecked: self.$rateTipps[index].isChecked, isBookmarked: self.$rateTipps[index].isBookmarked, tipp: rateTipps[index], color: cardColors[counter % 9])
+                                    TippCard2(
+                                        user: user,
+                                        isChecked: self.$rateTipps[index].isChecked,
+                                        isBookmarked: self.$rateTipps[index].isBookmarked,
+                                        tipp: rateTipps[index],
+                                        color: cardColors[counter % 9])
                                         .animation(.spring())
                                         .offset(x: counter < index ? 500 : 0)
                                         .offset(x: counter > index ? -500 : 0)
@@ -178,6 +186,7 @@ struct RateTippView: View {
         }
         .accentColor(.primary)
         .onAppear(){
+            getUser()
             impact(style: .medium)
             RateApi().fetchRateTipps { (rateTipps2) in
                 self.rateTipps2 = rateTipps2
@@ -209,6 +218,21 @@ struct RateTippView: View {
         URLSession.shared.dataTask(with: request) { data, response, error in
             
         }.resume()
+    }
+    
+    func getUser() {
+        guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
+        URLSession.shared.dataTask(with: url) { (data, _, _) in
+            if let data = data {
+                if let user = try? JSONDecoder().decode(User.self, from: data) {
+                    DispatchQueue.main.async {
+                        self.user = user
+                    }
+                    return
+                }
+            }
+        }
+        .resume()
     }
 }
 

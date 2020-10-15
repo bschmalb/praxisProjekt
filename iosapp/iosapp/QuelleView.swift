@@ -33,7 +33,7 @@ struct QuelleView: View {
                 .onAppear(){
                     print("Quelle: \(quelle)")
                 }
-        }
+        }.edgesIgnoringSafeArea(.all)
     }
 }
 

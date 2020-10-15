@@ -1046,7 +1046,7 @@ struct MultilineTextView2: UIViewRepresentable {
         let myColor : UIColor = UIColor( red: 0.1, green: 0.1, blue: 0.1, alpha: 0.1 )
         view.layer.borderColor = myColor.cgColor
         view.delegate = context.coordinator
-        view.font = .systemFont(ofSize: UIScreen.main.bounds.width * 0.04)
+        view.font = .systemFont(ofSize: 18)
         return view
     }
 

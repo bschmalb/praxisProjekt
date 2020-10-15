@@ -10,7 +10,13 @@ import SwiftUI
 
 struct TagebuchEntwicklung: View {
     
+    @State var id = UserDefaults.standard.string(forKey: "id")
+    
+    @EnvironmentObject var myUrl: ApiUrl
+    
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
+    
+    @State var user: User = User(_id: "", phoneId: "", checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
     
     var body: some View {
         ZStack {
@@ -20,44 +26,76 @@ struct TagebuchEntwicklung: View {
             }
             
             ScrollView {
-            VStack {
-                HStack {
-                    Text("Deine Entwicklung")
-                        .font(.title)
-                        .fontWeight(.bold)
-                        .padding(.leading, 15)
-                        .padding(.bottom, 15)
-                    Spacer()
-                }
-                .padding(.top, 30.0)
-                
-                
-                    VStack (spacing: 30) {
-                        EntwicklungGraphView(graphColor: "cardgreen2", graphTitle: "Gefahrene Kilometer", graphCategory: 0)
-                        EntwicklungGraphView(graphColor: "cardblue2", graphTitle: "Fleischkonsum", graphCategory: 1)
-                        EntwicklungGraphView(graphColor: "cardgreen2", graphTitle: "Essen gekauft", graphCategory: 2)
-                        EntwicklungGraphView(graphColor: "cardpurple2", graphTitle: "Essen weggeschmissen", graphCategory: 3)
-                        EntwicklungGraphView(graphColor: "cardyellow2", graphTitle: "Getränke gekauft", graphCategory: 4)
-                        EntwicklungGraphView(graphColor: "cardturqouise2", graphTitle: "Duschzeit", graphCategory: 5)
-                        EntwicklungGraphView(graphColor: "cardred2", graphTitle: "Mülltrennung", graphCategory: 6)
+                VStack {
+                    HStack {
+                        Text("Deine Entwicklung")
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .padding(.leading, 15)
                             .padding(.bottom, 15)
+                        Spacer()
                     }
-                    .animation(.spring())
-                    .padding(.leading, 10)
+                    .padding(.top, 30.0)
+                    
+                    if (user.log.count > 1){
+                        VStack (spacing: 30) {
+                            EntwicklungGraphView(user: user, graphColor: "cardgreen2", graphTitle: "Gefahrene Kilometer", graphCategory: 0)
+                            EntwicklungGraphView(user: user, graphColor: "cardblue2", graphTitle: "Fleischkonsum", graphCategory: 1)
+                            EntwicklungGraphView(user: user, graphColor: "cardgreen2", graphTitle: "Essen gekauft", graphCategory: 2)
+                            EntwicklungGraphView(user: user, graphColor: "cardpurple2", graphTitle: "Essen weggeschmissen", graphCategory: 3)
+                            EntwicklungGraphView(user: user, graphColor: "cardyellow2", graphTitle: "Getränke gekauft", graphCategory: 4)
+                            EntwicklungGraphView(user: user, graphColor: "cardturqouise2", graphTitle: "Duschzeit", graphCategory: 5)
+                            EntwicklungGraphView(user: user, graphColor: "cardred2", graphTitle: "Mülltrennung", graphCategory: 6)
+                                .padding(.bottom, 15)
+                        }
+                        .animation(.spring())
+                        .padding(.leading, 10)
+                    }
                 }
             }
         }
         .gesture(DragGesture()
-        .onChanged({ (value) in
-            if value.translation.width > 40 {
-                self.mode.wrappedValue.dismiss()
+                    .onChanged({ (value) in
+                        if value.translation.width > 40 {
+                            self.mode.wrappedValue.dismiss()
+                        }
+                    }))
+        .onAppear {
+            getUser()
+        }
+    }
+    
+    func getUser() {
+        guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
+        
+        print("getPoster")
+        URLSession.shared.dataTask(with: url) { (data, _, _) in
+            
+            print("dataTask")
+            
+            if let data = data {
+                
+                print("data")
+                
+                if let user = try? JSONDecoder().decode(User.self, from: data) {
+                    // we have good data – go back to the main thread
+                    print("Decoded")
+                    DispatchQueue.main.async {
+                        // update our UI
+                        self.user = user
+                    }
+                    
+                    // everything is good, so we can exit
+                    return
+                }
             }
-        }))
+        }
+        .resume()
     }
 }
 
 struct TagebuchEntwicklung_Previews: PreviewProvider {
     static var previews: some View {
-        TagebuchEntwicklung()
+        TagebuchEntwicklung().environmentObject(ApiUrl())
     }
 }

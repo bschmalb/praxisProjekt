@@ -18,6 +18,7 @@
 		B71158742523B51500E6B5B7 /* KeyboardResponderIOS14.swift in Sources */ = {isa = PBXBuildFile; fileRef = B71158732523B51300E6B5B7 /* KeyboardResponderIOS14.swift */; };
 		B712CD14248973CD00A883A1 /* SwiftUIPager in Frameworks */ = {isa = PBXBuildFile; productRef = B712CD13248973CD00A883A1 /* SwiftUIPager */; };
 		B725218A248FDF9C00C43507 /* TippCardList.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7252189248FDF9C00C43507 /* TippCardList.swift */; };
+		B7301FE125387BC10017C5F2 /* SourceTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7301FE025387BC10017C5F2 /* SourceTextView.swift */; };
 		B74727C124B268B300775E16 /* ProfilChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74727C024B268B300775E16 /* ProfilChallengeView.swift */; };
 		B747581C251E26D400E7131B /* AddTagebuchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B747581B251E26D300E7131B /* AddTagebuchView.swift */; };
 		B7481A39248AC9B900C4CCF1 /* AddTippView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7481A38248AC9B900C4CCF1 /* AddTippView.swift */; };
@@ -116,6 +117,7 @@
 		B70BF7A02487EAC200B4C911 /* TagebuchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagebuchView.swift; sourceTree = "<group>"; };
 		B71158732523B51300E6B5B7 /* KeyboardResponderIOS14.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardResponderIOS14.swift; sourceTree = "<group>"; };
 		B7252189248FDF9C00C43507 /* TippCardList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippCardList.swift; sourceTree = "<group>"; };
+		B7301FE025387BC10017C5F2 /* SourceTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceTextView.swift; sourceTree = "<group>"; };
 		B74727C024B268B300775E16 /* ProfilChallengeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilChallengeView.swift; sourceTree = "<group>"; };
 		B747581B251E26D300E7131B /* AddTagebuchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagebuchView.swift; sourceTree = "<group>"; };
 		B7481A38248AC9B900C4CCF1 /* AddTippView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTippView.swift; sourceTree = "<group>"; };
@@ -246,6 +248,7 @@
 			children = (
 				B7649E32249105540079984A /* TippView.swift */,
 				B7B50CEE250F9AD500DD2FE6 /* TippCard2.swift */,
+				B7301FE025387BC10017C5F2 /* SourceTextView.swift */,
 				B7B50CEC250E57AC00DD2FE6 /* SmallTippCard.swift */,
 				B7252189248FDF9C00C43507 /* TippCardList.swift */,
 			);
@@ -597,6 +600,7 @@
 				B71158742523B51500E6B5B7 /* KeyboardResponderIOS14.swift in Sources */,
 				B70BF79F2487EA8000B4C911 /* ProfilView.swift in Sources */,
 				B7481A39248AC9B900C4CCF1 /* AddTippView.swift in Sources */,
+				B7301FE125387BC10017C5F2 /* SourceTextView.swift in Sources */,
 				B7C2285724AD22540075360D /* AddTagebuchCard5.swift in Sources */,
 				B7024FA825309FA600DC37B8 /* RateFactView.swift in Sources */,
 				B7649E312490F3AB0079984A /* TippController.swift in Sources */,
@@ -811,7 +815,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bastianschmalbach.sustainablelife;
 				PRODUCT_NAME = "Sustainable Life";
 				SWIFT_VERSION = 5.0;
@@ -834,7 +838,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bastianschmalbach.sustainablelife;
 				PRODUCT_NAME = "Sustainable Life";
 				SWIFT_VERSION = 5.0;

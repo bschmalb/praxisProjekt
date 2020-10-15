@@ -16,7 +16,7 @@ struct TippCard2: View {
     @EnvironmentObject var changeFilter: ChangeFilter
     @EnvironmentObject var myUrl: ApiUrl
     
-    @ObservedObject var user = UserDataStore()
+    @State var user: User
     
     @Binding var isChecked: Bool
     @Binding var isBookmarked: Bool
@@ -29,6 +29,7 @@ struct TippCard2: View {
     @State var userLevelLocal = 0
     
     @State var quelleShowing = false
+    @State var showSourceTextView = false
     
     @State var options: Bool = false
     
@@ -71,70 +72,78 @@ struct TippCard2: View {
                                         .foregroundColor(.secondary)
                                         .font(.caption)
                                         .multilineTextAlignment(.center)
-                                    Text("\(user2.name ?? "User")")
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(Color("black"))
-                                        .padding(5)
-                                    Text("\(user2.gender ?? "")  \(user2.age ?? "")")
-                                        .font(.footnote)
-                                        .multilineTextAlignment(.center)
-                                        .foregroundColor(Color("black"))
-                                        .opacity(user2.hideInfo ?? false ? 0 : 1)
+                                    if user2.name != nil {
+                                        Text("\(user2.name ?? "User")")
+                                            .multilineTextAlignment(.center)
+                                            .foregroundColor(Color("black"))
+                                            .padding(5)
+                                        Text("\(user2.gender ?? "")  \(user2.age ?? "")")
+                                            .font(.footnote)
+                                            .multilineTextAlignment(.center)
+                                            .foregroundColor(Color("black"))
+                                            .opacity(user2.hideInfo ?? false ? 0 : 1)
+                                    } else {
+                                        VStack {
+                                            LottieView(filename: "loadingCircle", loop: true)
+                                                .shadow(color: Color(.white), radius: 1, x: 0, y: 0)
+                                                .frame(width: 30, height: 30)
+                                        }.padding(10)
+                                    }
                                     Spacer()
                                 }
 //                                if (tipp.postedBy == id) {
-                                if (false) {
-                                    Group {
-                                        ZStack {
-                                            HStack {
-                                                Spacer()
-                                                Image(systemName: "trash")
-                                                    .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
-                                                    .foregroundColor(.red)
-                                                    .opacity(0.8)
-                                                    .padding(10)
-                                                    .onTapGesture(){
-                                                        impact(style: .medium)
-                                                        self.deleteTipp()
-                                                    }
-                                                Spacer()
-                                                Image(systemName: "xmark")
-                                                    .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
-                                                    .opacity(0.8)
-                                                    .padding(10)
-                                                    .onTapGesture(){
-                                                        impact(style: .medium)
-                                                        self.showYouSure = false
-                                                    }
-                                                Spacer()
-                                            }
-                                            .offset(y: showYouSure ? 0 : 30)
-                                            .opacity(showYouSure ? 1 : 0)
-                                            
-                                            HStack (spacing: 20){
-                                                Image(systemName: dislikeClicked ? "trash.fill" : "trash")
-                                                    .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
-                                                    .foregroundColor(.red)
-                                                    .opacity(0.8)
-                                                Text("Tipp löschen")
-                                                    .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
-                                                    .foregroundColor(.red)
-                                                    .opacity(0.8)
-                                            }
-                                            .padding(10)
-                                            .offset(y: showYouSure ? -30 : 0)
-                                            .opacity(showYouSure ? 0 : 1)
-                                            .cornerRadius(15)
-                                            .onTapGesture(){
-                                                impact(style: .medium)
-                                                
-                                                self.showYouSure = true
-                                            }
-                                        }
-                                        .animation(.spring())
-                                        Spacer()
-                                    }
-                                } else {
+//                                if (false) {
+//                                    Group {
+//                                        ZStack {
+//                                            HStack {
+//                                                Spacer()
+//                                                Image(systemName: "trash")
+//                                                    .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+//                                                    .foregroundColor(.red)
+//                                                    .opacity(0.8)
+//                                                    .padding(10)
+//                                                    .onTapGesture(){
+//                                                        impact(style: .medium)
+//                                                        self.deleteTipp()
+//                                                    }
+//                                                Spacer()
+//                                                Image(systemName: "xmark")
+//                                                    .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+//                                                    .opacity(0.8)
+//                                                    .padding(10)
+//                                                    .onTapGesture(){
+//                                                        impact(style: .medium)
+//                                                        self.showYouSure = false
+//                                                    }
+//                                                Spacer()
+//                                            }
+//                                            .offset(y: showYouSure ? 0 : 30)
+//                                            .opacity(showYouSure ? 1 : 0)
+//
+//                                            HStack (spacing: 20){
+//                                                Image(systemName: dislikeClicked ? "trash.fill" : "trash")
+//                                                    .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+//                                                    .foregroundColor(.red)
+//                                                    .opacity(0.8)
+//                                                Text("Tipp löschen")
+//                                                    .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
+//                                                    .foregroundColor(.red)
+//                                                    .opacity(0.8)
+//                                            }
+//                                            .padding(10)
+//                                            .offset(y: showYouSure ? -30 : 0)
+//                                            .opacity(showYouSure ? 0 : 1)
+//                                            .cornerRadius(15)
+//                                            .onTapGesture(){
+//                                                impact(style: .medium)
+//
+//                                                self.showYouSure = true
+//                                            }
+//                                        }
+//                                        .animation(.spring())
+//                                        Spacer()
+//                                    }
+//                                } else {
                                     Group {
                                         HStack (spacing: 15){
                                             Image(systemName: likeClicked ? "hand.thumbsup.fill" : "hand.thumbsup")
@@ -230,7 +239,7 @@ struct TippCard2: View {
                                         }
                                         Spacer()
                                     }
-                                }
+//                                }
                             }
                             .frame(width: size.size.width / 1.3)
                             .gesture(DragGesture()
@@ -259,7 +268,7 @@ struct TippCard2: View {
                         Image("I"+tipp.category)
                             .resizable()
                             .scaledToFit()
-                            .frame(minHeight: 100, idealHeight: 200, maxHeight: 300)
+                            .frame(minHeight: 40, idealHeight: 200, maxHeight: 300)
                             .drawingGroup()
                         Text(tipp.title)
                             .font(.system(size: size.size.width < 500 ? size.size.width * 0.07  - CGFloat(tipp.title.count / 25) : 26, weight: .medium))
@@ -267,18 +276,23 @@ struct TippCard2: View {
                             .foregroundColor(Color("alwaysblack"))
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
-                        if (tipp.source.count > 3) {
-                            Text("Quelle")
-                                .foregroundColor(.gray)
-                                .font(.system(size: size.size.width * 0.03, weight: .medium))
-                                .multilineTextAlignment(.center)
-                                .padding(.top, 5)
-                                .onTapGesture {
-                                    self.verifyUrl(urlString: tipp.source)
-                                }
-                                .sheet(isPresented: $quelleShowing) {
-                                    QuelleView(quelle: correctUrl, quelleShowing: self.$quelleShowing)
-                                }
+                        if (showSourceTextView){
+                            SourceTextView(tipp: tipp, show: $showSourceTextView, color: color)
+                        } else {
+                            if (tipp.source.count > 3) {
+                                Text("Quelle")
+                                    .foregroundColor(.gray)
+                                    .font(.system(size: size.size.width * 0.03, weight: .medium))
+                                    .multilineTextAlignment(.center)
+                                    .padding(.top, 5)
+                                    .onTapGesture {
+                                        impact(style: .medium)
+                                        self.openSource()
+                                    }
+                                    .sheet(isPresented: $quelleShowing) {
+                                        QuelleView(quelle: tipp.source, quelleShowing: self.$quelleShowing)
+                                    }
+                            }
                         }
                         Spacer()
                         HStack {
@@ -391,10 +405,10 @@ struct TippCard2: View {
     func getUserTipps(){
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            if (user.user.checkedTipps.contains(self.tipp._id) ) {
+            if (user.checkedTipps.contains(self.tipp._id) ) {
                 self.isChecked = true
             }
-            if (user.user.savedTipps.contains(self.tipp._id) ) {
+            if (user.savedTipps.contains(self.tipp._id) ) {
                 self.isBookmarked = true
             }
         }
@@ -443,11 +457,18 @@ struct TippCard2: View {
     func getPoster() {
         guard let url = URL(string: myUrl.users + tipp.postedBy) else { return }
         
+        print("getPoster")
         URLSession.shared.dataTask(with: url) { (data, _, _) in
             
+            print("dataTask")
+            
             if let data = data {
+                
+                print("data")
+                
                 if let user = try? JSONDecoder().decode(User.self, from: data) {
                     // we have good data – go back to the main thread
+                    print("Decoded")
                     DispatchQueue.main.async {
                         // update our UI
                         self.user2 = user
@@ -461,20 +482,27 @@ struct TippCard2: View {
         .resume()
     }
     
-    func verifyUrl (urlString: String) {
-        if (urlString.contains("http://www.") || urlString.contains("https://www.")){
-            self.correctUrl = urlString
-        } else if (urlString.contains("www.")){
-            self.correctUrl = "http://" + urlString
+    func openSource () {
+        if let myUrl = URL(string: tipp.source) {
+            if (UIApplication.shared.canOpenURL(myUrl)) {
+                print("quelleshowing = true")
+                self.quelleShowing = true
+            } else {
+                self.showSourceTextView = true
+            }
         } else {
-            let temp = "http://www.google.com/search?p=" + urlString
-            correctUrl = temp.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "http://www.google.de"
+            self.showSourceTextView = true
         }
-        print(self.correctUrl)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            self.quelleShowing = true
+    }
+    
+    func verifyUrl (urlString: String?) -> Bool {
+        if let urlString = urlString {
+            if let url = NSURL(string: urlString) {
+                return UIApplication.shared.canOpenURL(url as URL)
+            }
+            return false
         }
+        return false
     }
     
     func addToProfile(tippId: String, method: Int) {
@@ -522,6 +550,6 @@ struct ReportedTipps: Encodable, Decodable {
 
 struct TippCard2_Previews: PreviewProvider {
     static var previews: some View {
-        TippCard2(isChecked: .constant(false), isBookmarked: .constant(false), tipp: .init(_id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", level: "Leicht", category: "Ernährung", score: 25, postedBy: "123", official: "Community"), color: "cardblue2")
+        TippCard2(user: User(_id: "", phoneId: "", checkedTipps: [], savedTipps: [], savedFacts: [], log: []), isChecked: .constant(false), isBookmarked: .constant(false), tipp: .init(_id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", level: "Leicht", category: "Ernährung", score: 25, postedBy: "123", official: "Community"), color: "cardblue2")
     }
 }

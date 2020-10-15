@@ -38,7 +38,7 @@ struct ProfilData: View {
     
     @Binding var isChanged: Bool
     
-    var screenWidth = UIScreen.main.bounds.width
+    var screen = UIScreen.main.bounds
     
     var body: some View {
         
@@ -62,10 +62,10 @@ struct ProfilData: View {
                 }) {
                     HStack (spacing: 10){
                         Image(systemName: "arrow.left")
-                            .font(.system(size: screenWidth < 500 ? screenWidth * 0.040 : 18, weight: .medium))
+                            .font(.system(size: screen.width < 500 ? screen.width * 0.040 : 18, weight: .medium))
                             .foregroundColor(Color("black"))
                         Text("Deine Daten")
-                            .font(.system(size: screenWidth < 500 ? screenWidth * 0.040 : 18, weight: .medium))
+                            .font(.system(size: screen.width < 500 ? screen.width * 0.040 : 18, weight: .medium))
                             .foregroundColor(Color("black"))
                         Spacer()
                     }
@@ -81,34 +81,21 @@ struct ProfilData: View {
                         .onTapGesture(perform: {
                             self.hideKeyboard()
                         })
-                    
-                    TextField("", text: binding, onEditingChanged: { (editingchanged) in
-                        if (editingchanged) {
-                            self.firstResponder = true
-                        } else {
-                            self.firstResponder = false
-                        }
-                        
-                    } , onCommit: {
-                        user2.name = user2.name
-                        UserDefaults.standard.set(user2.name, forKey: "userName")
-                        
-                    })
-                        .lineLimit(1)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .frame(maxWidth: UIScreen.main.bounds.width - 30)
-                        .padding(.horizontal)
-                    
-//                    CustomTextField(text: binding,
-//                                    nextResponder: .constant(false),
-//                                    isResponder: $firstResponder,
-//                                    isSecured: false,
-//                                    keyboard: .default)
-//                        .frame(height: 40)
-//                        .onTapGesture(count: 1, perform: {
-//                            self.firstResponder = true
-//                        })
-//                        .padding(.horizontal)
+                    ZStack{
+                        MultilineTextView2(text: binding, isFirstResponder: $firstResponder, maxLength: 13)
+                            .frame(height: 40)
+                        VStack {
+                            HStack {
+                                Spacer()
+                                Text("\(user2.name.count)/\(13)")
+                                    .padding(10)
+                                    .font(.system(size: screen.width < 500 ? screen.width * 0.03 : 12))
+                                    .opacity(0.5)
+                            }
+                        }.frame(height: 40)
+                    }
+                    .frame(maxWidth: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width - 30 : 450)
+                    .padding(.horizontal)
                     
                     Spacer()
                     
@@ -218,7 +205,7 @@ struct ProfilData: View {
                                         .padding(.leading, 5)
                                 }
                                 Text(isChanged ? "Speichern" : "Gespeichert")
-                                    .font(.system(size: screenWidth < 500 ? screenWidth * 0.050 : 18, weight: .medium))
+                                    .font(.system(size: screen.width < 500 ? screen.width * 0.050 : 18, weight: .medium))
                                     .padding(.trailing, 3)
                             }
                             .accentColor(Color("white"))
@@ -247,11 +234,11 @@ struct ProfilData: View {
                                         .padding(.leading, 5)
                                 }
                                 Text(isChanged ? "Speichern" : "Gespeichert")
-                                    .font(.system(size: screenWidth < 500 ? screenWidth * 0.050 : 18, weight: .medium))
+                                    .font(.system(size: screen.width < 500 ? screen.width * 0.050 : 18, weight: .medium))
                                     .padding(.trailing, 3)
                             }
                             .accentColor(Color("white"))
-                            .padding(UIScreen.main.bounds.height < 600 ? 10 : 15)
+                            .padding(screen.height < 600 ? 10 : 15)
                             .background(Color("blue"))
                             .cornerRadius(15)
                         }

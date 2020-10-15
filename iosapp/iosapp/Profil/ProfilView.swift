@@ -16,6 +16,7 @@ struct ProfilView: View {
     @State var offsetLevel = -UIScreen.main.bounds.height
     @ObservedObject var userStore = UserDataStore()
     
+    @Binding var tabViewSelected: Int
     @Binding var isDark: Bool
     @Binding var appearenceDark: Bool
     @Binding var selection: Int?
@@ -84,7 +85,7 @@ struct ProfilView: View {
                     .padding(.top, 10.0)
                     .offset(y: 10)
                     
-                    ProfilHomeView(isDark: $isDark, appearenceDark: $appearenceDark, offsetChangeName: $offsetChangeName, offsetLevel: $offsetLevel, selection: $selection, selectionProfil: $selectionProfil, filter: filter, isChanged: $isChanged)
+                    ProfilHomeView(tabViewSelected: $tabViewSelected, isDark: $isDark, appearenceDark: $appearenceDark, offsetChangeName: $offsetChangeName, offsetLevel: $offsetLevel, selection: $selection, selectionProfil: $selectionProfil, filter: filter, isChanged: $isChanged)
                         .navigationBarTitle("")
                         .navigationBarHidden(true)
                         .navigationBarBackButtonHidden(true)
@@ -157,7 +158,7 @@ struct UserNamePatch: Encodable, Decodable {
 
 struct ProfilView_Previews: PreviewProvider {
     static var previews: some View {
-        ProfilView(isDark: .constant(false), appearenceDark: .constant(false), selection: .constant(0), selectionProfil: 1, filter: FilterData2()).environmentObject(UserLevel()).environmentObject(Overlay()).environmentObject(UserObserv())
+        ProfilView(tabViewSelected: .constant(3), isDark: .constant(false), appearenceDark: .constant(false), selection: .constant(0), selectionProfil: 1, filter: FilterData2()).environmentObject(UserLevel()).environmentObject(Overlay()).environmentObject(UserObserv())
     }
 }
 

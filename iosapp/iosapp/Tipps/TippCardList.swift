@@ -57,7 +57,9 @@ struct TippCardList: View {
                     if (!changeFilter.changeFilter){
                         ForEach(filter.filter.indices, id: \.self) { index in
                             HStack {
-                                FilterView(isSelected: self.$filter.filter[index].isSelected, filter: self.filter.filter[index])
+                                FilterView(
+                                    isSelected: self.$filter.filter[index].isSelected,
+                                    filter: self.filter.filter[index])
                                     .onTapGesture {
                                         self.filterTipps2(index: index)
                                         
@@ -334,6 +336,7 @@ struct FilterView: View {
                     .font(.system(size: screen < 500 ? screen * 0.045 : 20))
                     .fontWeight(.medium)
                     .accentColor(Color("black"))
+                    .fixedSize(horizontal: true, vertical: false)
                     .opacity(isSelected ? 1 : 0.3)
             }.padding(.horizontal, 10)
                 .padding(.vertical, 6)

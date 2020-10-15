@@ -11,6 +11,7 @@ import Combine
 
 struct ProfilHomeView: View {
     
+    @Binding var tabViewSelected: Int
     @Binding var isDark: Bool
     @Binding var appearenceDark: Bool
     @Binding var offsetChangeName: CGFloat
@@ -66,7 +67,7 @@ struct ProfilHomeView: View {
                         }
                         }.navigationBarTitle("Navigation")
                     
-                    NavigationLink(destination: ProfilEntwicklung()
+                    NavigationLink(destination: ProfilEntwicklung(tabViewSelected: $tabViewSelected)
                                         .navigationBarTitle("")
                                         .navigationBarHidden(true)
                                         .navigationBarBackButtonHidden(true)
@@ -126,10 +127,7 @@ struct ProfilHomeView: View {
 struct ProfilHomeView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            ProfilHomeView(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), selection: .constant(0), selectionProfil: .constant(1), filter: FilterData2(), isChanged: .constant(false))
-            ProfilHomeView(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), selection: .constant(0), selectionProfil: .constant(1), filter: FilterData2(), isChanged: .constant(false))
-                .previewDevice(PreviewDevice(rawValue: "iPhone 11"))
-                .previewDisplayName("iPhone 11")
+            ProfilHomeView(tabViewSelected: .constant(3), isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), selection: .constant(0), selectionProfil: .constant(1), filter: FilterData2(), isChanged: .constant(false))
         }
     }
 }

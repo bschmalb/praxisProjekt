@@ -10,9 +10,9 @@ import SwiftUI
 
 struct EntwicklungGraphView: View {
     
-    @ObservedObject var store = UserDataStore()
-    
     @State var pickerSelectedItem = 0
+    
+    var user: User
     
     var graphColor: String
     var graphTitle: String
@@ -48,7 +48,7 @@ struct EntwicklungGraphView: View {
     }
     
     func ChartView() -> some View {
-        let showIndex = store.user.log.count - 7
+        let showIndex = user.log.count - 7
         
         switch graphCategory {
         case 0: return AnyView(
@@ -57,11 +57,11 @@ struct EntwicklungGraphView: View {
             HStack (spacing: 0) {
                 ForEach(0..<7) { index in
                     HStack {
-                        if (self.store.user.log.count > 6) {
-                            BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.store.user.log[showIndex + index].kilometer * 45 + 20))
+                        if (self.user.log.count > 6) {
+                            BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.user.log[showIndex + index].kilometer * 45 + 20))
                         }
-                        else if (self.store.user.log.count > index) {
-                            BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.store.user.log[index].kilometer * 45 + 20))
+                        else if (self.user.log.count > index) {
+                            BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.user.log[index].kilometer * 45 + 20))
                         }
                         else {
                             BarView(graphColor: "gray", graphLegende: self.graphLegende[index], value: 5)
@@ -78,11 +78,11 @@ struct EntwicklungGraphView: View {
                 HStack (spacing: 0) {
                     ForEach(0..<7) { index in
                         HStack {
-                            if (self.store.user.log.count > 6) {
-                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.store.user.log[showIndex + index].meat * 45 + 20))
+                            if (self.user.log.count > 6) {
+                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.user.log[showIndex + index].meat * 45 + 20))
                             }
-                            else if (self.store.user.log.count > index) {
-                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.store.user.log[index].meat * 45 + 20))
+                            else if (self.user.log.count > index) {
+                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.user.log[index].meat * 45 + 20))
                             }
                             else {
                                 BarView(graphColor: "gray", graphLegende: self.graphLegende[index], value: 5)
@@ -99,11 +99,11 @@ struct EntwicklungGraphView: View {
                 HStack (spacing: 0) {
                     ForEach(0..<7) { index in
                         HStack {
-                            if (self.store.user.log.count > 6) {
-                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.store.user.log[showIndex + index].cooked * 45 + 20))
+                            if (self.user.log.count > 6) {
+                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.user.log[showIndex + index].cooked * 45 + 20))
                             }
-                            else if (self.store.user.log.count > index) {
-                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.store.user.log[index].cooked * 45 + 20))
+                            else if (self.user.log.count > index) {
+                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.user.log[index].cooked * 45 + 20))
                             }
                             else {
                                 BarView(graphColor: "gray", graphLegende: self.graphLegende[index], value: 5)
@@ -120,11 +120,11 @@ struct EntwicklungGraphView: View {
                 HStack (spacing: 0) {
                     ForEach(0..<7) { index in
                         HStack {
-                            if (self.store.user.log.count > 6) {
-                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.store.user.log[showIndex + index].foodWaste * 45 + 20))
+                            if (self.user.log.count > 6) {
+                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.user.log[showIndex + index].foodWaste * 45 + 20))
                             }
-                            else if (self.store.user.log.count > index) {
-                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.store.user.log[index].foodWaste * 45 + 20))
+                            else if (self.user.log.count > index) {
+                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.user.log[index].foodWaste * 45 + 20))
                             }
                             else {
                                 BarView(graphColor: "gray", graphLegende: self.graphLegende[index], value: 5)
@@ -141,11 +141,11 @@ struct EntwicklungGraphView: View {
                 HStack (spacing: 0) {
                     ForEach(0..<7) { index in
                         HStack {
-                            if (self.store.user.log.count > 6) {
-                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.store.user.log[showIndex + index].drinks * 45 + 20))
+                            if (self.user.log.count > 6) {
+                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.user.log[showIndex + index].drinks * 45 + 20))
                             }
-                            else if (self.store.user.log.count > index) {
-                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.store.user.log[index].drinks * 45 + 20))
+                            else if (self.user.log.count > index) {
+                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.user.log[index].drinks * 45 + 20))
                             }
                             else {
                                 BarView(graphColor: "gray", graphLegende: self.graphLegende[index], value: 5)
@@ -162,11 +162,11 @@ struct EntwicklungGraphView: View {
                 HStack (spacing: 0) {
                     ForEach(0..<7) { index in
                         HStack {
-                            if (self.store.user.log.count > 6) {
-                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.store.user.log[showIndex + index].shower * 45 + 20))
+                            if (self.user.log.count > 6) {
+                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.user.log[showIndex + index].shower * 45 + 20))
                             }
-                            else if (self.store.user.log.count > index) {
-                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.store.user.log[index].shower * 45 + 20))
+                            else if (self.user.log.count > index) {
+                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.user.log[index].shower * 45 + 20))
                             }
                             else {
                                 BarView(graphColor: "gray", graphLegende: self.graphLegende[index], value: 5)
@@ -183,11 +183,11 @@ struct EntwicklungGraphView: View {
                 HStack (spacing: 0) {
                     ForEach(0..<7) { index in
                         HStack {
-                            if (self.store.user.log.count > 6) {
-                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.store.user.log[showIndex + index].binWaste * 90 + 20))
+                            if (self.user.log.count > 6) {
+                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.user.log[showIndex + index].binWaste * 90 + 20))
                             }
-                            else if (self.store.user.log.count > index) {
-                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.store.user.log[index].binWaste * 90 + 20))
+                            else if (self.user.log.count > index) {
+                                BarView(graphColor: self.graphColor, graphLegende: self.graphLegende[index], value: CGFloat(self.user.log[index].binWaste * 90 + 20))
                             }
                             else {
                                 BarView(graphColor: "gray", graphLegende: self.graphLegende[index], value: 5)
@@ -363,8 +363,8 @@ struct EntwicklungGraphView: View {
 struct EntwicklungGraphView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            EntwicklungGraphView(graphColor: "blue", graphTitle: "Kilometer", graphCategory: 0)
-            EntwicklungGraphView(graphColor: "blue", graphTitle: "Kilometer", graphCategory: 0)
+            EntwicklungGraphView(user: User(_id: "", phoneId: "", checkedTipps: [], savedTipps: [], savedFacts: [], log: []), graphColor: "blue", graphTitle: "Kilometer", graphCategory: 0)
+            EntwicklungGraphView(user: User(_id: "", phoneId: "", checkedTipps: [], savedTipps: [], savedFacts: [], log: []), graphColor: "blue", graphTitle: "Kilometer", graphCategory: 0)
                 .previewDevice(PreviewDevice(rawValue: "iPhone 11"))
                 .previewDisplayName("iPhone 11")
         }

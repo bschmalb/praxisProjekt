@@ -332,22 +332,6 @@ struct Intro1: View {
                 ZStack{
                     MultilineTextView2(text: binding, isFirstResponder: $firstResponder, maxLength: maxLength)
                         .frame(height: 40)
-                    
-//                    TextField("", text: binding, onEditingChanged: { (editingchanged) in
-//                        if (editingchanged) {
-//                            self.firstResponder = true
-//                        } else {
-//                            self.firstResponder = false
-//                        }
-//
-//                    } , onCommit: {
-//                        user.name = user.name
-//                        self.firstResponder = false
-//                        UserDefaults.standard.set(user.name, forKey: "userName")
-//
-//                    })
-//                    .lineLimit(1)
-//                    .textFieldStyle(RoundedBorderTextFieldStyle())
                     VStack {
                         HStack {
                             Spacer()

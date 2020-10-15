@@ -162,7 +162,7 @@ struct ContentView: View {
                             .offset(x: logOffset)
                             .opacity(tabViewSelected == 2 ? 1 : 0)
                             .padding(.bottom, UIScreen.main.bounds.height / 12)
-                        ProfilView(isDark: $model.isDark, appearenceDark: $appearenceDark, selection: $selection, filter: filter)
+                        ProfilView(tabViewSelected: $tabViewSelected, isDark: $model.isDark, appearenceDark: $appearenceDark, selection: $selection, filter: filter)
                             .offset(x: profileOffset)
                             .opacity(tabViewSelected == 3 ? 1 : 0)
                             .environmentObject(UserObserv()).environmentObject(FilterString())
@@ -217,22 +217,47 @@ struct ContentView: View {
                             }
                             .frame(width: 40, height: 40)
                             Spacer()
-                            GeometryReader { g in
-                                Button(action: {
-                                    self.tabViewSelected = 2
-                                    self.selectTab(tabViewSelected: self.tabViewSelected)
-                                    
-                                    self.offsetCapsule = g.frame(in: .global).midX
-                                    
-                                    impact(style: .medium)
-                                }) {
-                                    Image(systemName: "book")
-                                        .font(.system(size: 16 + UIScreen.main.bounds.height / 160, weight: Font.Weight.medium))
-                                        .opacity(self.tabViewSelected == 2 ? 1 : 0.5)
-                                        .frame(width: 40, height: 40)
+                            if #available(iOS 14.0, *) {
+                                GeometryReader { g in
+                                    Button(action: {
+                                        self.tabViewSelected = 2
+                                        self.selectTab(tabViewSelected: self.tabViewSelected)
+                                        
+                                        self.offsetCapsule = g.frame(in: .global).midX
+                                        
+                                        impact(style: .medium)
+                                    }) {
+                                        Image(systemName: "book")
+                                            .font(.system(size: 16 + UIScreen.main.bounds.height / 160, weight: Font.Weight.medium))
+                                            .opacity(self.tabViewSelected == 2 ? 1 : 0.5)
+                                            .frame(width: 40, height: 40)
+                                    }
+                                    .onChange(of: tabViewSelected, perform: { value in
+                                        if tabViewSelected == 2 {
+                                            self.selectTab(tabViewSelected: self.tabViewSelected)
+                                            self.offsetCapsule = g.frame(in: .global).midX
+                                        }
+                                    })
                                 }
+                                .frame(width: 40, height: 40)
+                            } else {
+                                GeometryReader { g in
+                                    Button(action: {
+                                        self.tabViewSelected = 2
+                                        self.selectTab(tabViewSelected: self.tabViewSelected)
+                                        
+                                        self.offsetCapsule = g.frame(in: .global).midX
+                                        
+                                        impact(style: .medium)
+                                    }) {
+                                        Image(systemName: "book")
+                                            .font(.system(size: 16 + UIScreen.main.bounds.height / 160, weight: Font.Weight.medium))
+                                            .opacity(self.tabViewSelected == 2 ? 1 : 0.5)
+                                            .frame(width: 40, height: 40)
+                                    }
+                                }
+                                .frame(width: 40, height: 40)
                             }
-                            .frame(width: 40, height: 40)
                             Spacer()
                             GeometryReader { g in
                                 Button(action: {
