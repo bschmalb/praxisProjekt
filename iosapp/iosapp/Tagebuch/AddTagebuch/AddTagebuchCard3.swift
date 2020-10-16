@@ -43,7 +43,7 @@ struct AddTagebuchCard3: View {
                     Spacer()
                 }
                 VStack (spacing: 20){
-                    Image("Woman Cooking")
+                    Image("Einkaufen")
                         .resizable()
                         .scaledToFit()
                         .shadow(radius: 2)

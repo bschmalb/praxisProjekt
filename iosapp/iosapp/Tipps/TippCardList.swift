@@ -12,7 +12,6 @@ import Combine
 
 struct TippCardList: View {
     
-    @ObservedObject var store = TippDataStore()
     @EnvironmentObject var myUrl: ApiUrl
     @State var id = UserDefaults.standard.string(forKey: "id")
     
@@ -124,39 +123,10 @@ struct TippCardList: View {
                     }
                     else {
                         if (self.filteredTipps.count > 0) {
-                            GeometryReader { proxy in
-                                UIScrollViewWrapper {
-                                    HStack (spacing: 0) {
-                                        ForEach(self.filteredTipps.indices, id: \.self) { index in
-                                                HStack {
-                                                    if ([self.filteredTipps[index].category, self.filteredTipps[index].level, self.filteredTipps[index].official].allSatisfy(self.filterString.filterString.contains)){
-                                                        GeometryReader { geometry in
-                                                            HStack {
-                                                                Spacer()
-                                                                TippCard2(isChecked: self.$filteredTipps[index].isChecked, isBookmarked: self.$filteredTipps[index].isBookmarked, tipp: self.filteredTipps[index], color: cardColors[index % 9])
-                                                                    .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX < UIScreen.main.bounds.width*2 && geometry.frame(in: .global).minX > -UIScreen.main.bounds.width*2  ? (geometry.frame(in: .global).minX - 5 ) / -10 : 0))), axis: (x: 0, y: 10.0, z:0))
-                                                                    .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
-                                                                    .opacity(Double(geometry.frame(in: .global).minX < UIScreen.main.bounds.width && geometry.frame(in: .global).minX > -UIScreen.main.bounds.width ? 1 : 0))
-                                                                    .padding(.vertical, 10)
-                                                                Spacer()
-                                                            }
-                                                        }
-                                                        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2.1 + 20)
-                                                    }
-                                                }
-                                        }
-                                    }
-                                    .frame(height: UIScreen.main.bounds.height/2.1 + 20)
-                                    .background(Color("background"))
-                                    .animation(.spring())
-                                }
-                            }
-                            .frame(height: UIScreen.main.bounds.height/2.1 + 20)
-                            .offset(x: loading ? 300 : 0)
-                            .animation(.spring())
+                            ExtractedCardList(loading: loading, filteredTipps: filteredTipps, cardColors: cardColors, filterString: filterString)
                         }
                         else {
-                            CustomCard(image: "Fix website (man)", text: "Stelle sicher, dass du mit dem Internet verbunden bist", color: "buttonWhite")
+                            CustomCard(image: "ServerError", text: "Stelle sicher, dass du mit dem Internet verbunden bist", color: "buttonWhite")
                                 .padding(.horizontal, 15)
                                 .padding(.bottom, 5)
                         }
@@ -246,6 +216,78 @@ struct TippCardList: View {
     }
 }
 
+struct ExtractedCardList: View {
+    
+    @EnvironmentObject var myUrl: ApiUrl
+    @State var id = UserDefaults.standard.string(forKey: "id")
+    
+    var loading: Bool
+    @State var filteredTipps: [Tipp]
+    var cardColors: [String]
+    var filterString: FilterString
+    @State var user: User = User(_id: "", phoneId: "", checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
+    @State var userLoaded = false
+    
+    var body: some View {
+        GeometryReader { proxy in
+            if (userLoaded) {
+                UIScrollViewWrapper {
+                    HStack (spacing: 0) {
+                        ForEach(self.filteredTipps.indices, id: \.self) { index in
+                            HStack {
+                                if ([self.filteredTipps[index].category, self.filteredTipps[index].level, self.filteredTipps[index].official].allSatisfy(self.filterString.filterString.contains)){
+                                    GeometryReader { geometry in
+                                        HStack {
+                                            Spacer()
+                                            TippCard2(
+                                                user: user,
+                                                isChecked: self.$filteredTipps[index].isChecked,
+                                                isBookmarked: self.$filteredTipps[index].isBookmarked,
+                                                tipp: self.filteredTipps[index],
+                                                color: cardColors[index % 9])
+                                                .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX < UIScreen.main.bounds.width*2 && geometry.frame(in: .global).minX > -UIScreen.main.bounds.width*2  ? (geometry.frame(in: .global).minX - 5 ) / -10 : 0))), axis: (x: 0, y: 10.0, z:0))
+                                                .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
+                                                .opacity(Double(geometry.frame(in: .global).minX < UIScreen.main.bounds.width && geometry.frame(in: .global).minX > -UIScreen.main.bounds.width ? 1 : 0))
+                                                .padding(.vertical, 10)
+                                            Spacer()
+                                        }
+                                    }
+                                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2.1 + 20)
+                                }
+                            }
+                        }
+                    }
+                    .frame(height: UIScreen.main.bounds.height/2.1 + 20)
+                    .background(Color("background"))
+                    .animation(.spring())
+                }
+            }
+        }
+        .frame(height: UIScreen.main.bounds.height/2.1 + 20)
+        .offset(x: loading ? 300 : 0)
+        .animation(.spring())
+        .onAppear(){
+            getUser()
+        }
+    }
+    
+    func getUser() {
+        guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
+        let request = URLRequest(url: url)
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data else {
+                print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
+                return
+            }
+            if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
+                userLoaded = true
+                user = decodedResponse
+            }
+        }.resume()
+    }
+}
+
 class UIScrollViewViewController: UIViewController, UIGestureRecognizerDelegate {
     
     lazy var scrollView: UIScrollView = {
@@ -330,8 +372,9 @@ struct FilterView: View {
                     .resizable()
                     .scaledToFit()
                     .font(.title)
-                    .frame(width: screen < 400 ? screen * 0.07 : 30, height: screen < 400 ? screen * 0.07 : 30)
+                    .frame(width: screen < 400 ? screen * 0.05 : 25, height: screen < 400 ? screen * 0.05 : 25)
                     .opacity(isSelected ? 1 : 0.3)
+                    .padding(5)
                 Text(filter.name)
                     .font(.system(size: screen < 500 ? screen * 0.045 : 20))
                     .fontWeight(.medium)

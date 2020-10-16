@@ -45,7 +45,7 @@ struct AddTagebuchCard5: View {
                     Spacer()
                 }
                 VStack (spacing: 20){
-                    Image("Person drinking tea-2")
+                    Image("Drink")
                         .resizable()
                         .scaledToFit()
                         .frame(minHeight: 100, idealHeight: 200, maxHeight: 300)

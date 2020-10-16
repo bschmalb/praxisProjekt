@@ -354,27 +354,27 @@ struct ContentView: View {
     
     func loadObject() {
         if !objectLoaded {
-            filter.addItem(Filter(id: UUID(), icon: "blackFruits", name: "Ernährung", isSelected: true))
-            filter.addItem(Filter(id: UUID(), icon: "blackTransport", name: "Transport", isSelected: true))
+            filter.addItem(Filter(id: UUID(), icon: "Ernährung", name: "Ernährung", isSelected: true))
+            filter.addItem(Filter(id: UUID(), icon: "Transport", name: "Transport", isSelected: true))
             filter.addItem(Filter(id: UUID(), icon: "Haushalt", name: "Haushalt", isSelected: true))
-            filter.addItem(Filter(id: UUID(), icon: "blackRessourcen", name: "Ressourcen", isSelected: true))
-            filter.addItem(Filter(id: UUID(), icon: "blackStar", name: "Leicht", isSelected: true))
-            filter.addItem(Filter(id: UUID(), icon: "blackHalfStar", name: "Mittel", isSelected: true))
-            filter.addItem(Filter(id: UUID(), icon: "blackStarFilled", name: "Schwer", isSelected: true))
-            filter.addItem(Filter(id: UUID(), icon: "blackVerified", name: "Offiziell", isSelected: true))
-            filter.addItem(Filter(id: UUID(), icon: "blackCommunity", name: "Community", isSelected: true))
+            filter.addItem(Filter(id: UUID(), icon: "Ressourcen", name: "Ressourcen", isSelected: true))
+            filter.addItem(Filter(id: UUID(), icon: "Leicht", name: "Leicht", isSelected: true))
+            filter.addItem(Filter(id: UUID(), icon: "Mittel", name: "Mittel", isSelected: true))
+            filter.addItem(Filter(id: UUID(), icon: "Schwer", name: "Schwer", isSelected: true))
+            filter.addItem(Filter(id: UUID(), icon: "Offiziell", name: "Offiziell", isSelected: true))
+            filter.addItem(Filter(id: UUID(), icon: "Community", name: "Community", isSelected: true))
             objectLoaded = true
         }
     }
     
     func loadObjectFacts() {
         if !objectLoaded2 {
-            filterFacts.addItem(Filter(id: UUID(), icon: "blackFruits", name: "Ernährung", isSelected: true))
-            filterFacts.addItem(Filter(id: UUID(), icon: "blackTransport", name: "Transport", isSelected: true))
+            filterFacts.addItem(Filter(id: UUID(), icon: "Ernährung", name: "Ernährung", isSelected: true))
+            filterFacts.addItem(Filter(id: UUID(), icon: "Transport", name: "Transport", isSelected: true))
             filterFacts.addItem(Filter(id: UUID(), icon: "Haushalt", name: "Haushalt", isSelected: true))
-            filterFacts.addItem(Filter(id: UUID(), icon: "blackRessourcen", name: "Ressourcen", isSelected: true))
-            filterFacts.addItem(Filter(id: UUID(), icon: "blackVerified", name: "Offiziell", isSelected: true))
-            filterFacts.addItem(Filter(id: UUID(), icon: "blackCommunity", name: "Community", isSelected: true))
+            filterFacts.addItem(Filter(id: UUID(), icon: "Ressourcen", name: "Ressourcen", isSelected: true))
+            filterFacts.addItem(Filter(id: UUID(), icon: "Offiziell", name: "Offiziell", isSelected: true))
+            filterFacts.addItem(Filter(id: UUID(), icon: "Community", name: "Community", isSelected: true))
             objectLoaded2 = true
         }
     }

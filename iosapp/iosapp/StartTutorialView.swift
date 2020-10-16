@@ -312,7 +312,7 @@ struct Intro1: View {
         
         return VStack {
             Spacer()
-            Image("ProfileImage")
+            Image("Profiles")
                 .resizable()
                 .scaledToFit()
             Text("Hallo!")
@@ -379,7 +379,7 @@ struct Intro2 : View {
         VStack {
             Spacer()
             VStack {
-                Image("Family")
+                Image("SuccessPeople")
                     .resizable()
                     .scaledToFit()
                     .frame(minHeight: 100, idealHeight: 300, maxHeight: 600)
@@ -498,7 +498,7 @@ struct Intro3 : View {
         
         VStack {
             Spacer()
-            Image("Success")
+            Image("Level")
                 .resizable()
                 .scaledToFit()
                 .padding(.horizontal, 40)
@@ -538,7 +538,7 @@ struct Intro4 : View {
         
         VStack {
             Spacer()
-            Image("kategorie")
+            Image("Categories")
                 .resizable()
                 .scaledToFit()
                 .padding(.horizontal, 40)

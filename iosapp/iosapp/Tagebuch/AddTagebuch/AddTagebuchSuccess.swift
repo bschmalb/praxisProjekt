@@ -18,7 +18,7 @@ struct AddTagebuchSuccess: View {
         VStack {
             Spacer()
             VStack {
-                Image("PersonSofa")
+                Image("SofaChill")
                     .resizable()
                     .scaledToFit()
                     .padding(.horizontal, 35)

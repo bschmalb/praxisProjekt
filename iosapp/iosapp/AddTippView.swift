@@ -469,9 +469,11 @@ struct AddTipp1: View {
     
     var body: some View {
         VStack {
-            Image(uiImage: #imageLiteral(resourceName: "kategorie"))
+            Spacer()
+            Image("Categories")
                 .resizable()
                 .scaledToFit()
+            Spacer()
             Text("Wähle eine Kategorie für deinen Tipp")
                 .font(.system(size: screenWidth < 500 ? screenWidth * 0.06 : 24))
                 .fontWeight(.medium)
@@ -487,6 +489,7 @@ struct AddTipp1: View {
             HStack {
                 SelectButton(categorySelected: $categorySelected, category: $category, selectAmount: 3, categoryLocal: "Ressourcen", icon: "Ressourcen")
             }
+            Spacer()
         }
         .accentColor(Color("black"))
     }
@@ -501,9 +504,11 @@ struct AddTipp2: View {
     
     var body: some View {
         VStack {
-            Image(uiImage: #imageLiteral(resourceName: "Success"))
+            Spacer()
+            Image("Level")
                 .resizable()
                 .scaledToFit()
+            Spacer()
             Text("Wähle eine Niveaustufe für deinen Tipp")
                 .font(.system(size: screenWidth < 500 ? screenWidth * 0.06 : 24))
                 .multilineTextAlignment(.center)
@@ -514,6 +519,7 @@ struct AddTipp2: View {
                 SelectButton(categorySelected: $categorySelected, category: $category, selectAmount: 1, categoryLocal: "Mittel", icon: "HalfStar")
                 SelectButton(categorySelected: $categorySelected, category: $category, selectAmount: 2, categoryLocal: "Schwer", icon: "StarFilled")
             }
+            Spacer()
         }
         .accentColor(Color("black"))
     }
@@ -540,9 +546,11 @@ struct AddTipp3: View {
         })
         
         return VStack {
-            Image(uiImage: #imageLiteral(resourceName: "Woman Carrying Browser Tab"))
+            Spacer()
+            Image("HappyTab")
                 .resizable()
                 .scaledToFit()
+            Spacer()
             Text("Gebe deinen Tipp ein")
                 .font(.system(size: screen.width < 500 ? screen.width * 0.06 : 24))
                 .multilineTextAlignment(.center)
@@ -605,9 +613,11 @@ struct AddTipp4: View {
         })
         
         return VStack {
-            Image(uiImage: #imageLiteral(resourceName: "Working"))
+            Spacer()
+            Image("Research")
                 .resizable()
                 .scaledToFit()
+            Spacer()
             Text("Gebe wenn möglich eine Quelle für deinen Tipp an")
                 .font(.system(size: screenWidth < 500 ? screenWidth * 0.06 : 24))
                 .fontWeight(.medium)
@@ -721,6 +731,7 @@ struct AddTipp5: View {
                         Image(category)
                             .resizable()
                             .scaledToFit()
+                            .padding(5)
                             .frame(width: 30, height: 30)
                             .opacity(0.1)
                             .padding(.leading, 15)
@@ -728,6 +739,7 @@ struct AddTipp5: View {
                         Image(level)
                             .resizable()
                             .scaledToFit()
+                            .padding(5)
                             .frame(width: 30, height: 30)
                             .opacity(0.1)
                             .padding(.vertical)
@@ -765,6 +777,8 @@ struct SelectButton: View {
                     .resizable()
                     .scaledToFit()
                     .offset(y: 3)
+                    .padding(6)
+                    .opacity(0.9)
                 Text(categoryLocal)
                     .font(.system(size: screenWidth < 500 ? screenWidth * 0.04 : 18, weight: .medium))
                     .fixedSize()

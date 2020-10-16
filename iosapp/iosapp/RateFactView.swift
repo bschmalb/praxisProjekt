@@ -10,7 +10,8 @@ import SwiftUI
 
 struct RateFactView: View {
     
-    //    @ObservedObject var store2 = RateTippDataStore()
+    @State var userObject: User = User(_id: "", phoneId: "", level: 0, checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
+    
     @State var rateFacts: [Fact] = []
     @State var rateFacts2: [Fact] = []
     @State var alreadyRated: [String] = UserDefaults.standard.stringArray(forKey: "alreadyRatedFacts") ?? []
@@ -75,7 +76,7 @@ struct RateFactView: View {
                                     FactCard(
                                         isBookmarked: self.$rateFacts[counter].isBookmarked,
                                         fact: self.rateFacts[counter],
-                                        color: cardColors[0])
+                                        color: cardColors[0], user: userObject)
                                         .animation(.spring())
                                         .offset(x: counter < index ? 500 : 0)
                                         .offset(x: counter > index ? -500 : 0)
@@ -147,7 +148,7 @@ struct RateFactView: View {
                             .animation(.spring())
                         }
                         else {
-                            CustomCard(image: "PersonSofa", text: "Vorerst keine weiteren Tipps mehr zum bewerten verfügbar", color: "cardgreen2")
+                            CustomCard(image: "SofaChill", text: "Vorerst keine weiteren Tipps mehr zum bewerten verfügbar", color: "cardgreen2")
                                 .animation(.spring())
                         }
                     } else {

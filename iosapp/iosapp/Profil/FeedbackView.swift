@@ -60,7 +60,7 @@ struct FeedbackView: View {
                 }
                 
                 if (!(firstResponder ?? false)){
-                Image("Woman Carrying Browser Tab")
+                Image("HappyTab")
                     .resizable()
                     .scaledToFit()
                     .scaleEffect(1.3)

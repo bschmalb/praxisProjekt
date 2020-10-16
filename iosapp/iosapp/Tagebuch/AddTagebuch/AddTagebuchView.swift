@@ -42,32 +42,32 @@ struct AddTagebuchView: View {
     @State var tagebuch1options = ["0", "1-10", "11-20", "21-50", "51+"]
     
     @State var tagebuch2titel = "Wie oft hast du gestern Fleisch gegessen?"
-    @State var tagebuch2image = "IErnährung"
+    @State var tagebuch2image = "Meat"
     @State var tagebuch2einheit = "Mal"
     @State var tagebuch2options = ["0", "1", "2", "3", "4+"]
     
     @State var tagebuch3titel = "Wie viele Mahlzeiten hast du gestern gekauft?"
-    @State var tagebuch3image = "Woman Cooking"
+    @State var tagebuch3image = "Einkaufen"
     @State var tagebuch3einheit = "Mal"
     @State var tagebuch3options = ["0", "1", "2", "3", "4+"]
     
     @State var tagebuch4titel = "Bei wie vielen Malzeiten hast du Reste weggeschmissen?"
-    @State var tagebuch4image = "IRecycling"
+    @State var tagebuch4image = "Cookie"
     @State var tagebuch4einheit = "Mal"
     @State var tagebuch4options = ["0", "1", "2", "3", "4+"]
     
     @State var tagebuch5titel = "Wie viel Liter gekaufte Getränke hast du gestern getrunken?"
-    @State var tagebuch5image = "Person drinking tea-2"
+    @State var tagebuch5image = "Drink"
     @State var tagebuch5einheit = "Mal"
     @State var tagebuch5options = ["0", "1", "2", "3", "4+"]
     
     @State var tagebuch6titel = "Wie lange hast du gestern geduscht?"
-    @State var tagebuch6image = "Person in the summer"
+    @State var tagebuch6image = "Shower"
     @State var tagebuch6einheit = "Minuten"
     @State var tagebuch6options = ["0", "5", "10", "15", "20+"]
     
     @State var tagebuch7titel = "Hast du gestern auf die Mülltrennung geachtet?"
-    @State var tagebuch7image = "People Shopping"
+    @State var tagebuch7image = "Mülltrennung"
     @State var tagebuch7einheit = ""
     @State var tagebuch7options = ["Ja", "Teilweise", "Nein"]
     

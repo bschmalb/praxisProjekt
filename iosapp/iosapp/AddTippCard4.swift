@@ -56,7 +56,7 @@ struct AddTippCard4: View {
                 }
                 VStack {
                     VStack {
-                        Image(uiImage: #imageLiteral(resourceName: "Working"))
+                        Image("Research")
                             .resizable()
                             .scaledToFit()
                             .animation(.easeInOut)

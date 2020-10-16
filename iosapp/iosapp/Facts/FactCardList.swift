@@ -14,6 +14,9 @@ struct FactCardList: View {
     
     @Environment(\.horizontalSizeClass) var horizontalSize
     
+    @EnvironmentObject var myUrl: ApiUrl
+    @State var id = UserDefaults.standard.string(forKey: "id")
+    
     @State var filteredFacts: [Fact] = []
     @State var offlineFacts: [Fact] = []
     
@@ -29,6 +32,8 @@ struct FactCardList: View {
     @State var notDifficulty: [String] = UserDefaults.standard.stringArray(forKey: "notDifficulty") ?? []
     
     @EnvironmentObject var user: UserObserv
+    
+    @State var userObject: User = User(_id: "", phoneId: "", level: 0, checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
     
     @EnvironmentObject var changeFilter: ChangeFilter
     @EnvironmentObject var filterString: FilterString
@@ -82,59 +87,27 @@ struct FactCardList: View {
                                 .shadow(color: Color(.white), radius: 1, x: 0, y: 0)
                                 .frame(width: 100, height: 100)
                         }
-                        .onAppear(){
-                            if changeFilter.changeFilter {
-                                FactApi().fetchApproved { (filteredFacts) in
-                                    self.filteredFacts = filteredFacts
-                                    
-                                    if (self.filteredFacts.count > 0) {
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                                            self.changeFilter.changeFilter = false
-                                        }
-                                    }
-                                }
-                            }
-                        }
+//                        .onAppear(){
+//                            if changeFilter.changeFilter {
+//                                FactApi().fetchApproved { (filteredFacts) in
+//                                    self.filteredFacts = filteredFacts
+//
+//                                    if (self.filteredFacts.count > 0) {
+//                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+//                                            self.changeFilter.changeFilter = false
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
                         .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2.1 + 20)
                     }
                     else {
                         if (self.filteredFacts.count > 0) {
-                            GeometryReader { proxy in
-                                UIScrollViewWrapper {
-                                    HStack (spacing: 0) {
-                                        ForEach(self.filteredFacts.indices, id: \.self) { index in
-                                            HStack {
-                                                if ([self.filteredFacts[index].category, self.filteredFacts[index].official].allSatisfy(self.filterString.filterString.contains)){
-                                                    GeometryReader { geometry in
-                                                        HStack {
-                                                            Spacer()
-                                                            FactCard(
-                                                                isBookmarked: self.$filteredFacts[index].isBookmarked,
-                                                                fact: self.filteredFacts[index],
-                                                                color: cardColors[index % 9])
-                                                                .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX < UIScreen.main.bounds.width*2 && geometry.frame(in: .global).minX > -UIScreen.main.bounds.width*2  ? (geometry.frame(in: .global).minX - 5 ) / -10 : 0))), axis: (x: 0, y: 10.0, z:0))
-                                                                .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
-                                                                .opacity(Double(geometry.frame(in: .global).minX < UIScreen.main.bounds.width && geometry.frame(in: .global).minX > -UIScreen.main.bounds.width ? 1 : 0))
-                                                                .padding(.vertical, 10)
-                                                            Spacer()
-                                                        }
-                                                    }
-                                                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2.1 + 20)
-                                                }
-                                            }
-                                        }
-                                    }
-                                    .frame(height: UIScreen.main.bounds.height/2.1 + 20)
-                                    .background(Color("background"))
-                                    .animation(.spring())
-                                }
-                            }
-                            .frame(height: UIScreen.main.bounds.height/2.1 + 20)
-                            .offset(x: loading ? 300 : 0)
-                            .animation(.spring())
+                            ExtractedFactList(loading: loading, filteredFacts: filteredFacts, cardColors: cardColors, filterString: filterString)
                         }
                         else {
-                            CustomCard(image: "Fix website (man)", text: "Stelle sicher, dass du mit dem Internet verbunden bist", color: "buttonWhite")
+                            CustomCard(image: "ServerError", text: "Stelle sicher, dass du mit dem Internet verbunden bist", color: "buttonWhite")
                                 .padding(.horizontal, 15)
                                 .padding(.bottom, 5)
                         }
@@ -150,6 +123,8 @@ struct FactCardList: View {
             .offset(y: -3)
         }
         .onAppear(){
+            
+            getUser()
             
             do {
                 let storedObjTipp = UserDefaults.standard.object(forKey: "offlineFacts")
@@ -184,6 +159,21 @@ struct FactCardList: View {
         }
     }
     
+    func getUser() {
+        guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
+        let request = URLRequest(url: url)
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data else {
+                print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
+                return
+            }
+            if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
+                userObject = decodedResponse
+            }
+        }.resume()
+    }
+    
     func filterTipps2(index: Int){
         if (filterString.filterString.contains(filter.filter[index].name)){
             filterString.filterString.removeAll(where: {$0 == filter.filter[index].name})
@@ -197,6 +187,78 @@ struct FactCardList: View {
             changeFilter.changeFilterProfile = false
         }
         print(filterString.filterString)
+    }
+}
+
+struct ExtractedFactList: View {
+    
+    @EnvironmentObject var myUrl: ApiUrl
+    @State var id = UserDefaults.standard.string(forKey: "id")
+    
+    var loading: Bool
+    @State var filteredFacts: [Fact]
+    var cardColors: [String]
+    var filterString: FilterString
+    @State var user: User = User(_id: "", phoneId: "", checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
+    @State var userLoaded = false
+    
+    var body: some View {
+        GeometryReader { proxy in
+            if (userLoaded) {
+                UIScrollViewWrapper {
+                    HStack (spacing: 0) {
+                        ForEach(self.filteredFacts.indices, id: \.self) { index in
+                            HStack {
+                                if ([self.filteredFacts[index].category, self.filteredFacts[index].official].allSatisfy(self.filterString.filterString.contains)){
+                                    GeometryReader { geometry in
+                                        HStack {
+                                            Spacer()
+                                            FactCard(
+                                                isBookmarked: self.$filteredFacts[index].isBookmarked,
+                                                fact: self.filteredFacts[index],
+                                                color: cardColors[index % 9],
+                                                user: user
+                                            )
+                                            .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX < UIScreen.main.bounds.width*2 && geometry.frame(in: .global).minX > -UIScreen.main.bounds.width*2  ? (geometry.frame(in: .global).minX - 5 ) / -10 : 0))), axis: (x: 0, y: 10.0, z:0))
+                                            .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
+                                            .opacity(Double(geometry.frame(in: .global).minX < UIScreen.main.bounds.width && geometry.frame(in: .global).minX > -UIScreen.main.bounds.width ? 1 : 0))
+                                            .padding(.vertical, 10)
+                                            Spacer()
+                                        }
+                                    }
+                                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2.1 + 20)
+                                }
+                            }
+                        }
+                    }
+                    .frame(height: UIScreen.main.bounds.height/2.1 + 20)
+                    .background(Color("background"))
+                    .animation(.spring())
+                }
+            }
+        }
+        .frame(height: UIScreen.main.bounds.height/2.1 + 20)
+        .offset(x: loading ? 300 : 0)
+        .animation(.spring())
+        .onAppear(){
+            getUser()
+        }
+    }
+    
+    func getUser() {
+        guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
+        let request = URLRequest(url: url)
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data else {
+                print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
+                return
+            }
+            if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
+                userLoaded = true
+                user = decodedResponse
+            }
+        }.resume()
     }
 }
 

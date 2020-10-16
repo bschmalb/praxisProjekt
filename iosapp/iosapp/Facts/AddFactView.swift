@@ -469,7 +469,7 @@ struct AddFact1: View {
     
     var body: some View {
         VStack {
-            Image(uiImage: #imageLiteral(resourceName: "kategorie"))
+            Image("Categories")
                 .resizable()
                 .scaledToFit()
             Text("Wähle eine Kategorie für den Fakt")
@@ -514,7 +514,7 @@ struct AddFact3: View {
         })
         
         return VStack {
-            Image(uiImage: #imageLiteral(resourceName: "Woman Carrying Browser Tab"))
+            Image("HappyTab")
                 .resizable()
                 .scaledToFit()
             Text("Gebe den Fact ein")
@@ -579,7 +579,7 @@ struct AddFact4: View {
         })
         
         return VStack {
-            Image(uiImage: #imageLiteral(resourceName: "Working"))
+            Image("Research")
                 .resizable()
                 .scaledToFit()
             Text("Gebe eine Quelle für den Fakt an")

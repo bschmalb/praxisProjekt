@@ -54,7 +54,7 @@ struct AddTippCard3: View {
                 }
                 VStack {
                     VStack {
-                        Image(uiImage: #imageLiteral(resourceName: "Woman Carrying Browser Tab"))
+                        Image("HappyTab")
                             .resizable()
                             .scaledToFit()
                             .animation(.easeInOut)

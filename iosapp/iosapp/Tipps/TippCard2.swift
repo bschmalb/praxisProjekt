@@ -277,7 +277,7 @@ struct TippCard2: View {
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
                         if (showSourceTextView){
-                            SourceTextView(tipp: tipp, show: $showSourceTextView, color: color)
+                            SourceTextView(source: tipp.source, show: $showSourceTextView, color: color)
                         } else {
                             if (tipp.source.count > 3) {
                                 Text("Quelle")
@@ -347,24 +347,24 @@ struct TippCard2: View {
                         
                     }
                     VStack {
-                        HStack(alignment: .top) {
+                        HStack(alignment: .top, spacing: 10) {
                             Image(tipp.category)
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: size.size.width < 500 ? size.size.width * 0.09 : 40, height: size.size.width < 500 ? size.size.width * 0.09 : 40)
+                                .frame(width: size.size.width < 500 ? size.size.width * 0.097 : 40, height: size.size.width < 500 ? size.size.width * 0.07 : 40)
                                 .opacity(0.1)
                                 .padding(.leading, 20)
                                 .padding(.vertical)
                             Image(tipp.level)
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: size.size.width < 500 ? size.size.width * 0.09 : 40, height: size.size.width < 500 ? size.size.width * 0.09 : 40)
+                                .frame(width: size.size.width < 500 ? size.size.width * 0.07 : 40, height: size.size.width < 500 ? size.size.width * 0.07 : 40)
                                 .opacity(0.1)
                                 .padding(.vertical)
                             Image(tipp.official)
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: size.size.width < 500 ? size.size.width * 0.09 : 40, height: size.size.width < 500 ? size.size.width * 0.09 : 40)
+                                .frame(width: size.size.width < 500 ? size.size.width * 0.07 : 40, height: size.size.width < 500 ? size.size.width * 0.07 : 40)
                                 .opacity(0.1)
                                 .padding(.vertical)
                             Spacer()
@@ -403,7 +403,6 @@ struct TippCard2: View {
         }
     }
     func getUserTipps(){
-        
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             if (user.checkedTipps.contains(self.tipp._id) ) {
                 self.isChecked = true
@@ -493,16 +492,6 @@ struct TippCard2: View {
         } else {
             self.showSourceTextView = true
         }
-    }
-    
-    func verifyUrl (urlString: String?) -> Bool {
-        if let urlString = urlString {
-            if let url = NSURL(string: urlString) {
-                return UIApplication.shared.canOpenURL(url as URL)
-            }
-            return false
-        }
-        return false
     }
     
     func addToProfile(tippId: String, method: Int) {

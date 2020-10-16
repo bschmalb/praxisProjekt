@@ -152,7 +152,7 @@ struct RateTippView: View {
                             .animation(.spring())
                         }
                         else {
-                            CustomCard(image: "PersonSofa", text: "Vorerst keine weiteren Tipps mehr zum bewerten verfügbar", color: "cardgreen2")
+                            CustomCard(image: "SofaChill", text: "Vorerst keine weiteren Tipps mehr zum bewerten verfügbar", color: "cardgreen2")
                                 .animation(.spring())
                         }
                     } else {

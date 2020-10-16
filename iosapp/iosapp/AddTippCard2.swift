@@ -51,7 +51,7 @@ struct AddTippCard2: View {
                     Spacer()
                 }
                 VStack {
-                    Image(uiImage:  #imageLiteral(resourceName: "Success"))
+                    Image("Level")
                         .resizable()
                         .scaledToFit()
                     Text("Wähle eine Niveaustufe für deinen Tipp")

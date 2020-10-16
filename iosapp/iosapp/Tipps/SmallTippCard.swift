@@ -251,19 +251,19 @@ struct SmallTippCard: View {
                         }
                     }
                     HStack {
-                        HStack(alignment: .top) {
+                        HStack(alignment: .top, spacing: 10) {
                             Image(tipp.category)
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: size.size.width < 400 ? size.size.width * 0.09 : 40, height: size.size.width < 500 ? size.size.width * 0.09 : 40)
+                                .frame(width: size.size.width < 400 ? size.size.width * 0.07 : 30, height: size.size.width < 500 ? size.size.width * 0.07 : 30)
                             Image(tipp.level)
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: size.size.width < 400 ? size.size.width * 0.09 : 40, height: size.size.width < 500 ? size.size.width * 0.09 : 40)
+                                .frame(width: size.size.width < 400 ? size.size.width * 0.07 : 30, height: size.size.width < 500 ? size.size.width * 0.07 : 30)
                             Image(tipp.official)
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: size.size.width < 400 ? size.size.width * 0.09 : 40, height: size.size.width < 500 ? size.size.width * 0.09 : 40)
+                                .frame(width: size.size.width < 400 ? size.size.width * 0.07 : 30, height: size.size.width < 500 ? size.size.width * 0.07 : 30)
                         }.padding(.leading)
                         .foregroundColor(Color("alwaysblack"))
                         Spacer()

@@ -48,7 +48,7 @@ struct ProfilEntwicklung: View {
                             .padding(.vertical, 10)
                         }
                         Spacer()
-                        Image("Working")
+                        Image("Research")
                             .resizable()
                             .scaledToFit()
                         Text("Um dein Entwicklung zu sehen musst du erst Tagebucheinträge erstellen. Dafür musst du nur ein paar Fragen beantworten. :)")

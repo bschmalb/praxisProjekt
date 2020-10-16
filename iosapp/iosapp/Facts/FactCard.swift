@@ -25,6 +25,7 @@ struct FactCard: View {
     @State var loading: Bool = false
     
     var color: String
+    @State var user: User
     
     @State var user2: User = User(_id: "", phoneId: "", level: 2, checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
     
@@ -42,7 +43,7 @@ struct FactCard: View {
 
 struct FactCard_Previews: PreviewProvider {
     static var previews: some View {
-        FactCard(isBookmarked: .constant(false), fact: .init(_id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", category: "Ernährung", score: 25, postedBy: "123", official: "Community"), color: "cardblue2")
+        FactCard(isBookmarked: .constant(false), fact: .init(_id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", category: "Ernährung", score: 25, postedBy: "123", official: "Community"), color: "cardblue2", user: User(_id: "", phoneId: "", checkedTipps: [], savedTipps: [], savedFacts: [], log: []))
     }
 }
 
@@ -74,6 +75,8 @@ struct FactCardMain: View {
     @State var bookmarkScale: CGFloat = 1
     @State var correctUrl: String = ""
     
+    @State var showSourceTextView = false
+    
     var body: some View {
         GeometryReader { size in
             ZStack {
@@ -90,18 +93,23 @@ struct FactCardMain: View {
                         .foregroundColor(Color("alwaysblack"))
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
-                    if (fact.source.count > 3) {
-                        Text("Quelle")
-                            .foregroundColor(.gray)
-                            .font(.system(size: size.size.width * 0.03, weight: .medium))
-                            .multilineTextAlignment(.center)
-                            .padding(.top, 5)
-                            .onTapGesture {
-                                //                                self.verifyUrl(urlString: fact.source)
-                            }
-                            .sheet(isPresented: $quelleShowing) {
-                                QuelleView(quelle: correctUrl, quelleShowing: self.$quelleShowing)
-                            }
+                    if (showSourceTextView){
+                        SourceTextView(source: fact.source, show: $showSourceTextView, color: color)
+                    } else {
+                        if (fact.source.count > 3) {
+                            Text("Quelle")
+                                .foregroundColor(.gray)
+                                .font(.system(size: size.size.width * 0.03, weight: .medium))
+                                .multilineTextAlignment(.center)
+                                .padding(.top, 5)
+                                .onTapGesture {
+                                    impact(style: .medium)
+                                    self.openSource()
+                                }
+                                .sheet(isPresented: $quelleShowing) {
+                                    QuelleView(quelle: fact.source, quelleShowing: self.$quelleShowing)
+                                }
+                        }
                     }
                     Spacer()
                     HStack {
@@ -139,18 +147,18 @@ struct FactCardMain: View {
                     
                 }
                 VStack {
-                    HStack(alignment: .top) {
+                    HStack(alignment: .top, spacing: 10) {
                         Image(fact.category)
                             .resizable()
                             .scaledToFit()
-                            .frame(width: size.size.width < 500 ? size.size.width * 0.09 : 40, height: size.size.width < 500 ? size.size.width * 0.09 : 40)
+                            .frame(width: size.size.width < 500 ? size.size.width * 0.07 : 40, height: size.size.width < 500 ? size.size.width * 0.07 : 40)
                             .opacity(0.1)
                             .padding(.leading, 20)
                             .padding(.vertical)
                         Image(fact.official)
                             .resizable()
                             .scaledToFit()
-                            .frame(width: size.size.width < 500 ? size.size.width * 0.09 : 40, height: size.size.width < 500 ? size.size.width * 0.09 : 40)
+                            .frame(width: size.size.width < 500 ? size.size.width * 0.07 : 40, height: size.size.width < 500 ? size.size.width * 0.07 : 40)
                             .opacity(0.1)
                             .padding(.vertical)
                         Spacer()
@@ -182,6 +190,19 @@ struct FactCardMain: View {
                     }))
         .onAppear(){
             self.getUserTipps()
+        }
+    }
+    
+    func openSource () {
+        if let myUrl = URL(string: fact.source) {
+            if (UIApplication.shared.canOpenURL(myUrl)) {
+                print("quelleshowing = true")
+                self.quelleShowing = true
+            } else {
+                self.showSourceTextView = true
+            }
+        } else {
+            self.showSourceTextView = true
         }
     }
     
