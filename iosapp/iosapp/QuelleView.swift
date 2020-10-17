@@ -30,9 +30,6 @@ struct QuelleView: View {
             
             WebLinkView(url: quelle)
                 .edgesIgnoringSafeArea(.all)
-                .onAppear(){
-                    print("Quelle: \(quelle)")
-                }
         }.edgesIgnoringSafeArea(.all)
     }
 }

@@ -684,16 +684,12 @@ struct categoryButton: View {
             } else {
                 self.optionSelected = -1
             }
-            
-            changeFilter.changeFilter = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                changeFilter.changeFilter = false
-            }
         }){
             VStack {
                 Image(category)
                     .resizable()
                     .scaledToFit()
+                    .padding(5)
                     .frame(width: 40)
                 Text(category)
                     .font(.system(size: 14))
@@ -753,16 +749,12 @@ struct difficultyButton: View {
             } else {
                 self.optionSelected = -1
             }
-            
-            changeFilter.changeFilter = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                changeFilter.changeFilter = false
-            }
         }){
             VStack {
                 Image(difficulty)
                     .resizable()
                     .scaledToFit()
+                    .padding(5)
                     .frame(width: 40)
                 Text(difficulty)
                     .font(.system(size: 14))
@@ -845,6 +837,7 @@ struct ProfilFilterView: View {
                         .fontWeight(.medium)
                         .accentColor(Color("black"))
                         .opacity(isSelected ? 1 : 0.3)
+                        .fixedSize(horizontal: true, vertical: false)
                 }.padding(.horizontal, 10)
                 .padding(.vertical, 6)
             }

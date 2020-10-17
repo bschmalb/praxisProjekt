@@ -154,6 +154,7 @@ struct FeedbackView: View {
                     .cornerRadius(15)
                 }.disabled(feedback.count < 5 || feedbackOptionSelected == -1)
                 Spacer()
+                Spacer()
             }
             .padding(.bottom, 20)
             .blur(radius: loading ? 4 : 0)

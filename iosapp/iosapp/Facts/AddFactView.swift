@@ -246,7 +246,7 @@ struct AddFactView: View {
                         }.opacity(step > 1 ? 1 : 0)
                         Spacer()
                         Button(action: {
-                            if (step < 5){
+                            if (step < 4){
                                 impact(style: .medium)
                                 
                                 if (step != 2) {

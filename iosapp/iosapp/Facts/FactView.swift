@@ -97,7 +97,7 @@ struct FactView: View {
                             .background(Color("buttonWhite"))
                             .cornerRadius(15)
                             .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
-                        .sheet(isPresented: $showRateFacts, content: { RateFactView(showRateFacts: self.$showRateFacts).environmentObject(self.levelEnv).environmentObject(self.overlay)})
+                        .sheet(isPresented: $showRateFacts, content: { RateFactView(showRateFacts: self.$showRateFacts).environmentObject(self.levelEnv).environmentObject(self.overlay).environmentObject(self.myUrl)})
                         }
                     }.offset(y: -screen.height / 81)
                     Spacer()

@@ -204,7 +204,7 @@ struct RateFactView: View {
             return
         }
         
-        guard let url = URL(string: myUrl.tipps + id) else { return }
+        guard let url = URL(string: myUrl.facts + id) else { return }
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "PATCH"

@@ -37,20 +37,18 @@ struct TagebuchEntwicklung: View {
                     }
                     .padding(.top, 30.0)
                     
-                    if (user.log.count > 1){
-                        VStack (spacing: 30) {
-                            EntwicklungGraphView(user: user, graphColor: "cardgreen2", graphTitle: "Gefahrene Kilometer", graphCategory: 0)
-                            EntwicklungGraphView(user: user, graphColor: "cardblue2", graphTitle: "Fleischkonsum", graphCategory: 1)
-                            EntwicklungGraphView(user: user, graphColor: "cardgreen2", graphTitle: "Essen gekauft", graphCategory: 2)
-                            EntwicklungGraphView(user: user, graphColor: "cardpurple2", graphTitle: "Essen weggeschmissen", graphCategory: 3)
-                            EntwicklungGraphView(user: user, graphColor: "cardyellow2", graphTitle: "Getränke gekauft", graphCategory: 4)
-                            EntwicklungGraphView(user: user, graphColor: "cardturqouise2", graphTitle: "Duschzeit", graphCategory: 5)
-                            EntwicklungGraphView(user: user, graphColor: "cardred2", graphTitle: "Mülltrennung", graphCategory: 6)
-                                .padding(.bottom, 15)
-                        }
-                        .animation(.spring())
-                        .padding(.leading, 10)
+                    VStack (spacing: 30) {
+                        EntwicklungGraphView(user: user, graphColor: "cardgreen2", graphTitle: "Gefahrene Kilometer", graphCategory: 0)
+                        EntwicklungGraphView(user: user, graphColor: "cardblue2", graphTitle: "Fleischkonsum", graphCategory: 1)
+                        EntwicklungGraphView(user: user, graphColor: "cardgreen2", graphTitle: "Essen gekauft", graphCategory: 2)
+                        EntwicklungGraphView(user: user, graphColor: "cardpurple2", graphTitle: "Essen weggeschmissen", graphCategory: 3)
+                        EntwicklungGraphView(user: user, graphColor: "cardyellow2", graphTitle: "Getränke gekauft", graphCategory: 4)
+                        EntwicklungGraphView(user: user, graphColor: "cardturqouise2", graphTitle: "Duschzeit", graphCategory: 5)
+                        EntwicklungGraphView(user: user, graphColor: "cardred2", graphTitle: "Mülltrennung", graphCategory: 6)
+                            .padding(.bottom, 15)
                     }
+                    .animation(.spring())
+                    .padding(.leading, 10)
                 }
             }
         }
@@ -67,25 +65,12 @@ struct TagebuchEntwicklung: View {
     
     func getUser() {
         guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
-        
-        print("getPoster")
         URLSession.shared.dataTask(with: url) { (data, _, _) in
-            
-            print("dataTask")
-            
             if let data = data {
-                
-                print("data")
-                
                 if let user = try? JSONDecoder().decode(User.self, from: data) {
-                    // we have good data – go back to the main thread
-                    print("Decoded")
                     DispatchQueue.main.async {
-                        // update our UI
                         self.user = user
                     }
-                    
-                    // everything is good, so we can exit
                     return
                 }
             }

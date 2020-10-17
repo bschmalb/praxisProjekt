@@ -24,6 +24,10 @@ struct FactCardList: View {
     @State var dataLoading: Bool = true
     @ObservedObject var filter: FilterDataFacts
     
+    @State var redrawUIScrollView = true
+    
+    @State var showOfflineTipps = true
+    
     @State var filterCategory2: [String] = ["Ernährung", "Transport", "Haushalt", "Ressourcen"]
     @State var filterLevel2: [String] = ["Leicht", "Mittel", "Schwer"]
     @State var filterPoster: [String] = ["Offiziell", "Community"]
@@ -57,6 +61,11 @@ struct FactCardList: View {
                         HStack {
                             FilterView(isSelected: self.$filter.filter[index].isSelected, filter: self.filter.filter[index])
                                 .onTapGesture {
+                                    self.redrawUIScrollView = false
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                        self.redrawUIScrollView = true
+                                    }
+                                    
                                     self.filterTipps2(index: index)
                                     
                                     impact(style: .heavy)
@@ -103,13 +112,45 @@ struct FactCardList: View {
                         .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2.1 + 20)
                     }
                     else {
-                        if (self.filteredFacts.count > 0) {
-                            ExtractedFactList(loading: loading, filteredFacts: filteredFacts, cardColors: cardColors, filterString: filterString)
-                        }
-                        else {
-                            CustomCard(image: "ServerError", text: "Stelle sicher, dass du mit dem Internet verbunden bist", color: "buttonWhite")
-                                .padding(.horizontal, 15)
-                                .padding(.bottom, 5)
+                        if #available(iOS 14.0, *) {
+                            if (self.filteredFacts.count > 0) {
+                                if (showOfflineTipps) {
+                                    ExtractedFactList(loading: loading, filteredFacts: filteredFacts, cardColors: cardColors, filterString: filterString)
+                                        .environmentObject(ApiUrl())
+                                } else {
+                                    ExtractedFactList(loading: loading, filteredFacts: filteredFacts, cardColors: cardColors, filterString: filterString)
+                                        .environmentObject(ApiUrl())
+                                }
+                            }
+                            else {
+                                CustomCard(image: "ServerError", text: "Stelle sicher, dass du mit dem Internet verbunden bist", color: "buttonWhite")
+                                    .padding(.horizontal, 15)
+                                    .padding(.bottom, 5)
+                            }
+                        } else {
+                            if (self.filteredFacts.count > 0) {
+                                if (redrawUIScrollView){
+                                    if (showOfflineTipps) {
+                                        ExtractedFactList(loading: loading, filteredFacts: filteredFacts, cardColors: cardColors, filterString: filterString)
+                                            .environmentObject(ApiUrl())
+                                    } else {
+                                        ExtractedFactList(loading: loading, filteredFacts: filteredFacts, cardColors: cardColors, filterString: filterString)
+                                            .environmentObject(ApiUrl())
+                                    }
+                                } else {
+                                    VStack {
+                                        LottieView(filename: "loadingCircle", loop: true)
+                                            .shadow(color: Color(.white), radius: 1, x: 0, y: 0)
+                                            .frame(width: 100, height: 100)
+                                    }
+                                    .frame(height: UIScreen.main.bounds.height / 2.1 + 20)
+                                }
+                            }
+                            else {
+                                CustomCard(image: "ServerError", text: "Stelle sicher, dass du mit dem Internet verbunden bist", color: "buttonWhite")
+                                    .padding(.horizontal, 15)
+                                    .padding(.bottom, 5)
+                            }
                         }
                     }
                 }
@@ -141,13 +182,14 @@ struct FactCardList: View {
                 self.filteredFacts = []
                 self.filteredFacts = filteredFacts
                 self.dataLoading = false
+                self.showOfflineTipps = false
                 
                 for (i, _) in filteredFacts.enumerated() {
-                    if i < 10 {
+                    if i < 10 && filteredFacts.count > i {
                         offlineFacts.append(filteredFacts[i])
                     }
                     else {
-                        return
+                        break
                     }
                 }
                 
@@ -200,7 +242,7 @@ struct ExtractedFactList: View {
     var cardColors: [String]
     var filterString: FilterString
     @State var user: User = User(_id: "", phoneId: "", checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
-    @State var userLoaded = false
+    @State var userLoaded = true
     
     var body: some View {
         GeometryReader { proxy in
@@ -223,6 +265,7 @@ struct ExtractedFactList: View {
                                             .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
                                             .opacity(Double(geometry.frame(in: .global).minX < UIScreen.main.bounds.width && geometry.frame(in: .global).minX > -UIScreen.main.bounds.width ? 1 : 0))
                                             .padding(.vertical, 10)
+                                            .environmentObject(ApiUrl())
                                             Spacer()
                                         }
                                     }
@@ -255,7 +298,10 @@ struct ExtractedFactList: View {
                 return
             }
             if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
-                userLoaded = true
+                userLoaded = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                    userLoaded = true
+                })
                 user = decodedResponse
             }
         }.resume()

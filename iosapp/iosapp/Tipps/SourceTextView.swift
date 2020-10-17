@@ -23,6 +23,7 @@ struct SourceTextView: View {
                 HStack {
                     Text("Quelle")
                         .fontWeight(.medium)
+                        .foregroundColor(Color("alwaysblack"))
                     Spacer()
                     Image(systemName: "xmark")
                         .foregroundColor(.black).opacity(0.2)
@@ -69,8 +70,13 @@ struct SourceTextView: View {
             .padding()
             if(copied){
                 Text("Kopiert")
-                    .foregroundColor(.gray)
-                    .font(.system(size: UIScreen.main.bounds.width * 0.03, weight: .medium))
+                    .foregroundColor(.black)
+                    .font(.system(size: 14, weight: .medium))
+                    .padding(8)
+                    .background(Color.black.opacity(0.05))
+                    .background(Color(color))
+                    .cornerRadius(10)
+                    .shadow(radius: 3)
             }
         }
         

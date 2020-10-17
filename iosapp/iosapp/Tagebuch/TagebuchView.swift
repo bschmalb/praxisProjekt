@@ -60,7 +60,7 @@ struct TagebuchView: View {
                 }
                 if (!firstUseLog) {
                     VStack (spacing: 10) {
-                        Image("Team")
+                        Image("Entwicklung")
                             .resizable()
                             .scaledToFit()
                         Text("Trage täglich deinen Fortschritt ein um diesen nachher in deiner Entwicklung anzusehen. Dadurch behältst du den Überblick wie nachhaltig du lebst.")

@@ -69,18 +69,16 @@ struct TippCard2: View {
                                 Group {
                                     Spacer()
                                     Text("Geposted von:")
-                                        .foregroundColor(.secondary)
+                                        .foregroundColor(.gray)
                                         .font(.caption)
                                         .multilineTextAlignment(.center)
                                     if user2.name != nil {
                                         Text("\(user2.name ?? "User")")
                                             .multilineTextAlignment(.center)
-                                            .foregroundColor(Color("black"))
                                             .padding(5)
                                         Text("\(user2.gender ?? "")  \(user2.age ?? "")")
                                             .font(.footnote)
                                             .multilineTextAlignment(.center)
-                                            .foregroundColor(Color("black"))
                                             .opacity(user2.hideInfo ?? false ? 0 : 1)
                                     } else {
                                         VStack {
@@ -90,7 +88,7 @@ struct TippCard2: View {
                                         }.padding(10)
                                     }
                                     Spacer()
-                                }
+                                }.foregroundColor(Color("alwaysblack"))
 //                                if (tipp.postedBy == id) {
 //                                if (false) {
 //                                    Group {
@@ -238,7 +236,7 @@ struct TippCard2: View {
                                             self.reportClicked.toggle()
                                         }
                                         Spacer()
-                                    }
+                                    }.foregroundColor(Color("alwaysblack"))
 //                                }
                             }
                             .frame(width: size.size.width / 1.3)
@@ -272,7 +270,7 @@ struct TippCard2: View {
                             .drawingGroup()
                         Text(tipp.title)
                             .font(.system(size: size.size.width < 500 ? size.size.width * 0.07  - CGFloat(tipp.title.count / 25) : 26, weight: .medium))
-                            .fixedSize(horizontal: false, vertical: true)
+                            .fixedSize(horizontal: false, vertical: showSourceTextView ? false : true)
                             .foregroundColor(Color("alwaysblack"))
                             .multilineTextAlignment(.center)
                             .padding(.horizontal)
@@ -280,17 +278,25 @@ struct TippCard2: View {
                             SourceTextView(source: tipp.source, show: $showSourceTextView, color: color)
                         } else {
                             if (tipp.source.count > 3) {
-                                Text("Quelle")
-                                    .foregroundColor(.gray)
-                                    .font(.system(size: size.size.width * 0.03, weight: .medium))
-                                    .multilineTextAlignment(.center)
-                                    .padding(.top, 5)
-                                    .onTapGesture {
-                                        impact(style: .medium)
-                                        self.openSource()
+                                HStack (spacing: 5){
+                                    Text("Quelle")
+                                        .foregroundColor(.gray)
+                                        .font(.system(size: size.size.width * 0.03, weight: .medium))
+                                        .multilineTextAlignment(.center)
+                                        .padding(.top, 5)
+                                    if isURL() {
+                                        Image(systemName: "link")
+                                            .foregroundColor(.gray)
+                                            .font(.system(size: size.size.width * 0.02, weight: .medium))
+                                    }
+                                }
+                                .onTapGesture {
+                                    impact(style: .medium)
+                                    self.openSource()
                                     }
                                     .sheet(isPresented: $quelleShowing) {
                                         QuelleView(quelle: tipp.source, quelleShowing: self.$quelleShowing)
+                                            .environmentObject(ApiUrl())
                                     }
                             }
                         }
@@ -455,25 +461,12 @@ struct TippCard2: View {
     
     func getPoster() {
         guard let url = URL(string: myUrl.users + tipp.postedBy) else { return }
-        
-        print("getPoster")
         URLSession.shared.dataTask(with: url) { (data, _, _) in
-            
-            print("dataTask")
-            
             if let data = data {
-                
-                print("data")
-                
                 if let user = try? JSONDecoder().decode(User.self, from: data) {
-                    // we have good data – go back to the main thread
-                    print("Decoded")
                     DispatchQueue.main.async {
-                        // update our UI
                         self.user2 = user
                     }
-                    
-                    // everything is good, so we can exit
                     return
                 }
             }
@@ -481,14 +474,21 @@ struct TippCard2: View {
         .resume()
     }
     
-    func openSource () {
+    func isURL() -> Bool {
         if let myUrl = URL(string: tipp.source) {
             if (UIApplication.shared.canOpenURL(myUrl)) {
-                print("quelleshowing = true")
-                self.quelleShowing = true
+                return true
             } else {
-                self.showSourceTextView = true
+                return false
             }
+        } else {
+            return false
+        }
+    }
+    
+    func openSource () {
+        if isURL() {
+            self.quelleShowing = true
         } else {
             self.showSourceTextView = true
         }

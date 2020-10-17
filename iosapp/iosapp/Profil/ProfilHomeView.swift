@@ -36,6 +36,7 @@ struct ProfilHomeView: View {
                 Color("background")
                     .edgesIgnoringSafeArea(.all)
                 VStack (spacing: screenWidth < 350 ? 3 : 10) {
+                    Spacer()
                     Image("Profiles")
                         .resizable()
                         .scaledToFit()

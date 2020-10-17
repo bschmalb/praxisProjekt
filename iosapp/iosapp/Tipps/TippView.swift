@@ -99,7 +99,7 @@ struct TippView: View {
                             .background(Color("buttonWhite"))
                             .cornerRadius(15)
                             .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
-                        .sheet(isPresented: $showRateTipps, content: { RateTippView(showRateTipps: self.$showRateTipps).environmentObject(self.levelEnv).environmentObject(self.overlay)})
+                        .sheet(isPresented: $showRateTipps, content: { RateTippView(showRateTipps: self.$showRateTipps).environmentObject(self.levelEnv).environmentObject(self.overlay).environmentObject(self.myUrl)})
                         
 //                            NavigationLink (destination: RateTippView(showRateTipps: $showRateTipps)
 //                                .navigationBarBackButtonHidden(false)

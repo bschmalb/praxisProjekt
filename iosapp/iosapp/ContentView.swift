@@ -58,9 +58,12 @@ class ChangeFilter: ObservableObject {
 }
 
 class FilterString: ObservableObject {
+    var didChange = PassthroughSubject<Void, Never>()
+    
     @Published var filterString: [String] {
         didSet {
             UserDefaults.standard.set(filterString, forKey: "filterString")
+            didChange.send()
         }
     }
     init() {
@@ -94,6 +97,7 @@ struct ContentView: View {
     @State var id = UserDefaults.standard.string(forKey: "id")
     
     @EnvironmentObject var myUrl: ApiUrl
+    @EnvironmentObject var filterString: FilterString
     
     @State private var appearenceDark = UserDefaults.standard.bool(forKey: "appearenceDark")
     @State private var isUser2 = UserDefaults.standard.bool(forKey: "isUser4")
@@ -110,6 +114,7 @@ struct ContentView: View {
     @Environment(\.presentationMode) var mode: Binding<PresentationMode>
     @EnvironmentObject var overlay: Overlay
     @EnvironmentObject var levelEnv: UserLevel
+    @EnvironmentObject var changeFilter: ChangeFilter
     @ObservedObject var filter = FilterData2()
     @ObservedObject var filterFacts = FilterDataFacts()
     @State var objectLoaded: Bool = false
@@ -146,18 +151,25 @@ struct ContentView: View {
                     .edgesIgnoringSafeArea(.all)
                 VStack {
                     ZStack {
-                        TippView(filter: filter)
-                            .offset(x: tippOffset)
-                            .opacity(tabViewSelected == 0 ? 1 : 0)
-                            .padding(.top, 1)
-                            .padding(.bottom, UIScreen.main.bounds.height / 12)
-                            .environmentObject(UserObserv()).environmentObject(FilterData2())
-                        FactView(filter: filterFacts)
-                            .offset(x: challengeOffset)
-                            .opacity(tabViewSelected == 1 ? 1 : 0)
-                            .padding(.top, 1)
-                            .padding(.bottom, UIScreen.main.bounds.height / 12)
-                            .environmentObject(FilterDataFacts())
+                        if !changeFilter.changeFilter {
+                            TippView(filter: filter)
+                                .offset(x: tippOffset)
+                                .opacity(tabViewSelected == 0 ? 1 : 0)
+                                .padding(.top, 1)
+                                .padding(.bottom, UIScreen.main.bounds.height / 12)
+                                .environmentObject(UserObserv()).environmentObject(FilterData2())
+                            FactView(filter: filterFacts)
+                                .offset(x: challengeOffset)
+                                .opacity(tabViewSelected == 1 ? 1 : 0)
+                                .padding(.top, 1)
+                                .padding(.bottom, UIScreen.main.bounds.height / 12)
+                                .environmentObject(FilterDataFacts())
+                        } else {
+                            Text("")
+                                .onAppear(){
+                                    print("changeFilter changed")
+                                }
+                        }
                         TagebuchView(tabViewSelected: $tabViewSelected)
                             .offset(x: logOffset)
                             .opacity(tabViewSelected == 2 ? 1 : 0)
@@ -193,7 +205,7 @@ struct ContentView: View {
                                         .frame(width: 40, height: 40)
                                 }
                                 .onAppear(){
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.4) {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.7) {
                                         self.offsetCapsule = g.frame(in: .global).midX
                                     }
                                 }
@@ -302,7 +314,7 @@ struct ContentView: View {
                 .offset(x: tutorialAnimation ? UIScreen.main.bounds.width : 0)
                 .animation(.spring())
                 if (!showTutorial){
-                    StartTutorialView(show: $showTutorial, animation: $tutorialAnimation, filter: filter, launchScreen: $launchScreen).environmentObject(UserObserv()).environmentObject(FilterString())
+                    StartTutorialView(show: $showTutorial, animation: $tutorialAnimation, filter: filter, launchScreen: $launchScreen).environmentObject(UserObserv())
                         .offset(x: tutorialAnimation ? 0 : -UIScreen.main.bounds.width)
                         .animation(.spring())
                 }

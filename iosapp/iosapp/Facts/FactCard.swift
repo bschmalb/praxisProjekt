@@ -33,7 +33,7 @@ struct FactCard: View {
         
         ZStack {
             FactCardBackground(fact: fact, isBookmarked: $fact.isBookmarked, quelleShowing: $quelleShowing, color: color, options: $options, user2: $user2)
-            FactCardMain(user2: $user2, fact: fact, isBookmarked: $fact.isBookmarked, quelleShowing: $quelleShowing, color: color, options: $options)
+            FactCardMain(user2: $user2, fact: fact, isBookmarked: $fact.isBookmarked, quelleShowing: $quelleShowing, color: color, options: $options, user: user)
         }
         .animation(.spring())
         .accentColor(.black)
@@ -50,8 +50,6 @@ struct FactCard_Previews: PreviewProvider {
 struct FactCardMain: View {
     
     @State var id = UserDefaults.standard.string(forKey: "id")
-    
-    @ObservedObject var user = UserDataStore()
     
     @EnvironmentObject var changeFilter: ChangeFilter
     @EnvironmentObject var levelEnv: UserLevel
@@ -77,6 +75,8 @@ struct FactCardMain: View {
     
     @State var showSourceTextView = false
     
+    @State var user: User
+    
     var body: some View {
         GeometryReader { size in
             ZStack {
@@ -85,11 +85,11 @@ struct FactCardMain: View {
                     Image("I"+fact.category)
                         .resizable()
                         .scaledToFit()
-                        .frame(minHeight: 100, idealHeight: 200, maxHeight: 300)
+                        .frame(minHeight: 30, idealHeight: 200, maxHeight: 300)
                         .drawingGroup()
                     Text(fact.title)
                         .font(.system(size: size.size.width < 500 ? size.size.width * 0.07  - CGFloat(fact.title.count / 25) : 26, weight: .medium))
-                        .fixedSize(horizontal: false, vertical: true)
+                        .fixedSize(horizontal: false, vertical: showSourceTextView ? false : true)
                         .foregroundColor(Color("alwaysblack"))
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
@@ -97,17 +97,25 @@ struct FactCardMain: View {
                         SourceTextView(source: fact.source, show: $showSourceTextView, color: color)
                     } else {
                         if (fact.source.count > 3) {
-                            Text("Quelle")
-                                .foregroundColor(.gray)
-                                .font(.system(size: size.size.width * 0.03, weight: .medium))
-                                .multilineTextAlignment(.center)
-                                .padding(.top, 5)
-                                .onTapGesture {
-                                    impact(style: .medium)
-                                    self.openSource()
+                            HStack (spacing: 5){
+                                Text("Quelle")
+                                    .foregroundColor(.gray)
+                                    .font(.system(size: size.size.width * 0.03, weight: .medium))
+                                    .multilineTextAlignment(.center)
+                                    .padding(.top, 5)
+                                if isURL() {
+                                    Image(systemName: "link")
+                                        .foregroundColor(.gray)
+                                        .font(.system(size: size.size.width * 0.02, weight: .medium))
+                                }
+                            }
+                            .onTapGesture {
+                                impact(style: .medium)
+                                self.openSource()
                                 }
                                 .sheet(isPresented: $quelleShowing) {
                                     QuelleView(quelle: fact.source, quelleShowing: self.$quelleShowing)
+                                        .environmentObject(ApiUrl())
                                 }
                         }
                     }
@@ -193,14 +201,21 @@ struct FactCardMain: View {
         }
     }
     
-    func openSource () {
+    func isURL() -> Bool {
         if let myUrl = URL(string: fact.source) {
             if (UIApplication.shared.canOpenURL(myUrl)) {
-                print("quelleshowing = true")
-                self.quelleShowing = true
+                return true
             } else {
-                self.showSourceTextView = true
+                return false
             }
+        } else {
+            return false
+        }
+    }
+    
+    func openSource () {
+        if isURL() {
+            self.quelleShowing = true
         } else {
             self.showSourceTextView = true
         }
@@ -209,8 +224,8 @@ struct FactCardMain: View {
     func getUserTipps(){
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            if (user.user.savedFacts != nil) {
-                if (user.user.savedFacts!.contains(self.fact._id) ) {
+            if (user.savedFacts != nil) {
+                if (user.savedFacts!.contains(self.fact._id) ) {
                     self.isBookmarked = true
                 }
             }
@@ -388,8 +403,6 @@ struct FactCardBackground: View {
 
     @State var id = UserDefaults.standard.string(forKey: "id")
 
-    @ObservedObject var user = UserDataStore()
-
     @EnvironmentObject var changeFilter: ChangeFilter
     @EnvironmentObject var levelEnv: UserLevel
     @EnvironmentObject var myUrl: ApiUrl
@@ -434,20 +447,26 @@ struct FactCardBackground: View {
                             Group {
                                 Spacer()
                                 Text("Geposted von:")
-                                    .foregroundColor(.secondary)
+                                    .foregroundColor(.gray)
                                     .font(.caption)
                                     .multilineTextAlignment(.center)
-                                Text("\(user2.name ?? "User")")
-                                    .multilineTextAlignment(.center)
-                                    .foregroundColor(Color("black"))
-                                    .padding(5)
-                                Text("\(user2.gender ?? "")  \(user2.age ?? "")")
-                                    .font(.footnote)
-                                    .multilineTextAlignment(.center)
-                                    .foregroundColor(Color("black"))
-                                    .opacity(user2.hideInfo ?? false ? 0 : 1)
+                                if user2.name != nil {
+                                    Text("\(user2.name ?? "User")")
+                                        .multilineTextAlignment(.center)
+                                        .padding(5)
+                                    Text("\(user2.gender ?? "")  \(user2.age ?? "")")
+                                        .font(.footnote)
+                                        .multilineTextAlignment(.center)
+                                        .opacity(user2.hideInfo ?? false ? 0 : 1)
+                                } else {
+                                    VStack {
+                                        LottieView(filename: "loadingCircle", loop: true)
+                                            .shadow(color: Color(.white), radius: 1, x: 0, y: 0)
+                                            .frame(width: 30, height: 30)
+                                    }.padding(10)
+                                }
                                 Spacer()
-                            }
+                            }.foregroundColor(Color("alwaysblack"))
 //                            if (fact.postedBy == id) {
                             if (false) {
                                 Group {

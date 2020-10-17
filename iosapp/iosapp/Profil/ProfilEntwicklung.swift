@@ -21,6 +21,8 @@ struct ProfilEntwicklung: View {
     @Binding var tabViewSelected: Int
     var screenWidth = UIScreen.main.bounds.width
     
+    let paddingBot = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 0
+    
     @State var user: User = User(_id: "", phoneId: "", checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
     
     var body: some View {
@@ -85,7 +87,7 @@ struct ProfilEntwicklung: View {
                                 }
                                 Spacer()
                             }
-                            .padding(.bottom, 30)
+                            .padding(.bottom, 30 + paddingBot)
                         }
                     }
                     .opacity(loading2 ? 0.01 : 1)
@@ -145,26 +147,13 @@ struct ProfilEntwicklung: View {
     
     func getUser() {
         guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
-        
-        print("getPoster")
         URLSession.shared.dataTask(with: url) { (data, _, _) in
-            
-            print("dataTask")
-            
             if let data = data {
-                
-                print("data")
-                
                 if let user = try? JSONDecoder().decode(User.self, from: data) {
-                    // we have good data – go back to the main thread
-                    print("Decoded")
                     DispatchQueue.main.async {
-                        // update our UI
                         self.user = user
                         self.loading2 = false
                     }
-                    
-                    // everything is good, so we can exit
                     return
                 }
             }

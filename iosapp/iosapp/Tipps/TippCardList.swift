@@ -20,6 +20,10 @@ struct TippCardList: View {
     @State var filteredTipps: [Tipp] = []
     @State var offlineTipps: [Tipp] = []
 
+    @State var redrawUIScrollView = true
+    
+    @State var showOfflineTipps = true
+    
     @State var loading: Bool = false
     @State var dataLoading: Bool = true
     @ObservedObject var filter: FilterData2
@@ -60,6 +64,11 @@ struct TippCardList: View {
                                     isSelected: self.$filter.filter[index].isSelected,
                                     filter: self.filter.filter[index])
                                     .onTapGesture {
+                                        self.redrawUIScrollView = false
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                            self.redrawUIScrollView = true
+                                        }
+                                        
                                         self.filterTipps2(index: index)
                                         
                                         impact(style: .heavy)
@@ -82,8 +91,7 @@ struct TippCardList: View {
             }.accentColor(Color("black"))
             
             ZStack {
-//                Text("Wähle mehr Kategorien aus")
-//                    .padding()
+                SelectMoreFilter(filterString: filterString.filterString, categories: filterCategory2, levels: filterLevel2, posters: filterPoster, loading: redrawUIScrollView)
                 VStack {
                     if (dataLoading || changeFilter.changeFilter) {
                         VStack {
@@ -122,13 +130,45 @@ struct TippCardList: View {
                         .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2.1 + 20)
                     }
                     else {
-                        if (self.filteredTipps.count > 0) {
-                            ExtractedCardList(loading: loading, filteredTipps: filteredTipps, cardColors: cardColors, filterString: filterString)
-                        }
-                        else {
-                            CustomCard(image: "ServerError", text: "Stelle sicher, dass du mit dem Internet verbunden bist", color: "buttonWhite")
-                                .padding(.horizontal, 15)
-                                .padding(.bottom, 5)
+                        if #available(iOS 14.0, *) {
+                            if (self.filteredTipps.count > 0) {
+                                if (showOfflineTipps) {
+                                    ExtractedCardList(loading: loading, filteredTipps: filteredTipps, cardColors: cardColors)
+                                        .environmentObject(ApiUrl())
+                                } else {
+                                    ExtractedCardList(loading: loading, filteredTipps: filteredTipps, cardColors: cardColors)
+                                        .environmentObject(ApiUrl())
+                                }
+                            }
+                            else {
+                                CustomCard(image: "ServerError", text: "Stelle sicher, dass du mit dem Internet verbunden bist", color: "buttonWhite")
+                                    .padding(.horizontal, 15)
+                                    .padding(.bottom, 5)
+                            }
+                        } else {
+                            if (self.filteredTipps.count > 0) {
+                                if (redrawUIScrollView){
+                                    if (showOfflineTipps) {
+                                        ExtractedCardList(loading: loading, filteredTipps: filteredTipps, cardColors: cardColors)
+                                            .environmentObject(ApiUrl())
+                                    } else {
+                                        ExtractedCardList(loading: loading, filteredTipps: filteredTipps, cardColors: cardColors)
+                                            .environmentObject(ApiUrl())
+                                    }
+                                } else {
+                                    VStack {
+                                        LottieView(filename: "loadingCircle", loop: true)
+                                            .shadow(color: Color(.white), radius: 1, x: 0, y: 0)
+                                            .frame(width: 100, height: 100)
+                                    }
+                                    .frame(height: UIScreen.main.bounds.height / 2.1 + 20)
+                                }
+                            }
+                            else {
+                                CustomCard(image: "ServerError", text: "Stelle sicher, dass du mit dem Internet verbunden bist", color: "buttonWhite")
+                                    .padding(.horizontal, 15)
+                                    .padding(.bottom, 5)
+                            }
                         }
                     }
                 }
@@ -158,13 +198,14 @@ struct TippCardList: View {
                 self.filteredTipps = []
                 self.filteredTipps = filteredTipps
                 self.dataLoading = false
+                self.showOfflineTipps = false
                 
                 for (i, _) in filteredTipps.enumerated() {
-                    if i < 10 {
+                    if (i < 10 && (filteredTipps.count > i)) {
                         offlineTipps.append(filteredTipps[i])
                     }
                     else {
-                        return
+                        break
                     }
                 }
                 
@@ -215,18 +256,48 @@ struct TippCardList: View {
         }
     }
 }
+struct SelectMoreFilter: View {
+    
+    var filterString: [String]
+    var categories: [String]
+    var levels: [String]
+    var posters: [String]
+    var loading: Bool
+    
+    var body: some View {
+        VStack {
+            if (!filterString.contains(where: categories.contains)){
+                Text("Wähle mindestens eine Kategorie aus")
+                    .font(.system(size: 12))
+                    .padding()
+            }
+            if (!filterString.contains(where: levels.contains)){
+                Text("Wähle mindestens einen Schwierigkeitsgrad aus")
+                    .font(.system(size: 12))
+                    .padding()
+            }
+            if (!filterString.contains(where: posters.contains)){
+                Text("Wähle mindestens eine Art der Poster")
+                    .font(.system(size: 12))
+                    .padding()
+            }
+        }.opacity(loading ? 0 : 1)
+    }
+}
+
 
 struct ExtractedCardList: View {
     
     @EnvironmentObject var myUrl: ApiUrl
+    @EnvironmentObject var filterString: FilterString
+    
     @State var id = UserDefaults.standard.string(forKey: "id")
     
     var loading: Bool
     @State var filteredTipps: [Tipp]
     var cardColors: [String]
-    var filterString: FilterString
     @State var user: User = User(_id: "", phoneId: "", checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
-    @State var userLoaded = false
+    @State var userLoaded = true
     
     var body: some View {
         GeometryReader { proxy in
@@ -245,6 +316,7 @@ struct ExtractedCardList: View {
                                                 isBookmarked: self.$filteredTipps[index].isBookmarked,
                                                 tipp: self.filteredTipps[index],
                                                 color: cardColors[index % 9])
+                                                .environmentObject(ApiUrl())
                                                 .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX < UIScreen.main.bounds.width*2 && geometry.frame(in: .global).minX > -UIScreen.main.bounds.width*2  ? (geometry.frame(in: .global).minX - 5 ) / -10 : 0))), axis: (x: 0, y: 10.0, z:0))
                                                 .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
                                                 .opacity(Double(geometry.frame(in: .global).minX < UIScreen.main.bounds.width && geometry.frame(in: .global).minX > -UIScreen.main.bounds.width ? 1 : 0))
@@ -260,6 +332,9 @@ struct ExtractedCardList: View {
                     .frame(height: UIScreen.main.bounds.height/2.1 + 20)
                     .background(Color("background"))
                     .animation(.spring())
+                }
+                .onAppear(){
+                    print(filterString.filterString)
                 }
             }
         }
@@ -281,7 +356,10 @@ struct ExtractedCardList: View {
                 return
             }
             if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
-                userLoaded = true
+                userLoaded = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+                    userLoaded = true
+                })
                 user = decodedResponse
             }
         }.resume()
