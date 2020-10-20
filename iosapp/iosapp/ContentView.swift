@@ -52,6 +52,10 @@ class OverlayLog: ObservableObject {
     @Published var overlayLog = UserDefaults.standard.bool(forKey: "overlayLog")
 }
 
+class RedrawScrollView: ObservableObject {
+    @Published var redraw = true
+}
+
 class ChangeFilter: ObservableObject {
     @Published var changeFilter = false
     @Published var changeFilterProfile = false
@@ -71,6 +75,24 @@ class FilterString: ObservableObject {
         if (self.filterString.count < 2) {
             self.filterString = ["Ernährung", "Transport", "Haushalt", "Ressourcen", "Leicht", "Mittel", "Schwer", "Offiziell", "Community"]
             UserDefaults.standard.set(filterString, forKey: "filterString")
+        }
+    }
+}
+
+class FilterStringFacts: ObservableObject {
+    var didChange = PassthroughSubject<Void, Never>()
+    
+    @Published var filterString: [String] {
+        didSet {
+            UserDefaults.standard.set(filterString, forKey: "filterStringFacts")
+            didChange.send()
+        }
+    }
+    init() {
+        self.filterString = UserDefaults.standard.stringArray(forKey: "filterString") ?? ["Ernährung", "Transport", "Haushalt", "Ressourcen", "Offiziell", "Community"]
+        if (self.filterString.count < 2) {
+            self.filterString = ["Ernährung", "Transport", "Haushalt", "Ressourcen", "Offiziell", "Community"]
+            UserDefaults.standard.set(filterString, forKey: "filterStringFacts")
         }
     }
 }
@@ -133,6 +155,8 @@ struct ContentView: View {
     @State var launchScale: CGFloat = 1
     @State var tabViewSelected = 0
     
+    @State var loadLater = false
+    
     @State var tippOffset: CGFloat = 0
     @State var challengeOffset: CGFloat = UIScreen.main.bounds.width
     @State var logOffset: CGFloat = UIScreen.main.bounds.width
@@ -151,33 +175,28 @@ struct ContentView: View {
                     .edgesIgnoringSafeArea(.all)
                 VStack {
                     ZStack {
-                        if !changeFilter.changeFilter {
-                            TippView(filter: filter)
-                                .offset(x: tippOffset)
-                                .opacity(tabViewSelected == 0 ? 1 : 0)
-                                .padding(.top, 1)
-                                .padding(.bottom, UIScreen.main.bounds.height / 12)
-                                .environmentObject(UserObserv()).environmentObject(FilterData2())
+                        TippView(filter: filter)
+                            .offset(x: tippOffset)
+                            .opacity(tabViewSelected == 0 ? 1 : 0)
+                            .padding(.top, 1)
+                            .padding(.bottom, UIScreen.main.bounds.height / 12)
+                            .environmentObject(UserObserv()).environmentObject(FilterData2())
+                        if loadLater {
                             FactView(filter: filterFacts)
                                 .offset(x: challengeOffset)
                                 .opacity(tabViewSelected == 1 ? 1 : 0)
                                 .padding(.top, 1)
                                 .padding(.bottom, UIScreen.main.bounds.height / 12)
                                 .environmentObject(FilterDataFacts())
-                        } else {
-                            Text("")
-                                .onAppear(){
-                                    print("changeFilter changed")
-                                }
+                            TagebuchView(tabViewSelected: $tabViewSelected)
+                                .offset(x: logOffset)
+                                .opacity(tabViewSelected == 2 ? 1 : 0)
+                                .padding(.bottom, UIScreen.main.bounds.height / 12)
+                            ProfilView(tabViewSelected: $tabViewSelected, isDark: $model.isDark, appearenceDark: $appearenceDark, selection: $selection, filter: filter)
+                                .offset(x: profileOffset)
+                                .opacity(tabViewSelected == 3 ? 1 : 0)
+                                .environmentObject(UserObserv()).environmentObject(FilterString())
                         }
-                        TagebuchView(tabViewSelected: $tabViewSelected)
-                            .offset(x: logOffset)
-                            .opacity(tabViewSelected == 2 ? 1 : 0)
-                            .padding(.bottom, UIScreen.main.bounds.height / 12)
-                        ProfilView(tabViewSelected: $tabViewSelected, isDark: $model.isDark, appearenceDark: $appearenceDark, selection: $selection, filter: filter)
-                            .offset(x: profileOffset)
-                            .opacity(tabViewSelected == 3 ? 1 : 0)
-                            .environmentObject(UserObserv()).environmentObject(FilterString())
                     }
                 }
                 .scaleEffect(launchScreen ? 0.8 : 1)
@@ -205,7 +224,7 @@ struct ContentView: View {
                                         .frame(width: 40, height: 40)
                                 }
                                 .onAppear(){
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.7) {
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.7) {
                                         self.offsetCapsule = g.frame(in: .global).midX
                                     }
                                 }
@@ -349,16 +368,20 @@ struct ContentView: View {
                         self.model.isDark = false
                     }
                     
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                         withAnimation() {
                             self.launchScreen = false
                         }
                     }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.7) {
                         self.launchScale = 0.8
                     }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                         self.launchScale = 80
+                    }
+                    
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
+                        self.loadLater = true
                     }
             }
         }

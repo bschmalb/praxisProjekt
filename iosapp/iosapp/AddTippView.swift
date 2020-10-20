@@ -324,7 +324,7 @@ struct AddTippView: View {
                             .frame(width: 200, height: 200)
                             .offset(y: -15)
                     }
-                    Text("Loading")
+                    Text("Posten...")
                         .font(.headline)
                         .offset(y: 20)
                 }.frame(width: 200, height: 130)
@@ -551,7 +551,7 @@ struct AddTipp3: View {
                 .resizable()
                 .scaledToFit()
             Spacer()
-            Text("Gebe deinen Tipp ein")
+            Text("Gib deinen Tipp ein")
                 .font(.system(size: screen.width < 500 ? screen.width * 0.06 : 24))
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
@@ -618,7 +618,7 @@ struct AddTipp4: View {
                 .resizable()
                 .scaledToFit()
             Spacer()
-            Text("Gebe wenn möglich eine Quelle für deinen Tipp an")
+            Text("Gib wenn möglich eine Quelle für deinen Tipp an")
                 .font(.system(size: screenWidth < 500 ? screenWidth * 0.06 : 24))
                 .fontWeight(.medium)
                 .multilineTextAlignment(.center)
@@ -969,7 +969,7 @@ struct MultilineTextView: UIViewRepresentable {
     @Binding var text: String
     @Binding var isFirstResponder: Bool?
     @State var maxLength: Int
-    @State var fontSize: CGFloat = 0.055
+    @State var fontSize: CGFloat = 0.045
 
     @State var didBecomeFirstResponder = false
 

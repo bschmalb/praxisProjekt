@@ -23,13 +23,13 @@ struct SuccessView: View {
                     .animation(Animation.linear(duration: 1).delay(0.2))
             }
             VStack {
-                Text("Dein Tipp wurde erfolgreich erstellt")
+                Text("Dein Post wurde erfolgreich erstellt!")
                     .font(.system(size: screenWidth < 500 ? UIScreen.main.bounds.width * 0.06 : 24, weight: .medium))
                     .multilineTextAlignment(.center)
                     .padding(15)
                     .opacity(self.show ? 1 : 0)
                     .animation(Animation.linear(duration: 1).delay(0.1))
-                Text("Tipps die von der Community gepostet werden, müssen erst von der Community bewertet werden. Erst dann werden diese allen Nutzer angezeigt.")
+                Text("Tipps und Fakten die von der Community gepostet werden, müssen erst von der Community bewertet werden. Dann werden diese allen Nutzer angezeigt.")
                     .font(.system(size: screenWidth < 500 ? UIScreen.main.bounds.width * 0.040 : 18))
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 25)

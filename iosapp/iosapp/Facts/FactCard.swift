@@ -38,6 +38,12 @@ struct FactCard: View {
         .animation(.spring())
         .accentColor(.black)
         .frame(width: UIScreen.main.bounds.width > 600 ? 600 - 30 : UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height/2.1)
+//        .onTapGesture(){}
+//        .gesture(DragGesture()
+//                    .onChanged({ (value) in
+//                        self.options = false
+//                        print("drag")
+//                    }))
     }
 }
 
@@ -103,11 +109,11 @@ struct FactCardMain: View {
                                     .font(.system(size: size.size.width * 0.03, weight: .medium))
                                     .multilineTextAlignment(.center)
                                     .padding(.top, 5)
-                                if isURL() {
-                                    Image(systemName: "link")
-                                        .foregroundColor(.gray)
-                                        .font(.system(size: size.size.width * 0.02, weight: .medium))
-                                }
+//                                if isURL() {
+//                                    Image(systemName: "link")
+//                                        .foregroundColor(.gray)
+//                                        .font(.system(size: size.size.width * 0.02, weight: .medium))
+//                                }
                             }
                             .onTapGesture {
                                 impact(style: .medium)
@@ -190,14 +196,6 @@ struct FactCardMain: View {
             .background(Color(color))
             .cornerRadius(15)
             .offset(x: options ? -size.size.width / 1.3 : 0)
-        }
-        .onTapGesture(){}
-        .gesture(DragGesture()
-                    .onChanged({ (value) in
-                        self.options = false
-                    }))
-        .onAppear(){
-            self.getUserTipps()
         }
     }
     
@@ -548,11 +546,6 @@ struct FactCardBackground: View {
                                         }
                                         self.likeClicked.toggle()
                                     }
-                                    .onTapGesture(){}
-                                    .gesture(DragGesture()
-                                                .onChanged({ (value) in
-                                                    self.options = false
-                                                }))
                                     Spacer()
                                         .frame(maxHeight: 5)
                                     HStack (spacing: 20){
@@ -618,10 +611,6 @@ struct FactCardBackground: View {
                             }
                         }
                         .frame(width: size.size.width / 1.3)
-                        .gesture(DragGesture()
-                                    .onChanged({ (value) in
-                                        self.options = false
-                                    }))
                     }
                 }
                 .frame(width: UIScreen.main.bounds.width > 600 ? 600 - 30 : UIScreen.main.bounds.width - 30, height:
@@ -629,11 +618,6 @@ struct FactCardBackground: View {
                 .background(Color.black.opacity(0.05))
                 .background(Color(color))
                 .cornerRadius(25)
-                .onTapGesture(){}
-                .gesture(DragGesture()
-                            .onChanged({ (value) in
-                                self.options = false
-                            }))
                 .animation(.spring())
             }
         }

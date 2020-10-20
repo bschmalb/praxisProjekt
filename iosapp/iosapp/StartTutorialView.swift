@@ -45,6 +45,7 @@ struct StartTutorialView: View {
     @State var step: Int = 0
     
     @ObservedObject var keyboard = KeyboardResponder()
+    @ObservedObject var keyboard14 = KeyboardResponderIOS14()
     
     var body: some View {
         
@@ -180,7 +181,8 @@ struct StartTutorialView: View {
                 }
                 .padding(.horizontal)
                 .padding(.bottom, 30)
-                .offset(y: (firstResponder ?? false) ? -UIScreen.main.bounds.height / 2.5 : 0)
+                .offset(y: (firstResponder ?? false) ? -UIScreen.main.bounds.height / 2.7 : 0)
+//                .padding(.bottom, keyboard14.keyboardHeight)
                 Spacer()
             }
 //            .offset(y: -keyboard.currentHeight)
@@ -318,7 +320,7 @@ struct Intro1: View {
             Text("Hallo!")
                 .font(.title)
                 .padding(.vertical)
-            Text("Gebe ein paar Daten zu deiner Person an, damit andere Nutzer dich Online erkennen können wenn du Fakten oder Tipps postest.")
+            Text("Gib ein paar Daten zu deiner Person an, damit andere Nutzer dich Online erkennen können, wenn du Fakten oder Tipps postest.")
                 .frame(maxWidth: 612)
                 .multilineTextAlignment(.center)
                 .font(.footnote)
@@ -384,7 +386,7 @@ struct Intro2 : View {
                     .scaledToFit()
                     .frame(minHeight: 100, idealHeight: 300, maxHeight: 600)
                     .layoutPriority(1)
-                Text("Gebe dein Geschlecht und Alter")
+                Text("Gib dein Geschlecht und dein Alter an")
                     .font(.system(size: 20, weight: Font.Weight.medium))
                     .fixedSize(horizontal: false, vertical: true)
                     .multilineTextAlignment(.center)
@@ -502,7 +504,7 @@ struct Intro3 : View {
                 .resizable()
                 .scaledToFit()
                 .padding(.horizontal, 40)
-            Text("Wähle Schwierigkeitsstufen ab für welche du keine Tipps bekommen möchtest")
+            Text("Wähle Schwierigkeitsstufen ab, für welche du keine Tipps bekommen möchtest")
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
                 .font(.system(size: 20, weight: Font.Weight.medium))

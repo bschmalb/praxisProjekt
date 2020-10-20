@@ -80,7 +80,7 @@ struct ProfilFactView: View {
                                                         isBookmarked: self.$allFacts[index].isBookmarked,
                                                         fact: self.allFacts[index],
                                                         color: self.cardColor[index % 8])
-                                                        .frame(height: 140)
+                                                        .frame(minHeight: 140, idealHeight: 150, maxHeight: 160)
                                                         .padding(.vertical, 5)
                                                 }
                                             }
@@ -114,7 +114,7 @@ struct ProfilFactView: View {
                                                         isBookmarked: self.$allFacts[index].isBookmarked,
                                                         fact: self.allFacts[index],
                                                         color: self.cardColor[index % 8])
-                                                        .frame(height: 140)
+                                                        .frame(minHeight: 140, idealHeight: 150, maxHeight: 160)
                                                         .padding(.vertical, 5)
                                                 }
                                             }

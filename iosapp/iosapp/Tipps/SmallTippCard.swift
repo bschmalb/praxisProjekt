@@ -233,7 +233,7 @@ struct SmallTippCard: View {
                         Text(tipp.title)
                             .font(.system(size: size.size.width < 400 ? size.size.width * 0.05  - CGFloat(tipp.title.count / 40) : 20))
                             .foregroundColor(Color("alwaysblack"))
-//                            .fixedSize(horizontal: false, vertical: true)
+                            .fixedSize(horizontal: false, vertical: true)
                             .padding(.leading)
                             .padding(.top)
                         Spacer()

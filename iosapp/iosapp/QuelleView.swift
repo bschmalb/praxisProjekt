@@ -7,16 +7,30 @@
 //
 
 import SwiftUI
+import MobileCoreServices
 
 struct QuelleView: View {
     
     var quelle: String
+    
+    var quelle2: URL = URL(string: "https://www.ecosia.org")!
     
     @Binding var quelleShowing: Bool
     
     var body: some View {
         VStack (spacing: 0){
             HStack {
+                Button(action: {
+                    impact(style: .medium)
+                    UIPasteboard.general.setValue(quelle, forPasteboardType: kUTTypePlainText as String)
+                }) {
+                    Image(systemName: "doc.on.doc")
+                        .font(.system(size: 14))
+                        .padding()
+                }
+                Spacer()
+                Text(quelle)
+                    .font(.system(size: 12))
                 Spacer()
                 Button(action: {
                     self.quelleShowing = false
@@ -28,9 +42,10 @@ struct QuelleView: View {
             }
             .background(Color.secondary.opacity(0.1))
             
-            WebLinkView(url: quelle)
+            Webview(url: URL(string: quelle) ?? quelle2)
                 .edgesIgnoringSafeArea(.all)
-        }.edgesIgnoringSafeArea(.all)
+        }
+        .edgesIgnoringSafeArea(.all)
     }
 }
 

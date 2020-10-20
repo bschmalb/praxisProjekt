@@ -15,6 +15,7 @@ struct FactCardList: View {
     @Environment(\.horizontalSizeClass) var horizontalSize
     
     @EnvironmentObject var myUrl: ApiUrl
+    @EnvironmentObject var redraw: RedrawScrollView
     @State var id = UserDefaults.standard.string(forKey: "id")
     
     @State var filteredFacts: [Fact] = []
@@ -40,7 +41,7 @@ struct FactCardList: View {
     @State var userObject: User = User(_id: "", phoneId: "", level: 0, checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
     
     @EnvironmentObject var changeFilter: ChangeFilter
-    @EnvironmentObject var filterString: FilterString
+    @EnvironmentObject var filterString: FilterStringFacts
     
     @State var showFacts: Bool = false
     
@@ -61,16 +62,13 @@ struct FactCardList: View {
                         HStack {
                             FilterView(isSelected: self.$filter.filter[index].isSelected, filter: self.filter.filter[index])
                                 .onTapGesture {
-                                    self.redrawUIScrollView = false
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                        self.redrawUIScrollView = true
-                                    }
-                                    
                                     self.filterTipps2(index: index)
                                     
                                     impact(style: .heavy)
                                     self.loading = true
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                    self.redraw.redraw = false
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                        self.redraw.redraw = true
                                         self.loading = false
                                     }
                                 }
@@ -87,29 +85,13 @@ struct FactCardList: View {
             }.accentColor(Color("black"))
             
             ZStack {
-                //                Text("Wähle mehr Kategorien aus")
-                //                    .padding()
                 VStack {
                     if (dataLoading || changeFilter.changeFilter) {
                         VStack {
                             LottieView(filename: "loadingCircle", loop: true)
                                 .shadow(color: Color(.white), radius: 1, x: 0, y: 0)
                                 .frame(width: 100, height: 100)
-                        }
-//                        .onAppear(){
-//                            if changeFilter.changeFilter {
-//                                FactApi().fetchApproved { (filteredFacts) in
-//                                    self.filteredFacts = filteredFacts
-//
-//                                    if (self.filteredFacts.count > 0) {
-//                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-//                                            self.changeFilter.changeFilter = false
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-                        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2.1 + 20)
+                        }.frame(height: UIScreen.main.bounds.height/2.1 + 20)
                     }
                     else {
                         if #available(iOS 14.0, *) {
@@ -129,7 +111,7 @@ struct FactCardList: View {
                             }
                         } else {
                             if (self.filteredFacts.count > 0) {
-                                if (redrawUIScrollView){
+                                if (redraw.redraw){
                                     if (showOfflineTipps) {
                                         ExtractedFactList(loading: loading, filteredFacts: filteredFacts, cardColors: cardColors, filterString: filterString)
                                             .environmentObject(ApiUrl())
@@ -159,8 +141,14 @@ struct FactCardList: View {
                     LottieView(filename: "loadingCircle", loop: true)
                         .shadow(color: Color(.white), radius: 1, x: 0, y: 0)
                         .frame(width: 100, height: 100)
+                        .frame(height: UIScreen.main.bounds.height/2.1 + 20)
+                }
+                if (!filterString.filterString.contains(where: filterCategory2.contains) || !filterString.filterString.contains(where: filterPoster.contains)){
+                    SelectMoreFilter(filterString: filterString.filterString, categories: filterCategory2, levels: filterLevel2, posters: filterPoster)
+                        .opacity(loading ? 0 : 1)
                 }
             }
+            .frame(height: UIScreen.main.bounds.height/2.1 + 20)
             .offset(y: -3)
         }
         .onAppear(){
@@ -240,7 +228,7 @@ struct ExtractedFactList: View {
     var loading: Bool
     @State var filteredFacts: [Fact]
     var cardColors: [String]
-    var filterString: FilterString
+    var filterString: FilterStringFacts
     @State var user: User = User(_id: "", phoneId: "", checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
     @State var userLoaded = true
     
@@ -266,6 +254,7 @@ struct ExtractedFactList: View {
                                             .opacity(Double(geometry.frame(in: .global).minX < UIScreen.main.bounds.width && geometry.frame(in: .global).minX > -UIScreen.main.bounds.width ? 1 : 0))
                                             .padding(.vertical, 10)
                                             .environmentObject(ApiUrl())
+                                            .environmentObject(UserLevel())
                                             Spacer()
                                         }
                                     }

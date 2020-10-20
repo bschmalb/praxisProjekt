@@ -81,7 +81,7 @@ struct ProfilTippView: View {
                                                         isBookmarked: self.$allTipps[index].isBookmarked,
                                                         tipp: self.allTipps[index],
                                                         color: self.cardColor[index % 8])
-                                                        .frame(height: 140)
+                                                        .frame(minHeight: 140, idealHeight: 150, maxHeight: 160)
                                                         .padding(.vertical, 5)
                                                 }
                                             }
@@ -115,7 +115,7 @@ struct ProfilTippView: View {
                                                         isBookmarked: self.$allTipps[index].isBookmarked,
                                                         tipp: self.allTipps[index],
                                                         color: self.cardColor[index % 8])
-                                                        .frame(height: 140)
+                                                        .frame(minHeight: 140, idealHeight: 150, maxHeight: 160)
                                                         .padding(.vertical, 5)
                                                 }
                                             }
@@ -158,7 +158,7 @@ struct ProfilTippView: View {
                                                         isBookmarked: self.$allTipps[index].isBookmarked,
                                                         tipp: self.allTipps[index],
                                                         color: self.cardColor[index % 8])
-                                                        .frame(height: 140)
+                                                        .frame(minHeight: 140, idealHeight: 150, maxHeight: 160)
                                                         .padding(.vertical, 5)
                                                 }
                                             }

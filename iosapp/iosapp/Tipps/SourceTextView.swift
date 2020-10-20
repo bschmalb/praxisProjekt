@@ -48,8 +48,7 @@ struct SourceTextView: View {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                             self.copied = false
                         }
-                        UIPasteboard.general.setValue(source,
-                                forPasteboardType: kUTTypePlainText as String)
+                        UIPasteboard.general.setValue(source, forPasteboardType: kUTTypePlainText as String)
                     }) {
                         Image(systemName: "doc.on.doc")
                             .font(.system(size: 14))

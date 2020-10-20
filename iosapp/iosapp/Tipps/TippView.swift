@@ -130,6 +130,9 @@ struct TippView: View {
                             .offset(y: -20)
                         Button(action: {
                             self.show = false
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: {
+                                UserDefaults.standard.set(true, forKey: "firstUseTipp")
+                            })
                         }) {
                             Text("Okay!")
                                 .foregroundColor(.white)

@@ -12,16 +12,21 @@ import UIKit
 
 final class KeyboardResponderIOS14: ObservableObject {
     
-    @Published var keyboardHeight: CGFloat = 0
-    private(set) var subscriptions = Set<AnyCancellable>()
+    @Published private(set) var keyboardHeight: CGFloat = 0
+    
+    private var cancellable: AnyCancellable?
+    
+    private let keyboardWillShow = NotificationCenter.default
+        .publisher(for: UIResponder.keyboardWillShowNotification)
+        .compactMap { ($0.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect)?.height }
+    
+    private let keyboardWillHide = NotificationCenter.default
+        .publisher(for: UIResponder.keyboardWillShowNotification)
+        .map { _ in CGFloat.zero }
     
     init() {
-        NotificationCenter.default.publisher(for: UIResponder.keyboardWillChangeFrameNotification)
-            .compactMap { notification in
-                (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.height
-            }
-            .receive(on: DispatchQueue.main)
-            .assign(to: \.keyboardHeight, on: self)
-            .store(in: &subscriptions)
+        cancellable = Publishers.Merge(keyboardWillShow, keyboardWillHide)
+            .subscribe(on: DispatchQueue.main)
+            .assign(to: \.self.keyboardHeight, on: self)
     }
 }

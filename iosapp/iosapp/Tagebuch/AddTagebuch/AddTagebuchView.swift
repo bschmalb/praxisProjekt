@@ -58,8 +58,8 @@ struct AddTagebuchView: View {
     
     @State var tagebuch5titel = "Wie viel Liter gekaufte Getränke hast du gestern getrunken?"
     @State var tagebuch5image = "Drink"
-    @State var tagebuch5einheit = "Mal"
-    @State var tagebuch5options = ["0", "1", "2", "3", "4+"]
+    @State var tagebuch5einheit = "Liter"
+    @State var tagebuch5options = ["0", "0,5", "1", "1,5", "2+"]
     
     @State var tagebuch6titel = "Wie lange hast du gestern geduscht?"
     @State var tagebuch6image = "Shower"

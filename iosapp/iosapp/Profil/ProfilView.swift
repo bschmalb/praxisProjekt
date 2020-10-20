@@ -65,7 +65,9 @@ struct ProfilView: View {
                     HStack {
                         VStack (alignment: .leading){
                             Text("Hallo \(user.name)")
-                                .font(.system(size: 24, weight: Font.Weight.semibold))
+//                                .font(.system(size: 24, weight: Font.Weight.semibold))
+                                .font(.title)
+                                .fontWeight(.bold)
                                 .lineLimit(1)
                                 .onTapGesture {
                                     impact(style: .medium)

@@ -517,7 +517,7 @@ struct AddFact3: View {
             Image("HappyTab")
                 .resizable()
                 .scaledToFit()
-            Text("Gebe den Fact ein")
+            Text("Gib den Fakt ein")
                 .font(.system(size: screen.width < 500 ? screen.width * 0.06 : 24))
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
@@ -582,7 +582,7 @@ struct AddFact4: View {
             Image("Research")
                 .resizable()
                 .scaledToFit()
-            Text("Gebe eine Quelle für den Fakt an")
+            Text("Gib eine Quelle für den Fakt an")
                 .font(.system(size: screenWidth < 500 ? screenWidth * 0.06 : 24))
                 .fontWeight(.medium)
                 .multilineTextAlignment(.center)
@@ -592,23 +592,9 @@ struct AddFact4: View {
             VStack {
                 HStack (alignment: .center){
                     Section {
-                        //                        CustomTextField(text: binding,
-                        //                                        nextResponder: .constant(false),
-                        //                                        isResponder: $firstResponder,
-                        //                                        isSecured: false,
-                        //                                        keyboard: .default)
-                        //                            .frame(height: 40)
                         MultilineTextView(text: binding, isFirstResponder: $firstResponder, maxLength: 1000, fontSize: 0.04)
                             .frame(height: 50)
                             .frame(maxWidth: UIScreen.main.bounds.width - 30)
-                        
-//                        CustomTextField2(text: binding, isFirstResponder: $firstResponder, maxLength: 5)
-//                            .frame(height: 40)
-//                            .frame(maxWidth: UIScreen.main.bounds.width - 30)
-                        
-                        //                        TextField("Dein Tipp", text: binding)
-                        //                            .font(.system(size: 18))
-                        //                            .textFieldStyle(RoundedBorderTextFieldStyle())
                     }
                 }
             }.padding(.horizontal)

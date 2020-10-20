@@ -76,6 +76,28 @@ struct ProfilEinstellungen: View {
                             }.padding(10)
                         }
                                     }.navigationBarTitle("Navigation")
+                    NavigationLink(destination: ProfilSpende()
+                                    .navigationBarTitle("")
+                                    .navigationBarHidden(true)
+                                    .navigationBarBackButtonHidden(true), tag: 4, selection: $selection) {
+                        Button(action: {
+                            impact(style: .medium)
+                            self.selection = 4
+                        }) {
+                            HStack (spacing: 5){
+                                Image(systemName: "eurosign.circle")
+                                    .font(.system(size: screenWidth < 500 ? screenWidth * 0.055 : 20))
+                                    .padding(.leading, 10)
+                                    .frame(width: screenWidth < 500 ? screenWidth * 0.16 : 50, height: 20)
+                                Text("Spenden")
+                                    .font(.system(size: screenWidth < 500 ? screenWidth * 0.050 : 20, weight: .medium))
+                                Spacer()
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: screenWidth < 500 ? screenWidth * 0.055 : 20))
+                                    .padding(.trailing, 28)
+                            }.padding(10)
+                        }
+                    }.navigationBarTitle("Navigation")
                     
                     Button(action: {
                         self.isDark.toggle()
@@ -133,9 +155,9 @@ struct ProfilEinstellungen_Previews: PreviewProvider {
     static var previews: some View {
         Group {
             ProfilEinstellungen(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), filter: FilterData2(), isChanged: .constant(false)).environmentObject(UserLevel())
-            ProfilEinstellungen(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), filter: FilterData2(), isChanged: .constant(false)).environmentObject(UserLevel())
-                .previewDevice(PreviewDevice(rawValue: "iPhone 11"))
-                .previewDisplayName("iPhone 11")
+//            ProfilEinstellungen(isDark: .constant(false), appearenceDark: .constant(false), offsetChangeName: .constant(-1000), offsetLevel: .constant(-1000), filter: FilterData2(), isChanged: .constant(false)).environmentObject(UserLevel())
+//                .previewDevice(PreviewDevice(rawValue: "iPhone 11"))
+//                .previewDisplayName("iPhone 11")
         }
     }
 }

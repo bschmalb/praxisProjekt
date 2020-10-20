@@ -13,16 +13,16 @@ import Combine
 struct TippCardList: View {
     
     @EnvironmentObject var myUrl: ApiUrl
+    @EnvironmentObject var redraw: RedrawScrollView
     @State var id = UserDefaults.standard.string(forKey: "id")
     
     @Environment(\.horizontalSizeClass) var horizontalSize
     
     @State var filteredTipps: [Tipp] = []
     @State var offlineTipps: [Tipp] = []
-
-    @State var redrawUIScrollView = true
     
     @State var showOfflineTipps = true
+    @State var showOnlineTipps = false
     
     @State var loading: Bool = false
     @State var dataLoading: Bool = true
@@ -64,16 +64,13 @@ struct TippCardList: View {
                                     isSelected: self.$filter.filter[index].isSelected,
                                     filter: self.filter.filter[index])
                                     .onTapGesture {
-                                        self.redrawUIScrollView = false
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                            self.redrawUIScrollView = true
-                                        }
-                                        
                                         self.filterTipps2(index: index)
-                                        
                                         impact(style: .heavy)
+                                        
                                         self.loading = true
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                        self.redraw.redraw = false
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                            self.redraw.redraw = true
                                             self.loading = false
                                         }
                                     }
@@ -91,14 +88,13 @@ struct TippCardList: View {
             }.accentColor(Color("black"))
             
             ZStack {
-                SelectMoreFilter(filterString: filterString.filterString, categories: filterCategory2, levels: filterLevel2, posters: filterPoster, loading: redrawUIScrollView)
                 VStack {
                     if (dataLoading || changeFilter.changeFilter) {
                         VStack {
                             LottieView(filename: "loadingCircle", loop: true)
                                 .shadow(color: Color(.white), radius: 1, x: 0, y: 0)
                                 .frame(width: 100, height: 100)
-                        }
+                        }.frame(height: UIScreen.main.bounds.height/2.1 + 20)
                         .onAppear(){
                             guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
                             let request = URLRequest(url: url)
@@ -132,12 +128,16 @@ struct TippCardList: View {
                     else {
                         if #available(iOS 14.0, *) {
                             if (self.filteredTipps.count > 0) {
-                                if (showOfflineTipps) {
-                                    ExtractedCardList(loading: loading, filteredTipps: filteredTipps, cardColors: cardColors)
-                                        .environmentObject(ApiUrl())
-                                } else {
-                                    ExtractedCardList(loading: loading, filteredTipps: filteredTipps, cardColors: cardColors)
-                                        .environmentObject(ApiUrl())
+                                ZStack {
+                                    if showOnlineTipps {
+                                        ExtractedCardList(loading: loading, filteredTipps: filteredTipps, cardColors: cardColors)
+                                            .environmentObject(ApiUrl())
+                                            .opacity(showOfflineTipps ? 0 : 1)
+                                    }
+                                    if showOfflineTipps {
+                                        ExtractedCardList(loading: loading, filteredTipps: filteredTipps, cardColors: cardColors)
+                                            .environmentObject(ApiUrl())
+                                    }
                                 }
                             }
                             else {
@@ -147,21 +147,18 @@ struct TippCardList: View {
                             }
                         } else {
                             if (self.filteredTipps.count > 0) {
-                                if (redrawUIScrollView){
-                                    if (showOfflineTipps) {
-                                        ExtractedCardList(loading: loading, filteredTipps: filteredTipps, cardColors: cardColors)
-                                            .environmentObject(ApiUrl())
-                                    } else {
-                                        ExtractedCardList(loading: loading, filteredTipps: filteredTipps, cardColors: cardColors)
-                                            .environmentObject(ApiUrl())
+                                if (redraw.redraw){
+                                    ZStack {
+                                        if showOnlineTipps {
+                                            ExtractedCardList(loading: loading, filteredTipps: filteredTipps, cardColors: cardColors)
+                                                .environmentObject(ApiUrl())
+                                                .opacity(showOfflineTipps ? 0 : 1)
+                                        }
+                                        if showOfflineTipps {
+                                            ExtractedCardList(loading: loading, filteredTipps: filteredTipps, cardColors: cardColors)
+                                                .environmentObject(ApiUrl())
+                                        }
                                     }
-                                } else {
-                                    VStack {
-                                        LottieView(filename: "loadingCircle", loop: true)
-                                            .shadow(color: Color(.white), radius: 1, x: 0, y: 0)
-                                            .frame(width: 100, height: 100)
-                                    }
-                                    .frame(height: UIScreen.main.bounds.height / 2.1 + 20)
                                 }
                             }
                             else {
@@ -177,8 +174,13 @@ struct TippCardList: View {
                     LottieView(filename: "loadingCircle", loop: true)
                         .shadow(color: Color(.white), radius: 1, x: 0, y: 0)
                         .frame(width: 100, height: 100)
+                        .frame(height: UIScreen.main.bounds.height/2.1 + 20)
                 }
-            }
+                if (!filterString.filterString.contains(where: filterCategory2.contains) || !filterString.filterString.contains(where: filterLevel2.contains) || !filterString.filterString.contains(where: filterPoster.contains)){
+                    SelectMoreFilter(filterString: filterString.filterString, categories: filterCategory2, levels: filterLevel2, posters: filterPoster)
+                        .opacity(loading ? 0 : 1)
+                }
+            }.frame(height: UIScreen.main.bounds.height/2.1 + 20)
             .offset(y: -3)
         }
         .onAppear(){
@@ -198,7 +200,10 @@ struct TippCardList: View {
                 self.filteredTipps = []
                 self.filteredTipps = filteredTipps
                 self.dataLoading = false
-                self.showOfflineTipps = false
+                self.showOnlineTipps = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    self.showOfflineTipps = false
+                }
                 
                 for (i, _) in filteredTipps.enumerated() {
                     if (i < 10 && (filteredTipps.count > i)) {
@@ -262,29 +267,39 @@ struct SelectMoreFilter: View {
     var categories: [String]
     var levels: [String]
     var posters: [String]
-    var loading: Bool
     
     var body: some View {
         VStack {
+            if (!filterString.contains(where: categories.contains) || !filterString.contains(where: levels.contains) || !filterString.contains(where: posters.contains)){
+                Text("Filter:")
+            }
             if (!filterString.contains(where: categories.contains)){
-                Text("Wähle mindestens eine Kategorie aus")
-                    .font(.system(size: 12))
-                    .padding()
+                VStack (spacing: 5){
+                    Text("Wähle mindestens eine Kategorie aus")
+                    Text("(Ernährung, Transport, Haushalt oder Ressourcen)")
+                }
+                .font(.system(size: 12))
+                .padding()
             }
             if (!filterString.contains(where: levels.contains)){
-                Text("Wähle mindestens einen Schwierigkeitsgrad aus")
-                    .font(.system(size: 12))
-                    .padding()
+                VStack (spacing: 5){
+                    Text("Wähle mindestens einen Schwierigkeitsgrad aus")
+                    Text("(Leicht, Mittel oder Schwer)")
+                }
+                .font(.system(size: 12))
+                .padding()
             }
             if (!filterString.contains(where: posters.contains)){
-                Text("Wähle mindestens eine Art der Poster")
-                    .font(.system(size: 12))
-                    .padding()
+                VStack (spacing: 5){
+                    Text("Wähle mindestens eine Art der Poster aus.")
+                    Text("(Offiziell oder Community)")
+                }
+                .font(.system(size: 12))
+                .padding()
             }
-        }.opacity(loading ? 0 : 1)
+        }
     }
 }
-
 
 struct ExtractedCardList: View {
     
@@ -299,9 +314,17 @@ struct ExtractedCardList: View {
     @State var user: User = User(_id: "", phoneId: "", checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
     @State var userLoaded = true
     
+    @State var load = 0
+    @State var loadMax = 30
+    
+    @State var filterCategory2: [String] = ["Ernährung", "Transport", "Haushalt", "Ressourcen"]
+    @State var filterLevel2: [String] = ["Leicht", "Mittel", "Schwer"]
+    @State var filterPoster: [String] = ["Offiziell", "Community"]
+    
+    
     var body: some View {
         GeometryReader { proxy in
-            if (userLoaded) {
+//            if (userLoaded) {
                 UIScrollViewWrapper {
                     HStack (spacing: 0) {
                         ForEach(self.filteredTipps.indices, id: \.self) { index in
@@ -321,11 +344,26 @@ struct ExtractedCardList: View {
                                                 .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
                                                 .opacity(Double(geometry.frame(in: .global).minX < UIScreen.main.bounds.width && geometry.frame(in: .global).minX > -UIScreen.main.bounds.width ? 1 : 0))
                                                 .padding(.vertical, 10)
+                                                .environmentObject(ApiUrl())
+                                                .environmentObject(UserLevel())
                                             Spacer()
                                         }
                                     }
                                     .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2.1 + 20)
                                 }
+//                                if index == loadMax {
+//                                    if (filterString.filterString.contains(where: filterCategory2.contains) && filterString.filterString.contains(where: filterLevel2.contains) && filterString.filterString.contains(where: filterPoster.contains)){
+//                                        VStack {
+//                                            Image(systemName: "arrow.counterclockwise")
+//                                                .font(.system(size: 24))
+//                                            Text("Mehr Tipps anzeigen")
+//                                                .onTapGesture(){
+//                                                    self.loadMax += 10
+//                                                }
+//                                        }
+//                                        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2.1 + 20)
+//                                    }
+//                                }
                             }
                         }
                     }
@@ -335,7 +373,7 @@ struct ExtractedCardList: View {
                 }
                 .onAppear(){
                     print(filterString.filterString)
-                }
+//                }
             }
         }
         .frame(height: UIScreen.main.bounds.height/2.1 + 20)
@@ -366,7 +404,7 @@ struct ExtractedCardList: View {
     }
 }
 
-class UIScrollViewViewController: UIViewController, UIGestureRecognizerDelegate {
+class UIScrollViewViewController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewDelegate {
     
     lazy var scrollView: UIScrollView = {
         let v = UIScrollView()
@@ -382,6 +420,8 @@ class UIScrollViewViewController: UIViewController, UIGestureRecognizerDelegate 
         self.view.addSubview(self.scrollView)
         self.pinEdges(of: self.scrollView, to: self.view)
         
+        scrollView.delegate = self
+        
         self.hostingController.willMove(toParent: self)
         self.scrollView.addSubview(self.hostingController.view)
         self.pinEdges(of: self.hostingController.view, to: self.scrollView)
@@ -393,11 +433,18 @@ class UIScrollViewViewController: UIViewController, UIGestureRecognizerDelegate 
         self.view.addSubview(self.scrollView)
         self.pinEdges(of: self.scrollView, to: self.view)
         
+        scrollView.delegate = self
+        
         self.hostingController.willMove(toParent: self)
         self.scrollView.addSubview(self.hostingController.view)
         self.pinEdges(of: self.hostingController.view, to: self.scrollView)
         self.hostingController.didMove(toParent: self)
     }
+    
+//    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView){
+//        let counter = Int(scrollView.contentOffset.x / UIScreen.main.bounds.width)
+//        scrollView.viewWithTag(counter)?.removeFromSuperview()
+//    }
     
     func pinEdges(of viewA: UIView, to viewB: UIView) {
         viewA.translatesAutoresizingMaskIntoConstraints = false

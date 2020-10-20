@@ -33,7 +33,7 @@ struct FactView: View {
                 
                 VStack (spacing: screen.height < 700 ? 5 : 10) {
                     HStack {
-                        Text("Fakten über die Natur")
+                        Text("Fakten für Dich")
                             .font(.title)
                             .fontWeight(.bold)
                             .padding(.leading, 20)

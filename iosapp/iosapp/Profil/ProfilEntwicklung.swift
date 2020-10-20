@@ -79,9 +79,10 @@ struct ProfilEntwicklung: View {
                                 Spacer()
                                 VStack {
                                     Text("Zu deinem\nTagebuch")
-                                        .font(.system(size: 16))
+                                        .font(.system(size: 14))
                                         .padding()
                                         .multilineTextAlignment(.center)
+                                        .fixedSize(horizontal: false, vertical: true)
                                     Image(systemName: "arrow.down")
                                         .font(.system(size: 24, weight: Font.Weight.medium))
                                 }

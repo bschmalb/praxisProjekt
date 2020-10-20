@@ -18,7 +18,7 @@ struct FeedbackView: View {
     
     @State var feedback: String = ""
     @State var feedbackType: String = ""
-    @State var feedbackOptions = ["Verbesserung", "Meinung", "Kritik"]
+    @State var feedbackOptions = ["Verbesserung", "Kritik", "Sonstiges"]
     @State var feedbackOptionSelected = -1
     
     @State var loading = false
@@ -66,11 +66,11 @@ struct FeedbackView: View {
                     .scaleEffect(1.3)
                     .frame(minHeight: 50, idealHeight: 100, maxHeight: 200)
                     .layoutPriority(1)
-                
-                Text("Gebe hier dein Feedback ein und wähle eine Kategorie zu welcher dieses zählt.")
+                    .padding()
+                Text("Gib hier dein Feedback ein und wähle eine zutreffende Kategorie.")
                     .frame(maxWidth: 612)
                     .multilineTextAlignment(.center)
-                    .font(.footnote)
+                    .font(.system(size: 16))
                     .fixedSize(horizontal: false, vertical: true)
                     .padding()
                 }
