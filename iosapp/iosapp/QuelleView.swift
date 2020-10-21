@@ -18,7 +18,11 @@ struct QuelleView: View {
     @Binding var quelleShowing: Bool
     
     var body: some View {
-        VStack (spacing: 0){
+        
+        let url = URL(string: quelle)
+        let domain = url?.host
+        
+        return VStack (spacing: 0){
             HStack {
                 Button(action: {
                     impact(style: .medium)
@@ -29,7 +33,7 @@ struct QuelleView: View {
                         .padding()
                 }
                 Spacer()
-                Text(quelle)
+                Text(domain ?? quelle)
                     .font(.system(size: 12))
                 Spacer()
                 Button(action: {

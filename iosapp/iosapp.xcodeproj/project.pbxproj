@@ -53,6 +53,9 @@
 		B7919AF424981C5B00014240 /* LottieView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7919AF324981C5B00014240 /* LottieView.swift */; };
 		B7919AF624981E3F00014240 /* SuccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7919AF524981E3F00014240 /* SuccessView.swift */; };
 		B7934861252F136A00D8FC25 /* ProfilProfil.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7934860252F136A00D8FC25 /* ProfilProfil.swift */; };
+		B79598682540410B005761E0 /* LottieTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B79598672540410B005761E0 /* LottieTest.swift */; };
+		B795986D25404192005761E0 /* errorCircle.json in Resources */ = {isa = PBXBuildFile; fileRef = B795986C25404192005761E0 /* errorCircle.json */; };
+		B795987225404387005761E0 /* error.json in Resources */ = {isa = PBXBuildFile; fileRef = B795987125404387005761E0 /* error.json */; };
 		B7A8CBDC242C10C50036FD6E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A8CBDB242C10C50036FD6E /* AppDelegate.swift */; };
 		B7A8CBDE242C10C50036FD6E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A8CBDD242C10C50036FD6E /* SceneDelegate.swift */; };
 		B7A8CBE0242C10C50036FD6E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A8CBDF242C10C50036FD6E /* ContentView.swift */; };
@@ -152,6 +155,10 @@
 		B7919AF324981C5B00014240 /* LottieView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieView.swift; sourceTree = "<group>"; };
 		B7919AF524981E3F00014240 /* SuccessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuccessView.swift; sourceTree = "<group>"; };
 		B7934860252F136A00D8FC25 /* ProfilProfil.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilProfil.swift; sourceTree = "<group>"; };
+		B79598672540410B005761E0 /* LottieTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LottieTest.swift; sourceTree = "<group>"; };
+		B795986C25404192005761E0 /* errorCircle.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = errorCircle.json; sourceTree = "<group>"; };
+		B795987125404387005761E0 /* error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = error.json; sourceTree = "<group>"; };
+		B795987A25404809005761E0 /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		B7A8CBD8242C10C50036FD6E /* Sustainable Life.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sustainable Life.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B7A8CBDB242C10C50036FD6E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B7A8CBDD242C10C50036FD6E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -291,6 +298,8 @@
 		B7919AED24981BBC00014240 /* Lottie */ = {
 			isa = PBXGroup;
 			children = (
+				B795987125404387005761E0 /* error.json */,
+				B795986C25404192005761E0 /* errorCircle.json */,
 				B762F588251B3685001050A1 /* loadingWhite.json */,
 				B7F0492B24C4FAA600FA1C88 /* loadingCircle.json */,
 				B7C655D124B3515700A79DBE /* loading2.json */,
@@ -341,6 +350,7 @@
 				B7BF71BD2497CF76007A3A92 /* Data */,
 				B7874C06249A48CA0045D609 /* LevelView.swift */,
 				B7919AF324981C5B00014240 /* LottieView.swift */,
+				B79598672540410B005761E0 /* LottieTest.swift */,
 				B784696B248D25BD000A4331 /* KeyboardResponder.swift */,
 				B71158732523B51300E6B5B7 /* KeyboardResponderIOS14.swift */,
 				B7A8CBE1242C10C80036FD6E /* Assets.xcassets */,
@@ -515,6 +525,7 @@
 			knownRegions = (
 				en,
 				Base,
+				de,
 			);
 			mainGroup = B7A8CBCF242C10C50036FD6E;
 			packageReferences = (
@@ -544,7 +555,9 @@
 				B7919AEF24981BBD00014240 /* success.json in Resources */,
 				B7C655D024B3509200A79DBE /* loading.json in Resources */,
 				B7C655D224B3515800A79DBE /* loading2.json in Resources */,
+				B795987225404387005761E0 /* error.json in Resources */,
 				B7A8CBE5242C10C80036FD6E /* Preview Assets.xcassets in Resources */,
+				B795986D25404192005761E0 /* errorCircle.json in Resources */,
 				B7A8CBE2242C10C80036FD6E /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -588,6 +601,7 @@
 				B7598B6E24A8C22B000436B8 /* ProfilEinstellungen.swift in Sources */,
 				B756AEC82530E47200DBBB17 /* AddFactView.swift in Sources */,
 				B7CF0F6F2497C0C300595EB2 /* RateTippDataStore.swift in Sources */,
+				B79598682540410B005761E0 /* LottieTest.swift in Sources */,
 				B7934861252F136A00D8FC25 /* ProfilProfil.swift in Sources */,
 				B7B50CF12510D5F700DD2FE6 /* QuelleView.swift in Sources */,
 				B7DB1E2D24AA138E00F28B07 /* ProfilFilter.swift in Sources */,
@@ -677,6 +691,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				B7A8CBE7242C10C80036FD6E /* Base */,
+				B795987A25404809005761E0 /* de */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -688,6 +703,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -751,6 +767,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
