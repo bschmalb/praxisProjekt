@@ -27,6 +27,7 @@ struct FactCardList: View {
     
     @State var redrawUIScrollView = true
     
+    @State var showOnlineTipps = false
     @State var showOfflineTipps = true
     
     @State var filterCategory2: [String] = ["Ernährung", "Transport", "Haushalt", "Ressourcen"]
@@ -36,9 +37,7 @@ struct FactCardList: View {
     @State var notCategory: [String] = UserDefaults.standard.stringArray(forKey: "notCategory") ?? []
     @State var notDifficulty: [String] = UserDefaults.standard.stringArray(forKey: "notDifficulty") ?? []
     
-    @EnvironmentObject var user: UserObserv
-    
-    @State var userObject: User = User(_id: "", phoneId: "", level: 0, checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
+    @State var user: User = User(_id: "", phoneId: "", level: 0, checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
     
     @EnvironmentObject var changeFilter: ChangeFilter
     @EnvironmentObject var filterString: FilterStringFacts
@@ -94,14 +93,19 @@ struct FactCardList: View {
                         }.frame(height: UIScreen.main.bounds.height/2.1 + 20)
                     }
                     else {
+                        
                         if #available(iOS 14.0, *) {
                             if (self.filteredFacts.count > 0) {
-                                if (showOfflineTipps) {
-                                    ExtractedFactList(loading: loading, filteredFacts: filteredFacts, cardColors: cardColors, filterString: filterString)
-                                        .environmentObject(ApiUrl())
-                                } else {
-                                    ExtractedFactList(loading: loading, filteredFacts: filteredFacts, cardColors: cardColors, filterString: filterString)
-                                        .environmentObject(ApiUrl())
+                                ZStack {
+                                    if showOnlineTipps {
+                                        ExtractedFactList(loading: loading, filteredFacts: filteredFacts, cardColors: cardColors, filterString: filterString, user: user)
+                                            .environmentObject(ApiUrl())
+                                            .opacity(showOfflineTipps ? 0 : 1)
+                                    }
+                                    if showOfflineTipps {
+                                        ExtractedFactList(loading: loading, filteredFacts: filteredFacts, cardColors: cardColors, filterString: filterString, user: user)
+                                            .environmentObject(ApiUrl())
+                                    }
                                 }
                             }
                             else {
@@ -112,20 +116,17 @@ struct FactCardList: View {
                         } else {
                             if (self.filteredFacts.count > 0) {
                                 if (redraw.redraw){
-                                    if (showOfflineTipps) {
-                                        ExtractedFactList(loading: loading, filteredFacts: filteredFacts, cardColors: cardColors, filterString: filterString)
-                                            .environmentObject(ApiUrl())
-                                    } else {
-                                        ExtractedFactList(loading: loading, filteredFacts: filteredFacts, cardColors: cardColors, filterString: filterString)
-                                            .environmentObject(ApiUrl())
+                                    ZStack {
+                                        if showOnlineTipps {
+                                            ExtractedFactList(loading: loading, filteredFacts: filteredFacts, cardColors: cardColors, filterString: filterString, user: user)
+                                                .environmentObject(ApiUrl())
+                                                .opacity(showOfflineTipps ? 0 : 1)
+                                        }
+                                        if showOfflineTipps {
+                                            ExtractedFactList(loading: loading, filteredFacts: filteredFacts, cardColors: cardColors, filterString: filterString, user: user)
+                                                .environmentObject(ApiUrl())
+                                        }
                                     }
-                                } else {
-                                    VStack {
-                                        LottieView(filename: "loadingCircle", loop: true)
-                                            .shadow(color: Color(.white), radius: 1, x: 0, y: 0)
-                                            .frame(width: 100, height: 100)
-                                    }
-                                    .frame(height: UIScreen.main.bounds.height / 2.1 + 20)
                                 }
                             }
                             else {
@@ -152,9 +153,6 @@ struct FactCardList: View {
             .offset(y: -3)
         }
         .onAppear(){
-            
-            getUser()
-            
             do {
                 let storedObjTipp = UserDefaults.standard.object(forKey: "offlineFacts")
                 if storedObjTipp != nil {
@@ -169,8 +167,14 @@ struct FactCardList: View {
             FactApi().fetchApproved { (filteredFacts) in
                 self.filteredFacts = []
                 self.filteredFacts = filteredFacts
-                self.dataLoading = false
-                self.showOfflineTipps = false
+                UserApi().fetchUser { user in
+                    self.user = user
+                    self.dataLoading = false
+                    self.showOnlineTipps = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        self.showOfflineTipps = false
+                    }
+                }
                 
                 for (i, _) in filteredFacts.enumerated() {
                     if i < 10 && filteredFacts.count > i {
@@ -187,21 +191,6 @@ struct FactCardList: View {
                 }
             }
         }
-    }
-    
-    func getUser() {
-        guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
-        let request = URLRequest(url: url)
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data else {
-                print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
-                return
-            }
-            if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
-                userObject = decodedResponse
-            }
-        }.resume()
     }
     
     func filterTipps2(index: Int){
@@ -229,7 +218,7 @@ struct ExtractedFactList: View {
     @State var filteredFacts: [Fact]
     var cardColors: [String]
     var filterString: FilterStringFacts
-    @State var user: User = User(_id: "", phoneId: "", checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
+    @State var user: User
     @State var userLoaded = true
     
     var body: some View {
@@ -272,28 +261,6 @@ struct ExtractedFactList: View {
         .frame(height: UIScreen.main.bounds.height/2.1 + 20)
         .offset(x: loading ? 300 : 0)
         .animation(.spring())
-        .onAppear(){
-            getUser()
-        }
-    }
-    
-    func getUser() {
-        guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
-        let request = URLRequest(url: url)
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data else {
-                print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
-                return
-            }
-            if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
-                userLoaded = false
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
-                    userLoaded = true
-                })
-                user = decodedResponse
-            }
-        }.resume()
     }
 }
 

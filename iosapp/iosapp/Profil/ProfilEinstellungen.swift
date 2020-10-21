@@ -116,22 +116,22 @@ struct ProfilEinstellungen: View {
                         }.padding(10)
                     }
                     Spacer()
-                    Button(action: {
-                        UserDefaults.standard.set(self.logDate, forKey: "logDate")
-                        UserDefaults.standard.set(false, forKey: "firstUseTipp")
-                        UserDefaults.standard.set(false, forKey: "firstUseLog")
-                        impact(style: .rigid)
-                    }) {
-                        HStack (spacing: 5){
-                            Image(systemName: "delete.left")
-                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.035 : 14))
-                                .padding(.leading, 10)
-                                .frame(width: screenWidth < 500 ? screenWidth * 0.16 : 50, height: 20)
-                            Text("Reset to First App Use")
-                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.030 : 14, weight: .medium))
-                            Spacer()
-                        }.padding(10)
-                    }
+//                    Button(action: {
+//                        UserDefaults.standard.set(self.logDate, forKey: "logDate")
+//                        UserDefaults.standard.set(false, forKey: "firstUseTipp")
+//                        UserDefaults.standard.set(false, forKey: "firstUseLog")
+//                        impact(style: .rigid)
+//                    }) {
+//                        HStack (spacing: 5){
+//                            Image(systemName: "delete.left")
+//                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.035 : 14))
+//                                .padding(.leading, 10)
+//                                .frame(width: screenWidth < 500 ? screenWidth * 0.16 : 50, height: 20)
+//                            Text("Reset to First App Use")
+//                                .font(.system(size: screenWidth < 500 ? screenWidth * 0.030 : 14, weight: .medium))
+//                            Spacer()
+//                        }.padding(10)
+//                    }
                 }
                 .padding(.bottom, 20)
                 .padding(.top, screenWidth < 350 ? 0 : 20)

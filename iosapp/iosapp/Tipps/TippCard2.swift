@@ -247,7 +247,7 @@ struct TippCard2: View {
                             UIScreen.main.bounds.height / 2.1)
                     .background(Color.black.opacity(0.05))
                     .background(Color(color))
-                    .cornerRadius(25)
+                    .cornerRadius(15)
                     .onTapGesture(){}
                     .gesture(DragGesture()
                                 .onChanged({ (value) in
@@ -371,7 +371,7 @@ struct TippCard2: View {
                                     .frame(width: size.size.width < 500 ? size.size.width * 0.07 : 40, height: size.size.width < 500 ? size.size.width * 0.07 : 40)
                                     .opacity(0.1)
                                     .padding(.vertical)
-                            }.drawingGroup()
+                            }
                             Spacer()
                             Image(systemName: "ellipsis")
                                 .font(.system(size: size.size.width < 400 ? size.size.width * 0.07 : 25, weight: Font.Weight.medium))
@@ -384,17 +384,19 @@ struct TippCard2: View {
                                     self.options.toggle()
                                     self.getPoster()
                                 }
-                        }
+                        }.foregroundColor(Color("alwaysblack"))
                         Spacer()
                     }
                     .frame(width: UIScreen.main.bounds.width > 600 ? 600 - 30 : UIScreen.main.bounds.width - 30, height:
                             UIScreen.main.bounds.height / 2.1)
                 }
                 .background(Color(color))
-                .cornerRadius(25)
+                .cornerRadius(15)
                 .offset(x: options ? -size.size.width / 1.3 : 0)
             }
-            .onTapGesture(){}
+            .onTapGesture(){
+                options = false
+            }
             .gesture(DragGesture()
                         .onChanged({ (value) in
                             if options {

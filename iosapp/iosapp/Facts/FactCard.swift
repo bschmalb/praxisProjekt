@@ -187,15 +187,21 @@ struct FactCardMain: View {
                                 self.options.toggle()
                                 self.getPoster()
                             }
-                    }
+                    }.foregroundColor(Color("alwaysblack"))
                     Spacer()
                 }
                 .frame(width: UIScreen.main.bounds.width > 600 ? 600 - 30 : UIScreen.main.bounds.width - 30, height:
                         UIScreen.main.bounds.height / 2.1)
             }
+            .onTapGesture(perform: {
+                options = false
+            })
             .background(Color(color))
             .cornerRadius(15)
             .offset(x: options ? -size.size.width / 1.3 : 0)
+        }
+        .onAppear(){
+            getUserTipps()
         }
     }
     
@@ -220,7 +226,6 @@ struct FactCardMain: View {
     }
     
     func getUserTipps(){
-        
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             if (user.savedFacts != nil) {
                 if (user.savedFacts!.contains(self.fact._id) ) {
@@ -466,58 +471,58 @@ struct FactCardBackground: View {
                                 Spacer()
                             }.foregroundColor(Color("alwaysblack"))
 //                            if (fact.postedBy == id) {
-                            if (false) {
-                                Group {
-                                    ZStack {
-                                        HStack {
-                                            Spacer()
-                                            Image(systemName: "trash")
-                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
-                                                .foregroundColor(.red)
-                                                .opacity(0.8)
-                                                .padding(10)
-                                                .onTapGesture(){
-                                                    impact(style: .medium)
-                                                    self.deleteTipp()
-                                                }
-                                            Spacer()
-                                            Image(systemName: "xmark")
-                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
-                                                .opacity(0.8)
-                                                .padding(10)
-                                                .onTapGesture(){
-                                                    impact(style: .medium)
-                                                    self.showYouSure = false
-                                                }
-                                            Spacer()
-                                        }
-                                        .offset(y: showYouSure ? 0 : 30)
-                                        .opacity(showYouSure ? 1 : 0)
-
-                                        HStack (spacing: 20){
-                                            Image(systemName: dislikeClicked ? "trash.fill" : "trash")
-                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
-                                                .foregroundColor(.red)
-                                                .opacity(0.8)
-                                            Text("Tipp löschen")
-                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
-                                                .foregroundColor(.red)
-                                                .opacity(0.8)
-                                        }
-                                        .padding(10)
-                                        .offset(y: showYouSure ? -30 : 0)
-                                        .opacity(showYouSure ? 0 : 1)
-                                        .cornerRadius(15)
-                                        .onTapGesture(){
-                                            impact(style: .medium)
-
-                                            self.showYouSure = true
-                                        }
-                                    }
-                                    .animation(.spring())
-                                    Spacer()
-                                }
-                            } else {
+//                            if (false) {
+//                                Group {
+//                                    ZStack {
+//                                        HStack {
+//                                            Spacer()
+//                                            Image(systemName: "trash")
+//                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+//                                                .foregroundColor(.red)
+//                                                .opacity(0.8)
+//                                                .padding(10)
+//                                                .onTapGesture(){
+//                                                    impact(style: .medium)
+//                                                    self.deleteTipp()
+//                                                }
+//                                            Spacer()
+//                                            Image(systemName: "xmark")
+//                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+//                                                .opacity(0.8)
+//                                                .padding(10)
+//                                                .onTapGesture(){
+//                                                    impact(style: .medium)
+//                                                    self.showYouSure = false
+//                                                }
+//                                            Spacer()
+//                                        }
+//                                        .offset(y: showYouSure ? 0 : 30)
+//                                        .opacity(showYouSure ? 1 : 0)
+//
+//                                        HStack (spacing: 20){
+//                                            Image(systemName: dislikeClicked ? "trash.fill" : "trash")
+//                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+//                                                .foregroundColor(.red)
+//                                                .opacity(0.8)
+//                                            Text("Tipp löschen")
+//                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
+//                                                .foregroundColor(.red)
+//                                                .opacity(0.8)
+//                                        }
+//                                        .padding(10)
+//                                        .offset(y: showYouSure ? -30 : 0)
+//                                        .opacity(showYouSure ? 0 : 1)
+//                                        .cornerRadius(15)
+//                                        .onTapGesture(){
+//                                            impact(style: .medium)
+//
+//                                            self.showYouSure = true
+//                                        }
+//                                    }.foregroundColor(Color("alwaysblack"))
+//                                    .animation(.spring())
+//                                    Spacer()
+//                                }
+//                            } else {
                                 Group {
                                     HStack (spacing: 15){
                                         Image(systemName: likeClicked ? "hand.thumbsup.fill" : "hand.thumbsup")
@@ -608,7 +613,8 @@ struct FactCardBackground: View {
                                     }
                                     Spacer()
                                 }
-                            }
+                                .foregroundColor(Color("alwaysblack"))
+//                            }
                         }
                         .frame(width: size.size.width / 1.3)
                     }

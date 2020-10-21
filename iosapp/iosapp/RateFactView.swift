@@ -46,7 +46,7 @@ struct RateFactView: View {
                 VStack (spacing: 0){
                     
                     HStack {
-                        Text("Tipps bewerten")
+                        Text("Fakten bewerten")
                             .font(.title)
                             .fontWeight(.bold)
                             .padding(.leading, 20)
@@ -63,93 +63,99 @@ struct RateFactView: View {
                     }
                     .padding(.top, 20)
                     
-                    Text("Wenn ein Tipp von der Community gutes Feedback bekommt, wird dieser für alle Nutzer angezeigt")
+                    Text("Wenn ein Fakt von der Community gutes Feedback bekommt, wird dieser für alle Nutzer angezeigt")
                         .font(.system(size: 14))
                         .fixedSize(horizontal: false, vertical: true)
                         .padding(.horizontal, 15)
                         .padding(.bottom, 15)
                     
                     if (!loading) {
-                        if (!endReached && rateFacts.count > 0) {
+                        if (rateFacts.count > 0) {
                             ZStack {
-                                ForEach(rateFacts.indices, id: \.self) { index in
-                                    FactCard(
-                                        isBookmarked: self.$rateFacts[counter].isBookmarked,
-                                        fact: self.rateFacts[counter],
-                                        color: cardColors[0], user: userObject)
-                                        .animation(.spring())
-                                        .offset(x: counter < index ? 500 : 0)
-                                        .offset(x: counter > index ? -500 : 0)
-                                        .opacity(counter == index ? 1 : 0)
+                                VStack{
+                                    ZStack {
+                                        ForEach(rateFacts.indices, id: \.self) { index in
+                                            FactCard(
+                                                isBookmarked: self.$rateFacts[counter].isBookmarked,
+                                                fact: self.rateFacts[counter],
+                                                color: cardColors[0], user: userObject)
+                                                .animation(.spring())
+                                                .offset(x: counter < index ? 500 : 0)
+                                                .offset(x: counter > index ? -500 : 0)
+                                                .opacity(counter == index ? 1 : 0)
+                                        }
+                                    }
+                                    HStack {
+                                        Image(systemName: "hand.thumbsup")
+                                            .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.06 : 24, weight: Font.Weight.medium))
+                                            .accentColor(Color("black"))
+                                            .padding(10)
+                                            .frame(width: UIScreen.main.bounds.width > 600 ? 275 : UIScreen.main.bounds.width / 2 - 20, height: screenHeight > 700 ? 50 : screenHeight * 0.075)
+                                            .background(Color("buttonWhite"))
+                                            .cornerRadius(15)
+                                            .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
+                                            .scaleEffect(thumbUp ? 1.1 : 1)
+                                            .onTapGesture(){
+                                                self.levelEnv.level += 35
+                                                UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
+                                                
+                                                self.alreadyRated.append(self.rateFacts[counter]._id)
+                                                UserDefaults.standard.set(self.alreadyRated, forKey: "alreadyRatedFacts")
+                                                
+                                                patchScore(id: self.rateFacts[self.counter]._id, thumb: "up")
+                                                if (self.counter < self.rateFacts.count - 1){
+                                                    withAnimation(){self.counter += 1}
+                                                }
+                                                else {
+                                                    withAnimation(){self.endReached = true}
+                                                }
+                                                self.thumbUp = true
+                                                impact(style: .medium)
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                                                    self.thumbUp = false
+                                                }
+                                            }
+                                        Image(systemName: "hand.thumbsdown")
+                                            .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.06 : 24, weight: Font.Weight.medium))
+                                            .accentColor(Color("black"))
+                                            .padding(10)
+                                            .frame(width: UIScreen.main.bounds.width > 600 ? 275 : UIScreen.main.bounds.width / 2 - 20, height: screenHeight > 700 ? 50 : screenHeight * 0.075)
+                                            .background(Color("buttonWhite"))
+                                            .cornerRadius(15)
+                                            .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
+                                            .scaleEffect(thumbDown ? 1.1 : 1)
+                                            .onTapGesture(){
+                                                self.levelEnv.level += 35
+                                                UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
+                                                
+                                                self.alreadyRated.append(self.rateFacts[counter]._id)
+                                                UserDefaults.standard.set(self.alreadyRated, forKey: "alreadyRatedFacts")
+                                                
+                                                patchScore(id: self.rateFacts[self.counter]._id, thumb: "down")
+                                                if (self.counter < self.rateFacts.count - 1){
+                                                    withAnimation(){self.counter += 1}
+                                                    print(rateFacts[counter].title)
+                                                }
+                                                else {
+                                                    withAnimation(){self.endReached = true}
+                                                    print("endReached")
+                                                }
+                                                self.thumbDown = true
+                                                impact(style: .medium)
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                                                    self.thumbDown = false
+                                                }
+                                            }
+                                    }.padding(.top, 10)
+                                    .animation(.spring())
                                 }
+                                .offset(x: endReached ? -UIScreen.main.bounds.width : 0)
+                                CustomCard(image: "SofaChill", text: "Vorerst keine weiteren Fakten mehr zum bewerten verfügbar", color: "cardgreen2")
+                                    .offset(x: endReached ? 0 : UIScreen.main.bounds.width)
                             }
-                            HStack {
-                                Image(systemName: "hand.thumbsup")
-                                    .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.06 : 24, weight: Font.Weight.medium))
-                                    .accentColor(Color("black"))
-                                    .padding(10)
-                                    .frame(width: UIScreen.main.bounds.width > 600 ? 275 : UIScreen.main.bounds.width / 2 - 20, height: screenHeight > 700 ? 50 : screenHeight * 0.075)
-                                    .background(Color("buttonWhite"))
-                                    .cornerRadius(15)
-                                    .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
-                                    .scaleEffect(thumbUp ? 1.1 : 1)
-                                    .onTapGesture(){
-                                        self.levelEnv.level += 35
-                                        UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
-                                        
-                                        self.alreadyRated.append(self.rateFacts[counter]._id)
-                                        UserDefaults.standard.set(self.alreadyRated, forKey: "alreadyRatedFacts")
-                                        
-                                        patchScore(id: self.rateFacts[self.counter]._id, thumb: "up")
-                                        if (self.counter < self.rateFacts.count - 1){
-                                            withAnimation(){self.counter += 1}
-                                        }
-                                        else {
-                                            withAnimation(){self.endReached = true}
-                                        }
-                                        self.thumbUp = true
-                                        impact(style: .medium)
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                                            self.thumbUp = false
-                                        }
-                                    }
-                                Image(systemName: "hand.thumbsdown")
-                                    .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.06 : 24, weight: Font.Weight.medium))
-                                    .accentColor(Color("black"))
-                                    .padding(10)
-                                    .frame(width: UIScreen.main.bounds.width > 600 ? 275 : UIScreen.main.bounds.width / 2 - 20, height: screenHeight > 700 ? 50 : screenHeight * 0.075)
-                                    .background(Color("buttonWhite"))
-                                    .cornerRadius(15)
-                                    .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
-                                    .scaleEffect(thumbDown ? 1.1 : 1)
-                                    .onTapGesture(){
-                                        self.levelEnv.level += 35
-                                        UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
-                                        
-                                        self.alreadyRated.append(self.rateFacts[counter]._id)
-                                        UserDefaults.standard.set(self.alreadyRated, forKey: "alreadyRatedFacts")
-                                        
-                                        patchScore(id: self.rateFacts[self.counter]._id, thumb: "down")
-                                        if (self.counter < self.rateFacts.count - 1){
-                                            withAnimation(){self.counter += 1}
-                                            print(rateFacts[counter].title)
-                                        }
-                                        else {
-                                            withAnimation(){self.endReached = true}
-                                            print("endReached")
-                                        }
-                                        self.thumbDown = true
-                                        impact(style: .medium)
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
-                                            self.thumbDown = false
-                                        }
-                                    }
-                            }.padding(.top, 10)
                             .animation(.spring())
-                        }
-                        else {
-                            CustomCard(image: "SofaChill", text: "Vorerst keine weiteren Tipps mehr zum bewerten verfügbar", color: "cardgreen2")
-                                .animation(.spring())
+                        } else {
+                            CustomCard(image: "SofaChill", text: "Vorerst keine weiteren Fakten mehr zum bewerten verfügbar", color: "cardgreen2")
                         }
                     } else {
                         VStack {

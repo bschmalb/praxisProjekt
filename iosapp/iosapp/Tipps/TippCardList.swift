@@ -35,9 +35,8 @@ struct TippCardList: View {
     @State var notCategory: [String] = UserDefaults.standard.stringArray(forKey: "notCategory") ?? []
     @State var notDifficulty: [String] = UserDefaults.standard.stringArray(forKey: "notDifficulty") ?? []
     
-    @EnvironmentObject var user: UserObserv
-    
     @State var userObject: User = User(_id: "", phoneId: "", level: 0, checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
+    @State var user: User = User(_id: "", phoneId: "", level: 0, checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
     
     @EnvironmentObject var changeFilter: ChangeFilter
     @EnvironmentObject var filterString: FilterString
@@ -96,29 +95,21 @@ struct TippCardList: View {
                                 .frame(width: 100, height: 100)
                         }.frame(height: UIScreen.main.bounds.height/2.1 + 20)
                         .onAppear(){
-                            guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
-                            let request = URLRequest(url: url)
-                            
-                            URLSession.shared.dataTask(with: request) { data, response, error in
-                                guard let data = data else {
-                                    print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
-                                    return
-                                }
-                                if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
-                                    userObject = decodedResponse
-                                }
-                            }.resume()
-                            
-                            Api().fetchTipps { (filteredTipps) in
-                                self.filteredTipps = filteredTipps
-                                self.dataLoading = false
-                                
-                                for (index, test) in self.filteredTipps.enumerated() {
-                                    if (userObject.checkedTipps.contains(test._id)){
-                                        self.filteredTipps[index].isChecked = true
-                                    }
-                                    if (userObject.savedTipps.contains(test._id)){
-                                        self.filteredTipps[index].isBookmarked = true
+                            if !dataLoading {
+                                UserApi().fetchUser { user in
+                                    self.userObject = user
+                                    Api().fetchTipps { (filteredTipps) in
+                                        self.filteredTipps = filteredTipps
+                                        self.dataLoading = false
+                                        
+                                        for (index, test) in self.filteredTipps.enumerated() {
+                                            if (userObject.checkedTipps.contains(test._id)){
+                                                self.filteredTipps[index].isChecked = true
+                                            }
+                                            if (userObject.savedTipps.contains(test._id)){
+                                                self.filteredTipps[index].isBookmarked = true
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -130,12 +121,12 @@ struct TippCardList: View {
                             if (self.filteredTipps.count > 0) {
                                 ZStack {
                                     if showOnlineTipps {
-                                        ExtractedCardList(loading: loading, filteredTipps: filteredTipps, cardColors: cardColors)
+                                        ExtractedCardList(loading: loading, filteredTipps: filteredTipps, cardColors: cardColors, user: user)
                                             .environmentObject(ApiUrl())
                                             .opacity(showOfflineTipps ? 0 : 1)
                                     }
                                     if showOfflineTipps {
-                                        ExtractedCardList(loading: loading, filteredTipps: filteredTipps, cardColors: cardColors)
+                                        ExtractedCardList(loading: loading, filteredTipps: filteredTipps, cardColors: cardColors, user: user)
                                             .environmentObject(ApiUrl())
                                     }
                                 }
@@ -150,12 +141,12 @@ struct TippCardList: View {
                                 if (redraw.redraw){
                                     ZStack {
                                         if showOnlineTipps {
-                                            ExtractedCardList(loading: loading, filteredTipps: filteredTipps, cardColors: cardColors)
+                                            ExtractedCardList(loading: loading, filteredTipps: filteredTipps, cardColors: cardColors, user: user)
                                                 .environmentObject(ApiUrl())
                                                 .opacity(showOfflineTipps ? 0 : 1)
                                         }
                                         if showOfflineTipps {
-                                            ExtractedCardList(loading: loading, filteredTipps: filteredTipps, cardColors: cardColors)
+                                            ExtractedCardList(loading: loading, filteredTipps: filteredTipps, cardColors: cardColors, user: user)
                                                 .environmentObject(ApiUrl())
                                         }
                                     }
@@ -199,12 +190,14 @@ struct TippCardList: View {
             Api().fetchTipps { (filteredTipps) in
                 self.filteredTipps = []
                 self.filteredTipps = filteredTipps
-                self.dataLoading = false
-                self.showOnlineTipps = true
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                    self.showOfflineTipps = false
+                UserApi().fetchUser { (user) in
+                    self.user = user
+                    self.dataLoading = false
+                    self.showOnlineTipps = true
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        self.showOfflineTipps = false
+                    }
                 }
-                
                 for (i, _) in filteredTipps.enumerated() {
                     if (i < 10 && (filteredTipps.count > i)) {
                         offlineTipps.append(filteredTipps[i])
@@ -234,7 +227,6 @@ struct TippCardList: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             changeFilter.changeFilterProfile = false
         }
-        print(filterString.filterString)
     }
     
     func filterTipps(filterName: String){
@@ -311,7 +303,7 @@ struct ExtractedCardList: View {
     var loading: Bool
     @State var filteredTipps: [Tipp]
     var cardColors: [String]
-    @State var user: User = User(_id: "", phoneId: "", checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
+    @State var user: User
     @State var userLoaded = true
     
     @State var load = 0
@@ -371,37 +363,34 @@ struct ExtractedCardList: View {
                     .background(Color("background"))
                     .animation(.spring())
                 }
-                .onAppear(){
-                    print(filterString.filterString)
-//                }
-            }
         }
         .frame(height: UIScreen.main.bounds.height/2.1 + 20)
         .offset(x: loading ? 300 : 0)
         .animation(.spring())
-        .onAppear(){
-            getUser()
-        }
+//        .onAppear(){
+//            getUser()
+//        }
     }
     
-    func getUser() {
-        guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
-        let request = URLRequest(url: url)
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data else {
-                print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
-                return
-            }
-            if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
-                userLoaded = false
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
-                    userLoaded = true
-                })
-                user = decodedResponse
-            }
-        }.resume()
-    }
+//    func getUser() {
+//        guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
+//        let request = URLRequest(url: url)
+//
+//        URLSession.shared.dataTask(with: request) { data, response, error in
+//            guard let data = data else {
+//                print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
+//                return
+//            }
+//            if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
+//                userLoaded = false
+//                user = decodedResponse
+//                print(user)
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: {
+//                    userLoaded = true
+//                })
+//            }
+//        }.resume()
+//    }
 }
 
 class UIScrollViewViewController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewDelegate {

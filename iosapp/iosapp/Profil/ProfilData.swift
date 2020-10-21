@@ -26,7 +26,7 @@ struct ProfilData: View {
     @EnvironmentObject var user2: UserObserv
     @EnvironmentObject var myUrl: ApiUrl
     
-//    @State var name: String = UserDefaults.standard.string(forKey: "userName") ?? "User123"
+    @State var name: String = UserDefaults.standard.string(forKey: "userName") ?? "User123"
     @State var age: String = ""
     @State var gender: String = ""
     @State var hideInfo: Bool = UserDefaults.standard.bool(forKey: "hideInfo")
@@ -43,10 +43,10 @@ struct ProfilData: View {
     var body: some View {
         
         let binding = Binding<String>(get: {
-            self.user2.name
+            name
         }, set: {
-            self.user2.name = $0
-            UserDefaults.standard.set(user2.name, forKey: "userName")
+            name = $0
+            UserDefaults.standard.set(name, forKey: "userName")
             if (user.name !=  $0){
                 self.isChanged = true
             }
@@ -78,16 +78,15 @@ struct ProfilData: View {
                 VStack {
                     Text("Name:")
                         .font(.system(size: 16, weight: Font.Weight.medium))
-                        .onTapGesture(perform: {
-                            self.hideKeyboard()
-                        })
                     ZStack{
-                        MultilineTextView2(text: binding, isFirstResponder: $firstResponder, maxLength: 13)
+//                        MultilineTextView2(text: binding, isFirstResponder: $firstResponder, maxLength: 13)
+//                            .frame(height: 40)
+                        CustomTextField2(text: binding, isFirstResponder: $firstResponder, maxLength: 13)
                             .frame(height: 40)
                         VStack {
                             HStack {
                                 Spacer()
-                                Text("\(user2.name.count)/\(13)")
+                                Text("\(name.count)/\(13)")
                                     .padding(10)
                                     .font(.system(size: screen.width < 500 ? screen.width * 0.03 : 12))
                                     .opacity(0.5)
@@ -181,79 +180,86 @@ struct ProfilData: View {
                             .background(Color(.black).opacity(0.1))
                             .cornerRadius(10)
                             .padding()
+                            .onTapGesture(perform: {
+                                self.firstResponder = false
+                                self.hideKeyboard()
+                            })
                     }
                     
-                    Spacer()
-                    
-                    if #available(iOS 14, *) {
-                        Button(action: {
-                            self.posting = true
-                            self.isChanged = true
-                            self.firstResponder = false
-                            self.hideKeyboard()
-                            self.firstResponder = false
-                            self.postUserData()
-                        }){
-                            HStack (spacing: 15) {
-                                if (posting) {
-                                    LottieView(filename: "loadingWhite", loop: true)
-                                        .frame(width: 20, height: 20)
-                                        .scaleEffect(3)
-                                } else {
-                                    Image(systemName: isChanged ? "doc" : "checkmark")
-                                        .font(.headline)
-                                        .padding(.leading, 5)
+                    Group {
+                        
+                        Spacer()
+                        
+                        if #available(iOS 14, *) {
+                            Button(action: {
+                                self.posting = true
+                                self.isChanged = true
+                                self.firstResponder = false
+                                self.hideKeyboard()
+                                self.firstResponder = false
+                                self.postUserData(name: name, age: age, gender: gender, hideInfo: hideInfo)
+                            }){
+                                HStack (spacing: 15) {
+                                    if (posting) {
+                                        LottieView(filename: "loadingWhite", loop: true)
+                                            .frame(width: 20, height: 20)
+                                            .scaleEffect(3)
+                                    } else {
+                                        Image(systemName: isChanged ? "doc" : "checkmark")
+                                            .font(.headline)
+                                            .padding(.leading, 5)
+                                    }
+                                    Text(isChanged ? "Speichern" : "Gespeichert")
+                                        .font(.system(size: screen.width < 500 ? screen.width * 0.050 : 18, weight: .medium))
+                                        .padding(.trailing, 3)
                                 }
-                                Text(isChanged ? "Speichern" : "Gespeichert")
-                                    .font(.system(size: screen.width < 500 ? screen.width * 0.050 : 18, weight: .medium))
-                                    .padding(.trailing, 3)
+                                .accentColor(Color("white"))
+                                .padding(UIScreen.main.bounds.height < 600 ? 10 : 15)
+                                .background(Color("blue"))
+                                .cornerRadius(15)
                             }
-                            .accentColor(Color("white"))
-                            .padding(UIScreen.main.bounds.height < 600 ? 10 : 15)
-                            .background(Color("blue"))
-                            .cornerRadius(15)
-                        }
-                        .disabled(!isChanged)
-                    } else {
-                        Button(action: {
-                            self.posting = true
-                            self.isChanged = true
-                            self.firstResponder = false
-                            self.hideKeyboard()
-                            self.firstResponder = false
-                            self.postUserData()
-                        }){
-                            HStack (spacing: 15) {
-                                if (posting) {
-                                    LottieView(filename: "loadingWhite", loop: true)
-                                        .frame(width: 20, height: 20)
-                                        .scaleEffect(3)
-                                } else {
-                                    Image(systemName: isChanged ? "doc" : "checkmark")
-                                        .font(.headline)
-                                        .padding(.leading, 5)
+                            .disabled(!isChanged)
+                        } else {
+                            Button(action: {
+                                self.posting = true
+                                self.isChanged = true
+                                self.firstResponder = false
+                                self.hideKeyboard()
+                                self.firstResponder = false
+                                self.postUserData(name: name, age: age, gender: gender, hideInfo: hideInfo)
+                            }){
+                                HStack (spacing: 15) {
+                                    if (posting) {
+                                        LottieView(filename: "loadingWhite", loop: true)
+                                            .frame(width: 20, height: 20)
+                                            .scaleEffect(3)
+                                    } else {
+                                        Image(systemName: isChanged ? "doc" : "checkmark")
+                                            .font(.headline)
+                                            .padding(.leading, 5)
+                                    }
+                                    Text(isChanged ? "Speichern" : "Gespeichert")
+                                        .font(.system(size: screen.width < 500 ? screen.width * 0.050 : 18, weight: .medium))
+                                        .padding(.trailing, 3)
                                 }
-                                Text(isChanged ? "Speichern" : "Gespeichert")
-                                    .font(.system(size: screen.width < 500 ? screen.width * 0.050 : 18, weight: .medium))
-                                    .padding(.trailing, 3)
+                                .accentColor(Color("white"))
+                                .padding(screen.height < 600 ? 10 : 15)
+                                .background(Color("blue"))
+                                .cornerRadius(15)
                             }
-                            .accentColor(Color("white"))
-                            .padding(screen.height < 600 ? 10 : 15)
-                            .background(Color("blue"))
-                            .cornerRadius(15)
+                            .padding(.bottom, keyboard.currentHeight)
+                            .disabled(!isChanged)
                         }
-                        .padding(.bottom, keyboard.currentHeight)
-                        .disabled(!isChanged)
+                        Spacer()
                     }
-                    Spacer()
+                    .onTapGesture(perform: {
+                        self.firstResponder = false
+                        self.hideKeyboard()
+                    })
                 }
                 .accentColor(.primary)
                 .background(Color("background"))
                 .animation(.spring())
-                .onTapGesture(perform: {
-                    self.firstResponder = false
-                    self.hideKeyboard()
-                })
                 Spacer()
             }
         }
@@ -299,14 +305,16 @@ struct ProfilData: View {
             .resume()
     }
     
-    func postUserData(){
-        let patchData = UserNameAgeGen(name: user2.name, age: age, gender: gender, hideInfo: hideInfo)
+    func postUserData(name: String, age: String, gender: String, hideInfo: Bool){
+        let patchData = UserNameAgeGen(name: name, age: age, gender: gender, hideInfo: hideInfo)
+        
+        print(patchData)
         
         guard let encoded = try? JSONEncoder().encode(patchData) else {
                 print("Failed to encode order")
                 return
             }
-            
+        
         guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
             var request = URLRequest(url: url)
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")

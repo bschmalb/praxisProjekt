@@ -1038,6 +1038,15 @@ struct MultilineTextView2: UIViewRepresentable {
                 self.isFirstResponder = false
             }
         }
+        
+        func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+                if(text == "\n") {
+                    textView.resignFirstResponder()
+                    isFirstResponder = false
+                    return false
+                }
+                return true
+            }
     }
     
     @Binding var text: String
@@ -1061,6 +1070,8 @@ struct MultilineTextView2: UIViewRepresentable {
         view.layer.borderColor = myColor.cgColor
         view.delegate = context.coordinator
         view.font = .systemFont(ofSize: 18)
+        view.textContainer.maximumNumberOfLines = 1
+        view.textContainer.lineBreakMode = .byTruncatingTail
         return view
     }
 
