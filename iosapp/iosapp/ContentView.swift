@@ -72,10 +72,6 @@ class FilterString: ObservableObject {
     }
     init() {
         self.filterString = UserDefaults.standard.stringArray(forKey: "filterString") ?? ["Ernährung", "Transport", "Haushalt", "Ressourcen", "Leicht", "Mittel", "Schwer", "Offiziell", "Community"]
-        if (self.filterString.count < 2) {
-            self.filterString = ["Ernährung", "Transport", "Haushalt", "Ressourcen", "Leicht", "Mittel", "Schwer", "Offiziell", "Community"]
-            UserDefaults.standard.set(filterString, forKey: "filterString")
-        }
     }
 }
 
@@ -90,10 +86,6 @@ class FilterStringFacts: ObservableObject {
     }
     init() {
         self.filterString = UserDefaults.standard.stringArray(forKey: "filterStringFacts") ?? ["Ernährung", "Transport", "Haushalt", "Ressourcen", "Offiziell", "Community"]
-        if (self.filterString.count < 2) {
-            self.filterString = ["Ernährung", "Transport", "Haushalt", "Ressourcen", "Offiziell", "Community"]
-            UserDefaults.standard.set(filterString, forKey: "filterStringFacts")
-        }
     }
 }
 
@@ -146,10 +138,13 @@ struct ContentView: View {
     
     @State var showTutorial = UserDefaults.standard.bool(forKey: "showTutorial")
     @State var tutorialAnimation = !UserDefaults.standard.bool(forKey: "showTutorial")
+    @State var nameUpdated = UserDefaults.standard.bool(forKey: "nameUpdated")
     @State var launchScreen: Bool = true
     @State var launchScale: CGFloat = 1
     @State var tabViewSelected = 0
+    
     @State var idLoaded = false
+    @State var filterChanged = false
     
     @State var loadLater = false
     
@@ -170,7 +165,7 @@ struct ContentView: View {
                 Color("background")
                     .edgesIgnoringSafeArea(.all)
                 VStack {
-                    if idLoaded {
+                    if idLoaded && filterChanged {
                         ZStack {
                             TippView(filter: filter)
                                 .offset(x: tippOffset)
@@ -331,7 +326,7 @@ struct ContentView: View {
                 .offset(x: tutorialAnimation ? UIScreen.main.bounds.width : 0)
                 .animation(.spring())
                 if (!showTutorial){
-                    StartTutorialView(show: $showTutorial, animation: $tutorialAnimation, filter: filter, launchScreen: $launchScreen).environmentObject(UserObserv())
+                    StartTutorialView(show: $showTutorial, animation: $tutorialAnimation, filter: filter, launchScreen: $launchScreen, filterChanged: $filterChanged).environmentObject(UserObserv())
                         .offset(x: tutorialAnimation ? 0 : -UIScreen.main.bounds.width)
                         .animation(.spring())
                 }
@@ -362,6 +357,15 @@ struct ContentView: View {
                     } else {
                         self.idLoaded = true
                     }
+                    
+                    if nameUpdated {
+                        self.updateName()
+                    }
+                    
+                    if (showTutorial) {
+                        self.filterChanged = true
+                    }
+                    
                     if self.appearenceDark {
                         self.model.isDark = true
                     }else{
@@ -385,6 +389,29 @@ struct ContentView: View {
                     }
             }
         }
+    }
+    
+    func updateName() {
+        let name = UserDefaults.standard.string(forKey: "userName") ?? "User123"
+        
+        let patchData = UserNameAgeGen(name: name)
+        
+        print(patchData)
+        guard let encoded = try? JSONEncoder().encode(patchData) else {
+            print("Failed to encode order")
+            return
+        }
+        
+        guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
+        var request = URLRequest(url: url)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "PATCH"
+        request.httpBody = encoded
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            UserDefaults.standard.set(true, forKey: "nameUpdated")
+            print("nameUpdated \(name)")
+        }.resume()
     }
     
     func loadObject() {
@@ -454,7 +481,6 @@ struct ContentView: View {
     }
     
     func createUser(){
-        print("createUser")
         if let uuid = UIDevice.current.identifierForVendor?.uuidString {
             let userData = PostUser(phoneId: uuid)
             

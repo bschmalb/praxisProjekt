@@ -21,9 +21,10 @@ struct ProfilTippView: View {
     @State var id = UserDefaults.standard.string(forKey: "id")
     
     @State var loading = true
-    @State var loading2 = true
+    @State var showSliderView = false
     
     @State var allTipps: [Tipp] = []
+    @State var ownTipps: [Tipp] = []
     
     @State var userObject: User = User(_id: "", phoneId: "", level: 0, checkedTipps: [], savedTipps: [], log: [])
     
@@ -67,8 +68,9 @@ struct ProfilTippView: View {
                 VStack{
                     SliderView(slidingText: $slidingText, selectWidth: $selectWidth, tippOffset: $tippOffset, tabSelected: $tabSelected, geoMidChecked: $geoMidChecked, geoMidSaved: $geoMidSaved, geoMidOwn: $geoMidOwn)
                         .offset(y: -10)
-                        .opacity(loading ? 0 : 1)
-                    if (!changeFilter.changeFilter){
+                        .opacity(showSliderView ? 1 : 0)
+                        .animation(.spring())
+                    if (!loading){
                         ZStack {
                             VStack {
                                 if (!self.allTipps.isEmpty) {
@@ -122,9 +124,6 @@ struct ProfilTippView: View {
                                         }
                                         .padding(.bottom, 10)
                                     }
-                                    .onAppear(){
-                                        print("showScrollView")
-                                    }
                                 }
                             }
                             .gesture(DragGesture()
@@ -148,22 +147,32 @@ struct ProfilTippView: View {
                             .offset(x: self.tabSelected == 0 ? UIScreen.main.bounds.width : 0)
                             .offset(x: self.tabSelected == 2 ? -UIScreen.main.bounds.width : 0)
                             VStack {
-                                if (!self.allTipps.isEmpty) {
+                                if (!self.ownTipps.isEmpty) {
                                     ScrollView(.vertical, showsIndicators: false) {
-                                        ForEach(self.allTipps.indices, id: \.self) { index in
+                                        ForEach(self.ownTipps.indices, id: \.self) { index in
                                             VStack (spacing: 0) {
-                                                if(self.id == self.allTipps[index].postedBy) {
-                                                    SmallTippCard(
-                                                        isChecked: self.$allTipps[index].isChecked,
-                                                        isBookmarked: self.$allTipps[index].isBookmarked,
-                                                        tipp: self.allTipps[index],
-                                                        color: self.cardColor[index % 8])
-                                                        .frame(minHeight: 140, idealHeight: 150, maxHeight: 160)
-                                                        .padding(.vertical, 5)
-                                                }
+                                                SmallTippCard(
+                                                    isChecked: self.$allTipps[index].isChecked,
+                                                    isBookmarked: self.$allTipps[index].isBookmarked,
+                                                    tipp: self.allTipps[index],
+                                                    color: self.cardColor[index % 8])
+                                                    .frame(minHeight: 140, idealHeight: 150, maxHeight: 160)
+                                                    .padding(.vertical, 5)
                                             }
                                         }
                                         .padding(.bottom, 10)
+                                    }
+                                } else {
+                                    VStack {
+                                        Image("I")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(minHeight: 40, idealHeight: 200, maxHeight: 300)
+                                            .padding(.horizontal, 30)
+                                        Text("Lade eigene Tipps hoch um diese hier wieder zu finden!")
+                                            .multilineTextAlignment(.center)
+                                            .padding(.horizontal)
+                                        Spacer()
                                     }
                                 }
                             }
@@ -180,76 +189,21 @@ struct ProfilTippView: View {
                             .frame(maxWidth: UIScreen.main.bounds.width)
                             .offset(x: self.tabSelected == 2 ? 0 : UIScreen.main.bounds.width)
                         }
-                        .opacity(loading2 ? 0 : 1)
                         .animation(.spring())
                     } else {
                         VStack{
                             LottieView(filename: "loadingCircle", loop: true)
                                 .frame(width: 50, height: 50)
                         }.frame(maxHeight: UIScreen.main.bounds.height * 0.8)
-                        .onAppear(){
-                            AllApi().fetchAllTipps { (allTipps) in
-                                self.allTipps = allTipps
-                                if (self.allTipps.count > 0) {
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                                        self.changeFilter.changeFilter = false
-                                    }
-                                }
-                                for (index, test) in self.allTipps.enumerated() {
-                                    if (userObject.checkedTipps.contains(test._id)){
-                                        self.allTipps[index].isChecked = true
-                                    }
-                                    if (userObject.savedTipps.contains(test._id)){
-                                        self.allTipps[index].isBookmarked = true
-                                    }
-                                }
-                                
-                            }
-                        }
                     }
                     Spacer()
                 }
             }
-            VStack {
-                if (loading || loading2) {
-                    VStack{
-                        LottieView(filename: "loadingCircle", loop: true)
-                            .frame(width: 50, height: 50)
-                    }
-                }
-            }
             .onAppear{
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
-                    self.loading = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    self.showSliderView = true
                 }
-                guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
-                    let request = URLRequest(url: url)
-                    
-                    URLSession.shared.dataTask(with: request) { data, response, error in
-                        guard let data = data else {
-                            print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
-                            return
-                        }
-                        if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
-                            userObject = decodedResponse
-                            AllApi().fetchAllTipps { (allTipps) in
-                                self.allTipps = allTipps
-                                if (self.allTipps.count > 0) {
-                                    for (index, test) in self.allTipps.enumerated() {
-                                        if (userObject.checkedTipps.contains(test._id)){
-                                            self.allTipps[index].isChecked = true
-                                        }
-                                        if (userObject.savedTipps.contains(test._id)){
-                                            self.allTipps[index].isBookmarked = true
-                                        }
-                                    }
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                        self.loading2 = false
-                                    }
-                                }
-                            }
-                        }
-                    }.resume()
+                loadUser()
             }
         }
         .accentColor(.black)
@@ -259,6 +213,68 @@ struct ProfilTippView: View {
                             self.mode.wrappedValue.dismiss()
                         }
                     }))
+    }
+    
+    func loadUser() {
+        guard let url = URL(string: myUrl.users + (id ?? "")) else { return }
+        let request = URLRequest(url: url)
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data else {
+                print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
+                return
+            }
+            if let decodedResponse = try? JSONDecoder().decode(User.self, from: data) {
+                userObject = decodedResponse
+                loadOwnTipps()
+                loadAllTipps()
+            }
+        }.resume()
+    }
+    
+    func loadOwnTipps() {
+        let ownUrl = myUrl.tipps + "postedBy=" + (id ?? "")
+        guard let url = URL(string: ownUrl) else { return }
+        let request = URLRequest(url: url)
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            guard let data = data else {
+                print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
+                return
+            }
+            if let tipps = try? JSONDecoder().decode([Tipp].self, from: data) {
+                self.ownTipps = tipps
+                if (self.ownTipps.count > 0) {
+                    for (index, test) in self.ownTipps.enumerated() {
+                        if (userObject.checkedTipps.contains(test._id)){
+                            self.ownTipps[index].isChecked = true
+                        }
+                        if (userObject.savedTipps.contains(test._id)){
+                            self.ownTipps[index].isBookmarked = true
+                        }
+                    }
+                }
+            }
+        }.resume()
+    }
+    
+    func loadAllTipps() {
+        TippApi().fetchAll { (allTipps) in
+            self.allTipps = allTipps
+            if (self.allTipps.count > 0) {
+                for (index, test) in self.allTipps.enumerated() {
+                    if (userObject.checkedTipps.contains(test._id)){
+                        self.allTipps[index].isChecked = true
+                    }
+                    if (userObject.savedTipps.contains(test._id)){
+                        self.allTipps[index].isBookmarked = true
+                    }
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    self.loading = false
+                }
+            }
+        }
     }
 }
 

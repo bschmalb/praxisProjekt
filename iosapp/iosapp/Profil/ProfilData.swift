@@ -308,8 +308,6 @@ struct ProfilData: View {
     func postUserData(name: String, age: String, gender: String, hideInfo: Bool){
         let patchData = UserNameAgeGen(name: name, age: age, gender: gender, hideInfo: hideInfo)
         
-        print(patchData)
-        
         guard let encoded = try? JSONEncoder().encode(patchData) else {
                 print("Failed to encode order")
                 return

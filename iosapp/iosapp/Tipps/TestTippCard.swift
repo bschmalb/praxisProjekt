@@ -170,7 +170,6 @@ struct TestTippCard: View {
                             .resizable()
                             .scaledToFit()
                             .frame(minHeight: 40, idealHeight: 200, maxHeight: 300)
-                            .drawingGroup()
                         Text(tipp.title)
                             .font(.system(size: size.size.width < 500 ? size.size.width * 0.07  - CGFloat(tipp.title.count / 25) : 26, weight: .medium))
                             .fixedSize(horizontal: false, vertical: showSourceTextView ? false : true)

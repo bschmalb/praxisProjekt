@@ -71,20 +71,19 @@ struct TippCardList: View {
             }.accentColor(Color("black"))
             
             ZStack {
-                if !listOpacity {
-                    TippUICollectionViewWrapper {}
-                        .environmentObject(FilterString())
-                        .environmentObject(ApiUrl())
-                        .animation(.spring())
-                        .opacity(loading ? 0 : 1)
-                }
                 if (loading) {
                     LottieView(filename: "loadingCircle", loop: true)
                         .shadow(color: Color(.white), radius: 1, x: 0, y: 0)
                         .frame(width: 100, height: 100)
                         .frame(height: UIScreen.main.bounds.height/2.1 + 20)
                 }
-                if (!filterString.filterString.contains(where: filterCategory2.contains) || !filterString.filterString.contains(where: filterLevel2.contains) || !filterString.filterString.contains(where: filterPoster.contains)){
+                if !(!filterString.filterString.contains(where: filterCategory2.contains) || !filterString.filterString.contains(where: filterLevel2.contains) || !filterString.filterString.contains(where: filterPoster.contains)) && !listOpacity {
+                    TippUICollectionViewWrapper {}
+                        .environmentObject(FilterString())
+                        .environmentObject(ApiUrl())
+                        .animation(.spring())
+                        .opacity(loading ? 0 : 1)
+                } else {
                     SelectMoreFilter(filterString: filterString.filterString, categories: filterCategory2, levels: filterLevel2, posters: filterPoster)
                         .opacity(loading ? 0 : 1)
                 }

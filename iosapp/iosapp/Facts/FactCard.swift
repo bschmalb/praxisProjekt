@@ -29,21 +29,28 @@ struct FactCard: View {
     
     @State var user2: User = User(_id: "", phoneId: "", level: 2, checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
     
+    var isFact: Bool = true
+    var loaded = true
+    
     var body: some View {
         
         ZStack {
-            FactCardBackground(fact: fact, isBookmarked: $fact.isBookmarked, quelleShowing: $quelleShowing, color: color, options: $options, user2: $user2)
-            FactCardMain(user2: $user2, fact: fact, isBookmarked: $fact.isBookmarked, quelleShowing: $quelleShowing, color: color, options: $options, user: user)
+            if loaded {
+                if isFact {
+                    FactCardBackground(fact: fact, isBookmarked: $fact.isBookmarked, quelleShowing: $quelleShowing, color: color, options: $options, user2: $user2)
+                }
+                FactCardMain(user2: $user2, fact: fact, isBookmarked: $fact.isBookmarked, quelleShowing: $quelleShowing, color: color, options: $options, user: user, isFact: isFact)
+            }
         }
         .animation(.spring())
         .accentColor(.black)
         .frame(width: UIScreen.main.bounds.width > 600 ? 600 - 30 : UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height/2.1)
-//        .onTapGesture(){}
-//        .gesture(DragGesture()
-//                    .onChanged({ (value) in
-//                        self.options = false
-//                        print("drag")
-//                    }))
+        //        .onTapGesture(){}
+        //        .gesture(DragGesture()
+        //                    .onChanged({ (value) in
+        //                        self.options = false
+        //                        print("drag")
+        //                    }))
     }
 }
 
@@ -83,6 +90,8 @@ struct FactCardMain: View {
     
     @State var user: User
     
+    var isFact: Bool
+    
     var body: some View {
         GeometryReader { size in
             ZStack {
@@ -92,106 +101,113 @@ struct FactCardMain: View {
                         .resizable()
                         .scaledToFit()
                         .frame(minHeight: 30, idealHeight: 200, maxHeight: 300)
-                        .drawingGroup()
+                        .padding(.horizontal, isFact ? 0 : 30)
                     Text(fact.title)
-                        .font(.system(size: size.size.width < 500 ? size.size.width * 0.07  - CGFloat(fact.title.count / 25) : 26, weight: .medium))
+                        .font(.system(size: isFact ? (size.size.width < 500 ? size.size.width * 0.07  - CGFloat(fact.title.count / 25) : 26) : 15, weight: .medium))
                         .fixedSize(horizontal: false, vertical: showSourceTextView ? false : true)
-                        .foregroundColor(Color("alwaysblack"))
+                        .foregroundColor(isFact ? Color("alwaysblack") : Color("black"))
                         .multilineTextAlignment(.center)
                         .padding(.horizontal)
-                    if (showSourceTextView){
-                        SourceTextView(source: fact.source, show: $showSourceTextView, color: color)
-                    } else {
-                        if (fact.source.count > 3) {
-                            HStack (spacing: 5){
-                                Text("Quelle")
-                                    .foregroundColor(.gray)
-                                    .font(.system(size: size.size.width * 0.03, weight: .medium))
-                                    .multilineTextAlignment(.center)
-                                    .padding(.top, 5)
-//                                if isURL() {
-//                                    Image(systemName: "link")
-//                                        .foregroundColor(.gray)
-//                                        .font(.system(size: size.size.width * 0.02, weight: .medium))
-//                                }
-                            }
-                            .onTapGesture {
-                                impact(style: .medium)
-                                self.openSource()
+                        .padding(.bottom, isFact ? 0 : 50)
+                    if isFact {
+                        if (showSourceTextView){
+                            SourceTextView(source: fact.source, show: $showSourceTextView, color: color)
+                        } else {
+                            if (fact.source.count > 3) {
+                                HStack (spacing: 5){
+                                    Text("Quelle")
+                                        .foregroundColor(.gray)
+                                        .font(.system(size: size.size.width * 0.03, weight: .medium))
+                                        .multilineTextAlignment(.center)
+                                        .padding(.top, 5)
+                                    //                                if isURL() {
+                                    //                                    Image(systemName: "link")
+                                    //                                        .foregroundColor(.gray)
+                                    //                                        .font(.system(size: size.size.width * 0.02, weight: .medium))
+                                    //                                }
+                                }
+                                .onTapGesture {
+                                    impact(style: .medium)
+                                    self.openSource()
                                 }
                                 .sheet(isPresented: $quelleShowing) {
                                     QuelleView(quelle: fact.source, quelleShowing: self.$quelleShowing)
                                         .environmentObject(ApiUrl())
                                 }
+                            }
                         }
                     }
                     Spacer()
-                    HStack {
-                        Spacer()
-                        ReactionButton(width: size.size.width, isSelected: $isLoved, scale: $loveScale, emoji: "😍", amount: fact.isLoved, fact: fact)
-                        Spacer()
-                        ReactionButton(width: size.size.width, isSelected: $isSurprised, scale: $surprisedScale, emoji: "🤯", amount: fact.isSurprised, fact: fact)
-                        Spacer()
-                        ReactionButton(width: size.size.width, isSelected: $isAngry, scale: $angryScale, emoji: "😠", amount: fact.isAngry, fact: fact)
-                        Spacer()
-                        Image(systemName: "bookmark")
-                            .font(Font.system(size: size.size.width < 500 ? size.size.width * 0.06 : 22, weight: isBookmarked ? .medium : .regular))
-                            .foregroundColor(Color(isBookmarked ? .white : .black))
-                            .scaleEffect(bookmarkScale)
-                            .animation(.spring())
-                            .padding(10)
-                            .onTapGesture(){
-                                self.isBookmarked.toggle()
-                                self.addToProfile(tippId: self.fact._id, method: 1)
-
-                                self.bookmarkScale = 1.2
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                    self.bookmarkScale = 1
+                    if isFact {
+                        HStack {
+                            Spacer()
+                            ReactionButton(width: size.size.width, isSelected: $isLoved, scale: $loveScale, emoji: "😍", amount: fact.isLoved, fact: fact)
+                            Spacer()
+                            ReactionButton(width: size.size.width, isSelected: $isSurprised, scale: $surprisedScale, emoji: "🤯", amount: fact.isSurprised, fact: fact)
+                            Spacer()
+                            ReactionButton(width: size.size.width, isSelected: $isAngry, scale: $angryScale, emoji: "😠", amount: fact.isAngry, fact: fact)
+                            Spacer()
+                            Image(systemName: "bookmark")
+                                .font(Font.system(size: size.size.width < 500 ? size.size.width * 0.06 : 22, weight: isBookmarked ? .medium : .regular))
+                                .foregroundColor(Color(isBookmarked ? .white : .black))
+                                .scaleEffect(bookmarkScale)
+                                .animation(.spring())
+                                .padding(10)
+                                .onTapGesture(){
+                                    self.isBookmarked.toggle()
+                                    self.addToProfile(tippId: self.fact._id, method: 1)
+                                    
+                                    self.bookmarkScale = 1.2
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                        self.bookmarkScale = 1
+                                    }
+                                    
+                                    self.levelEnv.level += 5
+                                    UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
+                                    
+                                    impact(style: .medium)
                                 }
-
-                                self.levelEnv.level += 5
-                                UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
-
-                                impact(style: .medium)
-                            }
-                        Spacer()
+                            Spacer()
+                        }
                     }
                     Spacer()
                         .frame(maxHeight: 10)
                     
                 }
-                VStack {
-                    HStack(alignment: .top, spacing: 10) {
-                        Image(fact.category)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: size.size.width < 500 ? size.size.width * 0.07 : 40, height: size.size.width < 500 ? size.size.width * 0.07 : 40)
-                            .opacity(0.1)
-                            .padding(.leading, 20)
-                            .padding(.vertical)
-                        Image(fact.official)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: size.size.width < 500 ? size.size.width * 0.07 : 40, height: size.size.width < 500 ? size.size.width * 0.07 : 40)
-                            .opacity(0.1)
-                            .padding(.vertical)
+                if isFact {
+                    VStack {
+                        HStack(alignment: .top, spacing: 10) {
+                            Image(fact.category)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: size.size.width < 500 ? size.size.width * 0.07 : 40, height: size.size.width < 500 ? size.size.width * 0.07 : 40)
+                                .opacity(0.1)
+                                .padding(.leading, 20)
+                                .padding(.vertical)
+                            Image(fact.official)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: size.size.width < 500 ? size.size.width * 0.07 : 40, height: size.size.width < 500 ? size.size.width * 0.07 : 40)
+                                .opacity(0.1)
+                                .padding(.vertical)
+                            Spacer()
+                            Image(systemName: "ellipsis")
+                                .font(.system(size: size.size.width < 400 ? size.size.width * 0.07 : 25, weight: Font.Weight.medium))
+                                .padding(25)
+                                .padding(.trailing, 5)
+                                .background(Color(color))
+                                .opacity(0.1)
+                                .onTapGesture(){
+                                    impact(style: .heavy)
+                                    self.options.toggle()
+                                    self.getPoster()
+                                }
+                        }.foregroundColor(Color("alwaysblack"))
                         Spacer()
-                        Image(systemName: "ellipsis")
-                            .font(.system(size: size.size.width < 400 ? size.size.width * 0.07 : 25, weight: Font.Weight.medium))
-                            .padding(25)
-                            .padding(.trailing, 5)
-                            .background(Color(color))
-                            .opacity(0.1)
-                            .onTapGesture(){
-                                impact(style: .heavy)
-                                self.options.toggle()
-                                self.getPoster()
-                            }
-                    }.foregroundColor(Color("alwaysblack"))
-                    Spacer()
+                    }
+                    .frame(width: UIScreen.main.bounds.width > 600 ? 600 - 30 : UIScreen.main.bounds.width - 30, height:
+                            UIScreen.main.bounds.height / 2.1)
                 }
-                .frame(width: UIScreen.main.bounds.width > 600 ? 600 - 30 : UIScreen.main.bounds.width - 30, height:
-                        UIScreen.main.bounds.height / 2.1)
             }
             .onTapGesture(perform: {
                 options = false
@@ -259,7 +275,6 @@ struct FactCardMain: View {
             let temp = "http://www.google.com/search?p=" + urlString
             correctUrl = temp.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "http://www.google.de"
         }
-        print(self.correctUrl)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.quelleShowing = true
@@ -401,29 +416,29 @@ struct ReactionButton: View {
 }
 
 struct FactCardBackground: View {
-
+    
     @State var id = UserDefaults.standard.string(forKey: "id")
-
+    
     @EnvironmentObject var changeFilter: ChangeFilter
     @EnvironmentObject var levelEnv: UserLevel
     @EnvironmentObject var myUrl: ApiUrl
-
+    
     var fact: Fact
     @Binding var isBookmarked: Bool
     @Binding var quelleShowing: Bool
-
+    
     var color: String
     @Binding var options: Bool
-
+    
     @State var showYouSure: Bool = false
-
+    
     @State var reportClicked: Bool = false
     @State var likeClicked: Bool = false
     @State var dislikeClicked: Bool = false
-
+    
     @Binding var user2: User
-
-
+    
+    
     var body: some View {
         GeometryReader { size in
             VStack (spacing: 0){
@@ -468,182 +483,182 @@ struct FactCardBackground: View {
                                 }
                                 Spacer()
                             }.foregroundColor(Color("alwaysblack"))
-//                            if (fact.postedBy == id) {
-//                            if (false) {
-//                                Group {
-//                                    ZStack {
-//                                        HStack {
-//                                            Spacer()
-//                                            Image(systemName: "trash")
-//                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
-//                                                .foregroundColor(.red)
-//                                                .opacity(0.8)
-//                                                .padding(10)
-//                                                .onTapGesture(){
-//                                                    impact(style: .medium)
-//                                                    self.deleteTipp()
-//                                                }
-//                                            Spacer()
-//                                            Image(systemName: "xmark")
-//                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
-//                                                .opacity(0.8)
-//                                                .padding(10)
-//                                                .onTapGesture(){
-//                                                    impact(style: .medium)
-//                                                    self.showYouSure = false
-//                                                }
-//                                            Spacer()
-//                                        }
-//                                        .offset(y: showYouSure ? 0 : 30)
-//                                        .opacity(showYouSure ? 1 : 0)
-//
-//                                        HStack (spacing: 20){
-//                                            Image(systemName: dislikeClicked ? "trash.fill" : "trash")
-//                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
-//                                                .foregroundColor(.red)
-//                                                .opacity(0.8)
-//                                            Text("Tipp löschen")
-//                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
-//                                                .foregroundColor(.red)
-//                                                .opacity(0.8)
-//                                        }
-//                                        .padding(10)
-//                                        .offset(y: showYouSure ? -30 : 0)
-//                                        .opacity(showYouSure ? 0 : 1)
-//                                        .cornerRadius(15)
-//                                        .onTapGesture(){
-//                                            impact(style: .medium)
-//
-//                                            self.showYouSure = true
-//                                        }
-//                                    }.foregroundColor(Color("alwaysblack"))
-//                                    .animation(.spring())
-//                                    Spacer()
-//                                }
-//                            } else {
-                                Group {
-                                    HStack (spacing: 15){
-                                        Image(systemName: likeClicked ? "hand.thumbsup.fill" : "hand.thumbsup")
-                                            .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
-                                            .opacity(0.8)
-                                        Text("Positiv bewerten")
-                                            .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
-                                            .opacity(0.8)
-                                    }
-                                    .padding(10)
-                                    .cornerRadius(15)
-                                    .onTapGesture(){
-                                        impact(style: .medium)
-                                        if (self.likeClicked) {
-                                            self.patchScore2(score: -1)
-                                        } else {
-                                            if (self.reportClicked) {
-                                                self.reportClicked = false
-                                                self.patchScore(thumb: "unreport")
-                                            }
-                                            if (self.dislikeClicked) {
-                                                self.dislikeClicked = false
-                                                self.patchScore2(score: 1)
-                                            }
-                                            self.patchScore2(score: 1)
-                                        }
-                                        self.likeClicked.toggle()
-                                    }
-                                    Spacer()
-                                        .frame(maxHeight: 5)
-                                    HStack (spacing: 20){
-                                        Image(systemName: dislikeClicked ? "hand.thumbsdown.fill" : "hand.thumbsdown")
-                                            .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
-                                            .opacity(0.8)
-                                        Text("Negativ bewerten")
-                                            .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
-                                            .opacity(0.8)
-                                    }
-                                    .padding(10)
-                                    .cornerRadius(15)
-                                    .onTapGesture(){
-                                        impact(style: .medium)
-
-                                        if (!self.dislikeClicked && self.likeClicked) {
-                                            self.patchScore2(score: -1)
-                                            self.patchScore2(score: -1)
-                                        } else if (self.dislikeClicked) {
-                                            self.patchScore2(score: 1)
-                                        } else {
-                                            self.patchScore2(score: -1)
-                                        }
-                                        self.likeClicked = false
-                                        self.dislikeClicked.toggle()
-                                    }
-                                    Spacer()
-                                        .frame(maxHeight: 5)
-                                    HStack (spacing: 20){
-                                        Image(systemName: reportClicked ? "flag.fill" : "flag")
-                                            .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
-                                            .foregroundColor(.red)
-                                            .opacity(0.8)
-                                        Text("Diesen Tipp melden")
-                                            .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
-                                            .foregroundColor(.red)
-                                            .opacity(0.8)
-                                    }
-                                    .padding(10)
-                                    .cornerRadius(15)
-                                    .animation(.spring())
-                                    .onTapGesture(){
-                                        impact(style: .medium)
-                                        if (self.reportClicked) {
-                                            self.patchScore(thumb: "unreport")
-                                            self.patchScoreUser(reportedTipps: "unreport")
-                                        } else {
-                                            self.patchScore(thumb: "report")
-                                            self.patchScoreUser(reportedTipps: "report")
-                                            if (!self.dislikeClicked) {
-                                                self.dislikeClicked = true
-                                                self.patchScore2(score: -1)
-                                            }
-                                            if (self.likeClicked) {
-                                                self.likeClicked = false
-                                                self.patchScore2(score: -1)
-                                            }
-                                        }
-                                        self.reportClicked.toggle()
-                                    }
-                                    Spacer()
+                            //                            if (fact.postedBy == id) {
+                            //                            if (false) {
+                            //                                Group {
+                            //                                    ZStack {
+                            //                                        HStack {
+                            //                                            Spacer()
+                            //                                            Image(systemName: "trash")
+                            //                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+                            //                                                .foregroundColor(.red)
+                            //                                                .opacity(0.8)
+                            //                                                .padding(10)
+                            //                                                .onTapGesture(){
+                            //                                                    impact(style: .medium)
+                            //                                                    self.deleteTipp()
+                            //                                                }
+                            //                                            Spacer()
+                            //                                            Image(systemName: "xmark")
+                            //                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+                            //                                                .opacity(0.8)
+                            //                                                .padding(10)
+                            //                                                .onTapGesture(){
+                            //                                                    impact(style: .medium)
+                            //                                                    self.showYouSure = false
+                            //                                                }
+                            //                                            Spacer()
+                            //                                        }
+                            //                                        .offset(y: showYouSure ? 0 : 30)
+                            //                                        .opacity(showYouSure ? 1 : 0)
+                            //
+                            //                                        HStack (spacing: 20){
+                            //                                            Image(systemName: dislikeClicked ? "trash.fill" : "trash")
+                            //                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+                            //                                                .foregroundColor(.red)
+                            //                                                .opacity(0.8)
+                            //                                            Text("Tipp löschen")
+                            //                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
+                            //                                                .foregroundColor(.red)
+                            //                                                .opacity(0.8)
+                            //                                        }
+                            //                                        .padding(10)
+                            //                                        .offset(y: showYouSure ? -30 : 0)
+                            //                                        .opacity(showYouSure ? 0 : 1)
+                            //                                        .cornerRadius(15)
+                            //                                        .onTapGesture(){
+                            //                                            impact(style: .medium)
+                            //
+                            //                                            self.showYouSure = true
+                            //                                        }
+                            //                                    }.foregroundColor(Color("alwaysblack"))
+                            //                                    .animation(.spring())
+                            //                                    Spacer()
+                            //                                }
+                            //                            } else {
+                            Group {
+                                HStack (spacing: 15){
+                                    Image(systemName: likeClicked ? "hand.thumbsup.fill" : "hand.thumbsup")
+                                        .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+                                        .opacity(0.8)
+                                    Text("Positiv bewerten")
+                                        .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
+                                        .opacity(0.8)
                                 }
-                                .foregroundColor(Color("alwaysblack"))
-//                            }
+                                .padding(10)
+                                .cornerRadius(15)
+                                .onTapGesture(){
+                                    impact(style: .medium)
+                                    if (self.likeClicked) {
+                                        self.patchScore2(score: -1)
+                                    } else {
+                                        if (self.reportClicked) {
+                                            self.reportClicked = false
+                                            self.patchScore(thumb: "unreport")
+                                        }
+                                        if (self.dislikeClicked) {
+                                            self.dislikeClicked = false
+                                            self.patchScore2(score: 1)
+                                        }
+                                        self.patchScore2(score: 1)
+                                    }
+                                    self.likeClicked.toggle()
+                                }
+                                Spacer()
+                                    .frame(maxHeight: 5)
+                                HStack (spacing: 20){
+                                    Image(systemName: dislikeClicked ? "hand.thumbsdown.fill" : "hand.thumbsdown")
+                                        .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+                                        .opacity(0.8)
+                                    Text("Negativ bewerten")
+                                        .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
+                                        .opacity(0.8)
+                                }
+                                .padding(10)
+                                .cornerRadius(15)
+                                .onTapGesture(){
+                                    impact(style: .medium)
+                                    
+                                    if (!self.dislikeClicked && self.likeClicked) {
+                                        self.patchScore2(score: -1)
+                                        self.patchScore2(score: -1)
+                                    } else if (self.dislikeClicked) {
+                                        self.patchScore2(score: 1)
+                                    } else {
+                                        self.patchScore2(score: -1)
+                                    }
+                                    self.likeClicked = false
+                                    self.dislikeClicked.toggle()
+                                }
+                                Spacer()
+                                    .frame(maxHeight: 5)
+                                HStack (spacing: 20){
+                                    Image(systemName: reportClicked ? "flag.fill" : "flag")
+                                        .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+                                        .foregroundColor(.red)
+                                        .opacity(0.8)
+                                    Text("Diesen Tipp melden")
+                                        .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
+                                        .foregroundColor(.red)
+                                        .opacity(0.8)
+                                }
+                                .padding(10)
+                                .cornerRadius(15)
+                                .animation(.spring())
+                                .onTapGesture(){
+                                    impact(style: .medium)
+                                    if (self.reportClicked) {
+                                        self.patchScore(thumb: "unreport")
+                                        self.patchScoreUser(reportedTipps: "unreport")
+                                    } else {
+                                        self.patchScore(thumb: "report")
+                                        self.patchScoreUser(reportedTipps: "report")
+                                        if (!self.dislikeClicked) {
+                                            self.dislikeClicked = true
+                                            self.patchScore2(score: -1)
+                                        }
+                                        if (self.likeClicked) {
+                                            self.likeClicked = false
+                                            self.patchScore2(score: -1)
+                                        }
+                                    }
+                                    self.reportClicked.toggle()
+                                }
+                                Spacer()
+                            }
+                            .foregroundColor(Color("alwaysblack"))
+                            //                            }
                         }
                         .frame(width: size.size.width / 1.3)
                     }
                 }
             }
-                .frame(width: UIScreen.main.bounds.width > 600 ? 600 - 30 : UIScreen.main.bounds.width - 30, height:
-                        UIScreen.main.bounds.height / 2.1)
-                .background(Color.black.opacity(0.05))
-                .background(Color(color))
-                .cornerRadius(25)
-                .animation(.spring())
-            }
+            .frame(width: UIScreen.main.bounds.width > 600 ? 600 - 30 : UIScreen.main.bounds.width - 30, height:
+                    UIScreen.main.bounds.height / 2.1)
+            .background(Color.black.opacity(0.05))
+            .background(Color(color))
+            .cornerRadius(25)
+            .animation(.spring())
+        }
     }
-
+    
     func patchScore(thumb: String) {
-
+        
         let rating = Rate(thumb: thumb)
-
+        
         guard let encoded = try? JSONEncoder().encode(rating) else {
             print("Failed to encode order")
             return
         }
-
+        
         guard let url = URL(string: myUrl.facts + fact._id) else { return }
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "PATCH"
         request.httpBody = encoded
-
+        
         URLSession.shared.dataTask(with: request) { data, response, error in
-
+            
         }.resume()
     }
     
@@ -666,27 +681,27 @@ struct FactCardBackground: View {
             
         }.resume()
     }
-
+    
     func patchScoreUser(reportedTipps: String) {
-
+        
         let rating = ReportedTipps(reportedTipps: reportedTipps)
-
+        
         guard let encoded = try? JSONEncoder().encode(rating) else {
             print("Failed to encode order")
             return
         }
-
+        
         guard let url = URL(string: myUrl.users + fact.postedBy) else { return }
         var request = URLRequest(url: url)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpMethod = "PATCH"
         request.httpBody = encoded
-
+        
         URLSession.shared.dataTask(with: request) { data, response, error in
-
+            
         }.resume()
     }
-
+    
     func deleteTipp(){
         
         self.changeFilter.changeFilter = true
@@ -697,7 +712,7 @@ struct FactCardBackground: View {
         
         URLSession.shared.dataTask(with: request) { data, response, error in
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-//                self.loading = false
+                //                self.loading = false
             }
         }.resume()
     }

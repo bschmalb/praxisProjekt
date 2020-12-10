@@ -42,6 +42,7 @@ struct StartTutorialView: View {
     @State var successScale: Bool = false
     
     @Binding var launchScreen: Bool
+    @Binding var filterChanged: Bool
     
     @State var firstCapsule: CGFloat = 0
     @State var secondCapsule: CGFloat = 2
@@ -128,6 +129,10 @@ struct StartTutorialView: View {
                         else if (step == 2) {
                             self.secondCapsule += 1
                             self.thirdCapsule -= 1
+                        } else if (step == 4) {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                self.filterChanged = false
+                            }
                         }
                         
                         impact(style: .medium)
@@ -160,7 +165,9 @@ struct StartTutorialView: View {
                             self.secondCapsule -= 1
                             self.thirdCapsule += 1
                         } else if (step == 3){
-                            UserDefaults.standard.set(self.categories, forKey: "notCategory")
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                self.filterChanged = true
+                            }
                         }
                         
                         if (step < 4) {
@@ -244,7 +251,9 @@ struct StartTutorialView: View {
             }
         }
         .onAppear(){
-            getUserData()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                getUserData()
+            }
         }
     }
     
@@ -322,14 +331,14 @@ struct StartTutorialView: View {
 
 struct UserNameAgeGen: Encodable, Decodable {
     var name: String
-    var age: String
-    var gender: String
-    var hideInfo: Bool
+    var age: String?
+    var gender: String?
+    var hideInfo: Bool?
 }
 
 struct StartTutorialView_Previews: PreviewProvider {
     static var previews: some View {
-        StartTutorialView(show: .constant(false), animation: .constant(false), filter: FilterData2(), launchScreen: .constant(true)).environmentObject(UserObserv()).environmentObject(ChangeFilter()).environmentObject(FilterString())
+        StartTutorialView(show: .constant(false), animation: .constant(false), filter: FilterData2(), launchScreen: .constant(true), filterChanged: .constant(false)).environmentObject(UserObserv()).environmentObject(ChangeFilter()).environmentObject(FilterString())
     }
 }
 

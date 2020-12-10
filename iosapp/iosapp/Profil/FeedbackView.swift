@@ -78,6 +78,7 @@ struct FeedbackView: View {
                     Button(action: {
                         self.feedbackOptionSelected = 0
                         self.feedbackType = feedbackOptions[0]
+                        firstResponder = false
                     }){
                         Text(feedbackOptions[0])
                             .font(.system(size: screen.width < 500 ? screen.width * 0.035 : 14, weight: Font.Weight.medium))
@@ -90,6 +91,7 @@ struct FeedbackView: View {
                     Button(action: {
                         self.feedbackOptionSelected = 1
                         self.feedbackType = feedbackOptions[1]
+                        firstResponder = false
                     }){
                         Text(feedbackOptions[1])
                             .font(.system(size: screen.width < 500 ? screen.width * 0.035 : 14, weight: Font.Weight.medium))
@@ -102,6 +104,7 @@ struct FeedbackView: View {
                     Button(action: {
                         self.feedbackOptionSelected = 2
                         self.feedbackType = feedbackOptions[2]
+                        firstResponder = false
                     }){
                         Text(feedbackOptions[2])
                             .font(.system(size: screen.width < 500 ? screen.width * 0.035 : 14, weight: Font.Weight.medium))
@@ -114,26 +117,29 @@ struct FeedbackView: View {
                 }
                 .frame(maxWidth: screen.width - 30)
                 
-                ZStack{
-                    MultilineTextView2(text: binding, isFirstResponder: $firstResponder, maxLength: 250)
-                        .frame(minHeight: screen.height / 20, idealHeight: screen.height / 10, maxHeight: screen.height / 5)
-                    VStack {
-                        Spacer()
-                        HStack {
+                Section {
+                    ZStack{
+                        MultilineTextView(text: binding, isFirstResponder: $firstResponder, maxLength: 250)
+                            .frame(minHeight: screen.height / 20, idealHeight: screen.height / 10, maxHeight: screen.height / 5)
+                        VStack {
                             Spacer()
-                            Text("\(feedback.count)/250")
-                                .padding(10)
-                                .font(.system(size: screen.width < 500 ? screen.width * 0.03 : 12))
-                                .opacity(0.5)
+                            HStack {
+                                Spacer()
+                                Text("\(feedback.count)/250")
+                                    .padding(10)
+                                    .font(.system(size: screen.width < 500 ? screen.width * 0.03 : 12))
+                                    .opacity(0.5)
+                            }
                         }
                     }
+                    .frame(minHeight: screen.height / 20, idealHeight: screen.height / 10, maxHeight: screen.height / 5)
+                    .frame(maxWidth: UIScreen.main.bounds.width - 30)
+                    .padding(.vertical, 5)
                 }
-                .frame(minHeight: screen.height / 20, idealHeight: screen.height / 10, maxHeight: screen.height / 5)
-                .frame(maxWidth: UIScreen.main.bounds.width - 30)
-                .padding(.vertical, 5)
                 
                 Button(action: {
                     impact(style: .rigid)
+                    firstResponder = false
                     self.loading = true
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
                         self.loadingAnimation = true

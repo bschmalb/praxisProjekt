@@ -70,6 +70,7 @@ struct TagebuchView: View {
                             .padding(.bottom, 15)
                         Button(action: {
                             withAnimation {
+                                impact(style: .medium)
                                 self.show = false
                                 self.overlayLog.overlayLog = false
                             }
@@ -95,6 +96,7 @@ struct TagebuchView: View {
                     .scaleEffect(show ? 1 : 0.5)
                     .onTapGesture {
                         withAnimation {
+                            impact(style: .medium)
                             self.show = false
                             self.overlayLog.overlayLog = false
                         }
@@ -119,6 +121,7 @@ struct TagebuchView: View {
             .onTapGesture {
                 if (!self.firstUseLog) {
                 withAnimation {
+                    impact(style: .medium)
                     self.show = false
                     self.overlayLog.overlayLog = false
                 }

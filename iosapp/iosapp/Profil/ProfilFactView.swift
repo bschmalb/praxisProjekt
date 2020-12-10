@@ -144,7 +144,6 @@ struct ProfilFactView: View {
                                 .frame(width: 50, height: 50)
                         }.frame(maxHeight: UIScreen.main.bounds.height * 0.8)
                         .onAppear(){
-                            print("wrong fetchall")
                             FactApi().fetchAll { (allFacts) in
                                 self.allFacts = []
                                 self.allFacts = allFacts

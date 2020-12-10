@@ -15,7 +15,12 @@ struct AddTagebuchSuccess: View {
     @State var selection: Int? = 0
     
     var body: some View {
-        VStack {
+        let today = Date()
+        let formatter1 = DateFormatter()
+        formatter1.dateStyle = .short
+        let dateToday = formatter1.string(from: today)
+        
+        return VStack {
             Spacer()
             VStack {
                 Image("SofaChill")
@@ -23,7 +28,7 @@ struct AddTagebuchSuccess: View {
                     .scaledToFit()
                     .padding(.horizontal, 35)
                     .shadow(radius: 2)
-                Text("Du hast deinen Tagebucheintrag heute schon verfasst.\nSchaue hier morgen wieder vorbei!")
+                Text("Du hast deinen Tagebucheintrag für heute, den \(dateToday) schon verfasst.\nSchaue hier morgen wieder vorbei!")
                     .font(.system(size: UIScreen.main.bounds.width < 500 ? UIScreen.main.bounds.width * 0.045 : 20))
                     .multilineTextAlignment(.center)
                     .foregroundColor(Color("black").opacity(0.9))

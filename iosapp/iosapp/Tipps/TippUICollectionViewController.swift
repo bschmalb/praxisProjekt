@@ -22,15 +22,15 @@ class TippUICollectionViewController: UIViewController, UIGestureRecognizerDeleg
     var offlineTipps: [Tipp] = []
     var user: User = User(_id: "", phoneId: "", checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
     var filter: [String] = []
-    var loaded: Bool = false
-    let group = DispatchGroup()
-    var count = 0
+    var loading = true
+    
+    var noTippsAvailable = true
     
     var collectionView: UICollectionView!
     
     convenience init(filter: [String]) {
-        print(filter)
         self.init(nibName:nil, bundle:nil)
+        
         do {
             let storedObjTipp = UserDefaults.standard.object(forKey: "offlineTipps")
             if storedObjTipp != nil {
@@ -45,6 +45,10 @@ class TippUICollectionViewController: UIViewController, UIGestureRecognizerDeleg
             self.tipps = filteredTipps
             UserApi().fetchUser { user in
                 self.user = user
+                if self.tipps.count > 0 {
+                    self.noTippsAvailable = false
+                }
+                self.loading = false
                 self.collectionView.reloadData()
                 
                 for (i, _) in filteredTipps.enumerated() {
@@ -64,18 +68,38 @@ class TippUICollectionViewController: UIViewController, UIGestureRecognizerDeleg
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return tipps.count
+        return loading ? 1 : tipps.count > 0 ? tipps.count : 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let collectionCell = collectionView.dequeueReusableCell(withReuseIdentifier: "collectionViewCell", for: indexPath) as! HostingTableViewCell<TippCard2>
         collectionCell.prepareForReuse()
-        collectionCell.host(
-            TippCard2(
-                user: user,
-                tipp: tipps[indexPath.row],
-                color: cardColors[indexPath.row % cardColors.count]),
-            parent: self)
+        if loading {
+            collectionCell.host(
+                TippCard2(
+                    user: user,
+                    tipp: Tipp(_id: "", title: "Für deine ausgewählten Kategorien gibt es aktuell leider noch keine Tipps.\n\nWähle weitere Filter aus um Tipps zu sehen.", source: "", level: "", category: "", score: 300, postedBy: "", official: ""),
+                    color: cardColors[indexPath.row % cardColors.count],
+                    loaded: false),
+                parent: self)
+        } else {
+            if !noTippsAvailable {
+                collectionCell.host(
+                    TippCard2(
+                        user: user,
+                        tipp: tipps[indexPath.row],
+                        color: cardColors[indexPath.row % cardColors.count]),
+                    parent: self)
+            } else {
+                collectionCell.host(
+                    TippCard2(
+                        user: user,
+                        tipp: Tipp(_id: "", title: "Für deine ausgewählten Kategorien gibt es aktuell leider noch keine Tipps.\n\nWähle weitere Filter aus um Tipps zu sehen.", source: "", level: "", category: "", score: 300, postedBy: "", official: ""),
+                        color: "background",
+                        isTipp: false),
+                    parent: self)
+            }
+        }
         return collectionCell
     }
     

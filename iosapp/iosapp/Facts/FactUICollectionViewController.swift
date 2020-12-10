@@ -22,21 +22,19 @@ class FactUICollectionViewController: UIViewController, UIGestureRecognizerDeleg
     var offlineFacts: [Fact] = []
     var user: User = User(_id: "", phoneId: "", checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
     var filter: [String] = []
-    var loaded: Bool = false
-    let group = DispatchGroup()
-    var count = 0
+    var loading = true
+    
+    var noFactsAvailable = true
     
     var collectionView: UICollectionView!
     
-    
     convenience init(filter: [String]) {
-        print(filter)
         self.init(nibName:nil, bundle:nil)
         do {
             let storedObjTipp = UserDefaults.standard.object(forKey: "offlineFacts")
             if storedObjTipp != nil {
                 self.facts = try JSONDecoder().decode([Fact].self, from: storedObjTipp as! Data)
-                print("Retrieved Tipps: filteredFacts")
+                print("Retrieved Facts: filteredFacts")
             }
         } catch let err {
             print(err)
@@ -46,6 +44,10 @@ class FactUICollectionViewController: UIViewController, UIGestureRecognizerDeleg
             self.facts = facts
             UserApi().fetchUser { user in
                 self.user = user
+                if self.facts.count > 0 {
+                    self.noFactsAvailable = false
+                }
+                self.loading = false
                 self.collectionView.reloadData()
                 
                 for (i, _) in facts.enumerated() {
@@ -58,25 +60,45 @@ class FactUICollectionViewController: UIViewController, UIGestureRecognizerDeleg
                 }
                 if let encoded = try? JSONEncoder().encode(self.offlineFacts) {
                     UserDefaults.standard.set(encoded, forKey: "offlineFacts")
-                    print("Tipps saved")
+                    print("Facts saved")
                 }
             }
         }
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return facts.count
+        print(facts.count)
+        return loading ? 1 : facts.count > 0 ? facts.count : 1
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let collectionCell = collectionView.dequeueReusableCell(withReuseIdentifier: "factCell", for: indexPath) as! HostingTableViewCell<FactCard>
         collectionCell.prepareForReuse()
-        collectionCell.host(
-            FactCard(
-                fact: facts[indexPath.row],
-                color: cardColors[indexPath.row % cardColors.count],
-                user: user
-                ), parent: self)
+        if loading {
+            collectionCell.host(
+                FactCard(
+                    fact: Fact(_id: "", title: "Für deine ausgewählten Kategorien gibt es aktuell leider noch keine Fakten.\n\nWähle weitere Filter aus um Fakten zu sehen.", source: "", category: "", score: 300, postedBy: "", official: ""),
+                    color: "background",
+                    user: user,
+                    loaded: false),
+                parent: self)
+        } else {
+            if !noFactsAvailable {
+                collectionCell.host(
+                    FactCard(
+                        fact: facts[indexPath.row],
+                        color: cardColors[indexPath.row % cardColors.count],
+                        user: user), parent: self)
+            } else {
+                collectionCell.host(
+                    FactCard(
+                        fact: Fact(_id: "", title: "Für deine ausgewählten Kategorien gibt es aktuell leider noch keine Fakten.\n\nWähle weitere Filter aus um Fakten zu sehen.", source: "", category: "", score: 300, postedBy: "", official: ""),
+                        color: "background",
+                        user: user,
+                        isFact: false),
+                    parent: self)
+            }
+        }
         return collectionCell
     }
     

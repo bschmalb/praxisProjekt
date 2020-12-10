@@ -192,7 +192,7 @@ struct RateTippView: View {
         .onAppear(){
             getUser()
             impact(style: .medium)
-            RateApi().fetchRateTipps { (rateTipps2) in
+            TippApi().fetchRate { (rateTipps2) in
                 self.rateTipps2 = rateTipps2
                 self.rateTipps = rateTipps2.filter({!alreadyRated.contains($0._id)})
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {

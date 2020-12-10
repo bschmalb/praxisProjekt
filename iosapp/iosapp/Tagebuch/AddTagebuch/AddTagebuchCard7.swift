@@ -140,35 +140,35 @@ struct AddTagebuchCard7: View {
                                 .frame(width: 80, height: 40)
                         }
                         Spacer()
-                        NavigationLink(destination: AddTagebuchSuccess(tabViewSelected: $tabViewSelected)
-                                        .navigationBarTitle("")
-                                        .navigationBarHidden(true)
-                                        .navigationBarBackButtonHidden(true)
-                                       , tag: 1, selection: $selection) {
-                            Button(action: {
-                                haptic(type: .success)
-                                self.levelEnv.level += 35
-                                UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
-                                self.binWasteSelected = false
-                                self.postLog()
-                                self.selection = 1
-                            }) {
-                                HStack {
-                                    Image(systemName: "folder.badge.plus")
-                                        .font(.headline)
-                                        .accentColor(Color(binWasteSelected ? "white" :"white"))
-                                        .padding(0)
-                                    Text("Speichern")
-                                        .font(.headline)
-                                        .accentColor(Color(binWasteSelected ? "white" :"white"))
-                                        .padding(0)
-                                }
-                                .padding(20)
-                                .frame(height: 50)
-                                .background(Color(binWasteSelected ? "blue" : "blueDisabled"))
-                                .cornerRadius(15)
-                            }
-                        }.disabled(!binWasteSelected)
+//                        NavigationLink(destination: AddTagebuchSuccess(tabViewSelected: $tabViewSelected)
+//                                        .navigationBarTitle("")
+//                                        .navigationBarHidden(true)
+//                                        .navigationBarBackButtonHidden(true)
+//                                       , tag: 1, selection: $selection) {
+//                            Button(action: {
+//                                haptic(type: .success)
+//                                self.levelEnv.level += 35
+//                                UserDefaults.standard.set(self.levelEnv.level, forKey: "userLevel")
+//                                self.binWasteSelected = false
+//                                self.postLog()
+//                                self.selection = 1
+//                            }) {
+//                                HStack {
+//                                    Image(systemName: "folder.badge.plus")
+//                                        .font(.headline)
+//                                        .accentColor(Color(binWasteSelected ? "white" :"white"))
+//                                        .padding(0)
+//                                    Text("Speichern")
+//                                        .font(.headline)
+//                                        .accentColor(Color(binWasteSelected ? "white" :"white"))
+//                                        .padding(0)
+//                                }
+//                                .padding(20)
+//                                .frame(height: 50)
+//                                .background(Color(binWasteSelected ? "blue" : "blueDisabled"))
+//                                .cornerRadius(15)
+//                            }
+//                        }.disabled(!binWasteSelected)
 //                        Spacer()
 //                        Button(action: {
 //                            binWasteSelected = false

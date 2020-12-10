@@ -206,7 +206,6 @@ struct AddTagebuchView: View {
                                 .cornerRadius(50)
                         }
                         .onAppear(){
-                            print(successScale)
                             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                 self.isSuccess = true
                             }
