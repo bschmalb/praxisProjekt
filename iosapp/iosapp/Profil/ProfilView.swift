@@ -65,16 +65,12 @@ struct ProfilView: View {
                     HStack {
                         VStack (alignment: .leading){
                             Text("Hallo \(user.name)")
-//                                .font(.system(size: 24, weight: Font.Weight.semibold))
                                 .font(.title)
                                 .fontWeight(.bold)
                                 .lineLimit(1)
                                 .onTapGesture {
                                     impact(style: .medium)
                                     self.selection = 4
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                                        self.selectionProfil = 1
-                                    }
                                 }
                             Text("Wilkommen in deinem Profil")
                                 .font(.system(size: screen < 500 ? screen * 0.04 : 18))
@@ -101,9 +97,6 @@ struct ProfilView: View {
             .blur(radius: showLevel ? 4 : 0)
             .edgesIgnoringSafeArea(.all)
             .animation(.spring())
-            
-            //            ChangeNameView(offsetChangeName: $offsetChangeName, userName: $userName)
-            
             ProfileLevelView()
                 .offset(y: showLevel ? 0 : -UIScreen.main.bounds.height)
                 .onTapGesture {
@@ -119,8 +112,6 @@ struct ProfilView: View {
                         if (value.translation.height < 0) {
                             if (value.translation.height < 20) {
                                 UserDefaults.standard.set(self.userName, forKey: "userName")
-                                //                                self.postUserName()
-                                //                                self.offsetChangeName = -UIScreen.main.bounds.height / 1.5
                                 self.offsetLevel = -UIScreen.main.bounds.height / 1
                                 self.overlay.overlayLog = false
                                 self.hideKeyboard()
@@ -275,7 +266,7 @@ struct ProfileLevelView: View {
         let progress = 1 - CGFloat(Int(numberFormatter.string(for: levelEnv.level) ?? "2") ?? 10) / 100
         
         return VStack {
-            VStack (spacing: 30) {
+            VStack (spacing: 10) {
                 HStack {
                     Text("Level \((levelEnv.level/100)+1)")
                         .font(.system(size: 28))
@@ -307,20 +298,25 @@ struct ProfileLevelView: View {
                     }
                 }
                 .padding(.horizontal, 40)
-                Text("Durch das Hinzufügen, Speichern, selbst Erstellen und Eewerten von Tipps, sowie das Erstellen von Tagebucheinträgen sammelst du Punkte\n\nDeinen Fortschritt kannst du jederzeit in deinem Profil ansehen.")
-                    .font(.system(size: 15))
+                Text("Durch das Hinzufügen, Speichern, selbst Erstellen und Bewerten von Tipps, sowie das Erstellen von Tagebucheinträgen sammelst du Punkte\n\nDeinen Fortschritt kannst du jederzeit in deinem Profil ansehen.")
+                    .font(.system(size: UIScreen.main.bounds.width * 0.040))
+                    .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                     .padding(.horizontal, 20)
+                    .padding(.top, 20)
                 Text("Alles klar")
-                    .font(.system(size: UIScreen.main.bounds.width * 0.040, weight: .medium))
-                    .padding(15)
+                    .font(.system(size: UIScreen.main.bounds.width * 0.05, weight: .medium))
+                    .padding(20)
                     .opacity(0.9)
             }
-            .padding(.vertical, 30)
+            .padding(.top, 30)
+            .padding(.bottom, 10)
             .background(Color("buttonWhite"))
             .cornerRadius(25)
             .shadow(radius: 10)
             .padding(.horizontal, 20)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.black.opacity(0.00001))
         }
     }
 }

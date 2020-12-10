@@ -89,7 +89,7 @@ class FilterStringFacts: ObservableObject {
         }
     }
     init() {
-        self.filterString = UserDefaults.standard.stringArray(forKey: "filterString") ?? ["Ernährung", "Transport", "Haushalt", "Ressourcen", "Offiziell", "Community"]
+        self.filterString = UserDefaults.standard.stringArray(forKey: "filterStringFacts") ?? ["Ernährung", "Transport", "Haushalt", "Ressourcen", "Offiziell", "Community"]
         if (self.filterString.count < 2) {
             self.filterString = ["Ernährung", "Transport", "Haushalt", "Ressourcen", "Offiziell", "Community"]
             UserDefaults.standard.set(filterString, forKey: "filterStringFacts")
@@ -144,16 +144,12 @@ struct ContentView: View {
     
     @State var notca: [String] = []
     
-//    @State var showTutorial = UserDefaults.standard.bool(forKey: "showTutorial")
-//    @State var showTutorial = true
-//    @State var tutorialAnimation = false
-//    @State var launchScreen: Bool = false
-    
     @State var showTutorial = UserDefaults.standard.bool(forKey: "showTutorial")
     @State var tutorialAnimation = !UserDefaults.standard.bool(forKey: "showTutorial")
     @State var launchScreen: Bool = true
     @State var launchScale: CGFloat = 1
     @State var tabViewSelected = 0
+    @State var idLoaded = false
     
     @State var loadLater = false
     
@@ -174,28 +170,30 @@ struct ContentView: View {
                 Color("background")
                     .edgesIgnoringSafeArea(.all)
                 VStack {
-                    ZStack {
-                        TippView(filter: filter)
-                            .offset(x: tippOffset)
-                            .opacity(tabViewSelected == 0 ? 1 : 0)
-                            .padding(.top, 1)
-                            .padding(.bottom, UIScreen.main.bounds.height / 12)
-                            .environmentObject(UserObserv()).environmentObject(FilterData2())
-                        if loadLater {
-                            FactView(filter: filterFacts)
-                                .offset(x: challengeOffset)
-                                .opacity(tabViewSelected == 1 ? 1 : 0)
+                    if idLoaded {
+                        ZStack {
+                            TippView(filter: filter)
+                                .offset(x: tippOffset)
+                                .opacity(tabViewSelected == 0 ? 1 : 0)
                                 .padding(.top, 1)
                                 .padding(.bottom, UIScreen.main.bounds.height / 12)
-                                .environmentObject(FilterDataFacts())
-                            TagebuchView(tabViewSelected: $tabViewSelected)
-                                .offset(x: logOffset)
-                                .opacity(tabViewSelected == 2 ? 1 : 0)
-                                .padding(.bottom, UIScreen.main.bounds.height / 12)
-                            ProfilView(tabViewSelected: $tabViewSelected, isDark: $model.isDark, appearenceDark: $appearenceDark, selection: $selection, filter: filter)
-                                .offset(x: profileOffset)
-                                .opacity(tabViewSelected == 3 ? 1 : 0)
-                                .environmentObject(UserObserv()).environmentObject(FilterString())
+                                .environmentObject(UserObserv()).environmentObject(FilterData2())
+                            if loadLater {
+                                FactView(filter: filterFacts)
+                                    .offset(x: challengeOffset)
+                                    .opacity(tabViewSelected == 1 ? 1 : 0)
+                                    .padding(.top, 1)
+                                    .padding(.bottom, UIScreen.main.bounds.height / 12)
+                                    .environmentObject(FilterDataFacts())
+                                TagebuchView(tabViewSelected: $tabViewSelected)
+                                    .offset(x: logOffset)
+                                    .opacity(tabViewSelected == 2 ? 1 : 0)
+                                    .padding(.bottom, UIScreen.main.bounds.height / 12)
+                                ProfilView(tabViewSelected: $tabViewSelected, isDark: $model.isDark, appearenceDark: $appearenceDark, selection: $selection, filter: filter)
+                                    .offset(x: profileOffset)
+                                    .opacity(tabViewSelected == 3 ? 1 : 0)
+                                    .environmentObject(UserObserv()).environmentObject(FilterString())
+                            }
                         }
                     }
                 }
@@ -361,6 +359,8 @@ struct ContentView: View {
                     
                     if (!self.isUser2) {
                         self.createUser()
+                    } else {
+                        self.idLoaded = true
                     }
                     if self.appearenceDark {
                         self.model.isDark = true
@@ -476,6 +476,7 @@ struct ContentView: View {
                             self.isUser2 = true
                             UserDefaults.standard.set(self.isUser2, forKey: "isUser4")
                             UserDefaults.standard.set(user._id, forKey: "id")
+                            self.idLoaded = true
                         }
                         return
                     }

@@ -13,7 +13,7 @@ struct FactCard: View {
     @State var isLoved: Bool = false
     @State var isSurprised: Bool = false
     @State var isAngry: Bool = false
-    @Binding var isBookmarked: Bool
+    @State var isBookmarked: Bool = false
     @State var fact: Fact
     
     @State var userLevelLocal = 0
@@ -49,7 +49,7 @@ struct FactCard: View {
 
 struct FactCard_Previews: PreviewProvider {
     static var previews: some View {
-        FactCard(isBookmarked: .constant(false), fact: .init(_id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", category: "Ernährung", score: 25, postedBy: "123", official: "Community"), color: "cardblue2", user: User(_id: "", phoneId: "", checkedTipps: [], savedTipps: [], savedFacts: [], log: []))
+        FactCard(isBookmarked: false, fact: .init(_id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", category: "Ernährung", score: 25, postedBy: "123", official: "Community"), color: "cardblue2", user: User(_id: "", phoneId: "", checkedTipps: [], savedTipps: [], savedFacts: [], log: []))
     }
 }
 
@@ -226,11 +226,9 @@ struct FactCardMain: View {
     }
     
     func getUserTipps(){
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            if (user.savedFacts != nil) {
-                if (user.savedFacts!.contains(self.fact._id) ) {
-                    self.isBookmarked = true
-                }
+        if (user.savedFacts != nil) {
+            if (user.savedFacts!.contains(self.fact._id) ) {
+                self.isBookmarked = true
             }
         }
     }
@@ -428,8 +426,8 @@ struct FactCardBackground: View {
 
     var body: some View {
         GeometryReader { size in
-            if (options) {
-                VStack (spacing: 0){
+            VStack (spacing: 0){
+                if (options) {
                     HStack(alignment: .top) {
                         Spacer()
                         Button(action: {
@@ -619,6 +617,7 @@ struct FactCardBackground: View {
                         .frame(width: size.size.width / 1.3)
                     }
                 }
+            }
                 .frame(width: UIScreen.main.bounds.width > 600 ? 600 - 30 : UIScreen.main.bounds.width - 30, height:
                         UIScreen.main.bounds.height / 2.1)
                 .background(Color.black.opacity(0.05))
@@ -626,7 +625,6 @@ struct FactCardBackground: View {
                 .cornerRadius(25)
                 .animation(.spring())
             }
-        }
     }
 
     func patchScore(thumb: String) {

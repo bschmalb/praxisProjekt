@@ -26,8 +26,7 @@ struct TippView: View {
     @State var firstUseTipp = UserDefaults.standard.bool(forKey: "firstUseTipp")
     
     var body: some View {
-        NavigationView {
-            ZStack {
+        ZStack {
                 ZStack {
                     Color("background")
                         .edgesIgnoringSafeArea(.all)
@@ -100,26 +99,6 @@ struct TippView: View {
                             .cornerRadius(15)
                             .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
                         .sheet(isPresented: $showRateTipps, content: { RateTippView(showRateTipps: self.$showRateTipps).environmentObject(self.levelEnv).environmentObject(self.overlay).environmentObject(self.myUrl)})
-                        
-//                            NavigationLink (destination: RateTippView(showRateTipps: $showRateTipps)
-//                                .navigationBarBackButtonHidden(false)
-//                                .navigationBarTitle("")
-//                                .navigationBarHidden(true)
-//                            ){
-//                                HStack {
-//                                    Image(systemName: "hand.thumbsup")
-//                                        .font(.system(size: 20, weight: .medium))
-//                                    Text("Tipps von Nutzern bewerten")
-//                                        .font(.headline)
-//                                        .fontWeight(.medium)
-//                                }
-//                                .padding(13)
-//                                .padding(.leading, 10)
-//                                Spacer()
-//                            }.frame(width: UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height / 16)
-//                                .background(Color("buttonWhite"))
-//                                .cornerRadius(15)
-//                                .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
                         }
                     }.offset(y: -UIScreen.main.bounds.height / 81)
                     Spacer()
@@ -128,44 +107,34 @@ struct TippView: View {
                     ZStack {
                         LottieView(filename: "swipe", loop: true)
                             .offset(y: -20)
-                        Button(action: {
-                            self.show = false
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: {
-                                UserDefaults.standard.set(true, forKey: "firstUseTipp")
-                            })
-                        }) {
-                            Text("Okay!")
-                                .foregroundColor(.white)
-                                .font(.headline)
-                                .padding(13)
-                                .frame(width: 180)
-                                .background(Color("blue"))
-                                .cornerRadius(10)
+                        Text("Okay!")
+                                .foregroundColor(.black)
+                                .font(.system(size: 22, weight: Font.Weight.medium))
+                                .padding(8)
                                 .offset(y: 73)
-                        }
-                    }.frame(width: 200, height: 220)
+                    }
+                        .frame(width: 200, height: 220)
                         .background(Color("background"))
-                        .cornerRadius(20)
+                        .cornerRadius(40)
                         .shadow(radius: 20)
-                        .offset(x: show ? 0 : -UIScreen.main.bounds.width, y: -50)
                         .opacity(show ? 1 : 0)
                         .scaleEffect(show ? 1 : 0.8)
                         .onTapGesture {
                             withAnimation { self.show = false }
                             DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: {
                                 UserDefaults.standard.set(true, forKey: "firstUseTipp")
+                                firstUseTipp = true
                             })}
                         .animation(.spring())
                 }
             }.accentColor(.primary)
-                .navigationBarTitle("")
-                .navigationBarHidden(true)
                 .gesture(DragGesture()
                     .onChanged({ (value) in
                         if (value.translation.width < 30) {
                             self.show = false
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: {
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 2, execute: {
                                 UserDefaults.standard.set(true, forKey: "firstUseTipp")
+                                firstUseTipp = true
                             })
                         }
                     }))
@@ -174,7 +143,6 @@ struct TippView: View {
                         self.show = true
                     })
             }
-        }.navigationViewStyle(StackNavigationViewStyle())
     }
 }
 

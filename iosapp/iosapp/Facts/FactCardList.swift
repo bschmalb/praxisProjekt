@@ -12,43 +12,23 @@ import Combine
 
 struct FactCardList: View {
     
-    @Environment(\.horizontalSizeClass) var horizontalSize
-    
+    @EnvironmentObject var changeFilter: ChangeFilter
+    @EnvironmentObject var filterStringFacts: FilterStringFacts
     @EnvironmentObject var myUrl: ApiUrl
-    @EnvironmentObject var redraw: RedrawScrollView
+    
     @State var id = UserDefaults.standard.string(forKey: "id")
     
-    @State var filteredFacts: [Fact] = []
-    @State var offlineFacts: [Fact] = []
-    
     @State var loading: Bool = false
-    @State var dataLoading: Bool = true
+    @State var listOpacity: Bool = false
     @ObservedObject var filter: FilterDataFacts
-    
-    @State var redrawUIScrollView = true
-    
-    @State var showOnlineTipps = false
-    @State var showOfflineTipps = true
     
     @State var filterCategory2: [String] = ["Ernährung", "Transport", "Haushalt", "Ressourcen"]
     @State var filterLevel2: [String] = ["Leicht", "Mittel", "Schwer"]
     @State var filterPoster: [String] = ["Offiziell", "Community"]
     
-    @State var notCategory: [String] = UserDefaults.standard.stringArray(forKey: "notCategory") ?? []
-    @State var notDifficulty: [String] = UserDefaults.standard.stringArray(forKey: "notDifficulty") ?? []
-    
     @State var user: User = User(_id: "", phoneId: "", level: 0, checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
     
-    @EnvironmentObject var changeFilter: ChangeFilter
-    @EnvironmentObject var filterString: FilterStringFacts
-    
-    @State var showFacts: Bool = false
-    
     var screen = UIScreen.main.bounds.width
-    
-    var cardColors: [String]  = [
-        "cardgreen2", "cardblue2", "cardyellow2", "cardpurple2", "cardorange2", "cardred2", "cardturqouise2", "cardyelgre2", "cardpink2"
-    ]
     
     var body: some View {
         VStack (spacing: 0) {
@@ -59,20 +39,25 @@ struct FactCardList: View {
                         .padding(.leading, 20)
                     ForEach(filter.filter.indices, id: \.self) { index in
                         HStack {
-                            FilterView(isSelected: self.$filter.filter[index].isSelected, filter: self.filter.filter[index])
+                            FilterView(
+                                isSelected: self.$filter.filter[index].isSelected,
+                                filter: self.filter.filter[index])
                                 .onTapGesture {
-                                    self.filterTipps2(index: index)
-                                    
+                                    self.filterTipps(index: index)
                                     impact(style: .heavy)
+                                    
                                     self.loading = true
-                                    self.redraw.redraw = false
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                        self.redraw.redraw = true
-                                        self.loading = false
+                                    self.listOpacity = true
+                                    
+                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                                        self.listOpacity = false
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                            self.loading = false
+                                        }
                                     }
                                 }
                                 .onAppear(){
-                                    if (!self.filterString.filterString.contains(self.filter.filter[index].name)) {
+                                    if (!self.filterStringFacts.filterString.contains(self.filter.filter[index].name)) {
                                         self.filter.filter[index].isSelected = false
                                     }
                                 }
@@ -84,183 +69,36 @@ struct FactCardList: View {
             }.accentColor(Color("black"))
             
             ZStack {
-                VStack {
-                    if (dataLoading || changeFilter.changeFilter) {
-                        VStack {
-                            LottieView(filename: "loadingCircle", loop: true)
-                                .shadow(color: Color(.white), radius: 1, x: 0, y: 0)
-                                .frame(width: 100, height: 100)
-                        }.frame(height: UIScreen.main.bounds.height/2.1 + 20)
-                    }
-                    else {
-                        
-                        if #available(iOS 14.0, *) {
-                            if (self.filteredFacts.count > 0) {
-                                ZStack {
-                                    if showOnlineTipps {
-                                        ExtractedFactList(loading: loading, filteredFacts: filteredFacts, cardColors: cardColors, filterString: filterString, user: user)
-                                            .environmentObject(ApiUrl())
-                                            .opacity(showOfflineTipps ? 0 : 1)
-                                    }
-                                    if showOfflineTipps {
-                                        ExtractedFactList(loading: loading, filteredFacts: filteredFacts, cardColors: cardColors, filterString: filterString, user: user)
-                                            .environmentObject(ApiUrl())
-                                    }
-                                }
-                            }
-                            else {
-                                CustomCard(image: "ServerError", text: "Stelle sicher, dass du mit dem Internet verbunden bist", color: "buttonWhite")
-                                    .padding(.horizontal, 15)
-                                    .padding(.bottom, 5)
-                            }
-                        } else {
-                            if (self.filteredFacts.count > 0) {
-                                if (redraw.redraw){
-                                    ZStack {
-                                        if showOnlineTipps {
-                                            ExtractedFactList(loading: loading, filteredFacts: filteredFacts, cardColors: cardColors, filterString: filterString, user: user)
-                                                .environmentObject(ApiUrl())
-                                                .opacity(showOfflineTipps ? 0 : 1)
-                                        }
-                                        if showOfflineTipps {
-                                            ExtractedFactList(loading: loading, filteredFacts: filteredFacts, cardColors: cardColors, filterString: filterString, user: user)
-                                                .environmentObject(ApiUrl())
-                                        }
-                                    }
-                                }
-                            }
-                            else {
-                                CustomCard(image: "ServerError", text: "Stelle sicher, dass du mit dem Internet verbunden bist", color: "buttonWhite")
-                                    .padding(.horizontal, 15)
-                                    .padding(.bottom, 5)
-                            }
-                        }
-                    }
+                if !listOpacity {
+                    FactUICollectionViewWrapper {}
+                        .environmentObject(FilterStringFacts())
+                        .environmentObject(ApiUrl())
+                        .animation(.spring())
+                        .opacity(loading ? 0 : 1)
                 }
-                .animation(.spring())
                 if (loading) {
                     LottieView(filename: "loadingCircle", loop: true)
                         .shadow(color: Color(.white), radius: 1, x: 0, y: 0)
                         .frame(width: 100, height: 100)
                         .frame(height: UIScreen.main.bounds.height/2.1 + 20)
                 }
-                if (!filterString.filterString.contains(where: filterCategory2.contains) || !filterString.filterString.contains(where: filterPoster.contains)){
-                    SelectMoreFilter(filterString: filterString.filterString, categories: filterCategory2, levels: filterLevel2, posters: filterPoster)
+                if (!filterStringFacts.filterString.contains(where: filterCategory2.contains) || !filterStringFacts.filterString.contains(where: filterPoster.contains)){
+                    SelectMoreFilter(filterString: filterStringFacts.filterString, categories: filterCategory2, posters: filterPoster)
                         .opacity(loading ? 0 : 1)
                 }
-            }
-            .frame(height: UIScreen.main.bounds.height/2.1 + 20)
+            }.frame(height: UIScreen.main.bounds.height/2.1 + 20)
             .offset(y: -3)
         }
-        .onAppear(){
-            do {
-                let storedObjTipp = UserDefaults.standard.object(forKey: "offlineFacts")
-                if storedObjTipp != nil {
-                    self.filteredFacts = try JSONDecoder().decode([Fact].self, from: storedObjTipp as! Data)
-                    self.dataLoading = false
-                    print("Retrieved Facts: filteredFacts")
-                }
-            } catch let err {
-                print(err)
-            }
-            
-            FactApi().fetchApproved { (filteredFacts) in
-                self.filteredFacts = []
-                self.filteredFacts = filteredFacts
-                UserApi().fetchUser { user in
-                    self.user = user
-                    self.dataLoading = false
-                    self.showOnlineTipps = true
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        self.showOfflineTipps = false
-                    }
-                }
-                
-                for (i, _) in filteredFacts.enumerated() {
-                    if i < 10 && filteredFacts.count > i {
-                        offlineFacts.append(filteredFacts[i])
-                    }
-                    else {
-                        break
-                    }
-                }
-                
-                if let encoded = try? JSONEncoder().encode(offlineFacts) {
-                    UserDefaults.standard.set(encoded, forKey: "offlineFacts")
-                    print("Facts saved")
-                }
-            }
-        }
     }
     
-    func filterTipps2(index: Int){
-        if (filterString.filterString.contains(filter.filter[index].name)){
-            filterString.filterString.removeAll(where: {$0 == filter.filter[index].name})
+    func filterTipps(index: Int){
+        if (filterStringFacts.filterString.contains(filter.filter[index].name)){
+            filterStringFacts.filterString.removeAll(where: {$0 == filter.filter[index].name})
             self.filter.filter[index].isSelected = false
         } else {
-            filterString.filterString.append(filter.filter[index].name)
+            filterStringFacts.filterString.append(filter.filter[index].name)
             self.filter.filter[index].isSelected = true
         }
-        changeFilter.changeFilterProfile = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            changeFilter.changeFilterProfile = false
-        }
-        print(filterString.filterString)
-    }
-}
-
-struct ExtractedFactList: View {
-    
-    @EnvironmentObject var myUrl: ApiUrl
-    @State var id = UserDefaults.standard.string(forKey: "id")
-    
-    var loading: Bool
-    @State var filteredFacts: [Fact]
-    var cardColors: [String]
-    var filterString: FilterStringFacts
-    @State var user: User
-    @State var userLoaded = true
-    
-    var body: some View {
-        GeometryReader { proxy in
-            if (userLoaded) {
-                UIScrollViewWrapper {
-                    HStack (spacing: 0) {
-                        ForEach(self.filteredFacts.indices, id: \.self) { index in
-                            HStack {
-                                if ([self.filteredFacts[index].category, self.filteredFacts[index].official].allSatisfy(self.filterString.filterString.contains)){
-                                    GeometryReader { geometry in
-                                        HStack {
-                                            Spacer()
-                                            FactCard(
-                                                isBookmarked: self.$filteredFacts[index].isBookmarked,
-                                                fact: self.filteredFacts[index],
-                                                color: cardColors[index % 9],
-                                                user: user
-                                            )
-                                            .rotation3DEffect(Angle(degrees: (Double(geometry.frame(in: .global).minX < UIScreen.main.bounds.width*2 && geometry.frame(in: .global).minX > -UIScreen.main.bounds.width*2  ? (geometry.frame(in: .global).minX - 5 ) / -10 : 0))), axis: (x: 0, y: 10.0, z:0))
-                                            .shadow(color: Color("black").opacity(0.05), radius: 5, x: 4, y: 4)
-                                            .opacity(Double(geometry.frame(in: .global).minX < UIScreen.main.bounds.width && geometry.frame(in: .global).minX > -UIScreen.main.bounds.width ? 1 : 0))
-                                            .padding(.vertical, 10)
-                                            .environmentObject(ApiUrl())
-                                            .environmentObject(UserLevel())
-                                            Spacer()
-                                        }
-                                    }
-                                    .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2.1 + 20)
-                                }
-                            }
-                        }
-                    }
-                    .frame(height: UIScreen.main.bounds.height/2.1 + 20)
-                    .background(Color("background"))
-                    .animation(.spring())
-                }
-            }
-        }
-        .frame(height: UIScreen.main.bounds.height/2.1 + 20)
-        .offset(x: loading ? 300 : 0)
-        .animation(.spring())
     }
 }
 

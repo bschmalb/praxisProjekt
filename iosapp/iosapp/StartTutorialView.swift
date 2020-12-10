@@ -29,6 +29,13 @@ struct StartTutorialView: View {
     @State var categories: [String] = UserDefaults.standard.stringArray(forKey: "notCategory") ?? []
     @State var difficulties: [String] = UserDefaults.standard.stringArray(forKey: "notDifficulty") ?? []
     
+    @State var ages: [String] = ["12-17", "18-25", "26-35", "36-50", "51-70", "71+"]
+    @State var genders: [String] = ["Männlich", "Weiblich", "Divers"]
+    @State var isSelected: [Bool] = [false, false, false, false, false, false]
+    @State var isSelectedGender: [Bool] = [false, false, false]
+    @State var ageSelected = false
+    @State var genderSelected = false
+    
     @State var loading: Bool = false
     @State var loadingAnimation: Bool = false
     @State var success: Bool = false
@@ -80,7 +87,7 @@ struct StartTutorialView: View {
                     Intro1(name: $name, nameLength: $optionSelected[0], firstResponder: $firstResponder)
                         .offset(x: offsets[0])
                         .opacity(step == 0 ? 1 : 0)
-                    Intro2(age: $age, gender: $gender, hideInfo: $hideInfo, optionSelected: $optionSelected[step], firstResponder: $firstResponder)
+                    Intro2(age: $age, gender: $gender, hideInfo: $hideInfo, optionSelected: $optionSelected[step], firstResponder: $firstResponder, ageSelected: $ageSelected, genderSelected: $genderSelected, isSelected: $isSelected, isSelectedGender: $isSelectedGender)
                         .offset(x: offsets[1])
                         .opacity(step == 1 ? 1 : 0)
                     Intro3(optionSelected: $optionSelected[step], filter: filter).environmentObject(FilterData2())
@@ -236,11 +243,50 @@ struct StartTutorialView: View {
                 .animation(.spring())
             }
         }
+        .onAppear(){
+            getUserData()
+        }
+    }
+    
+    func getUserData() {
+        id = UserDefaults.standard.string(forKey: "id") ?? ""
+        
+        guard let url = URL(string: myUrl.users + id) else { return }
+        
+        URLSession.shared.dataTask(with: url) { data, response, error in
+            
+            if let data = data {
+                if let user = try? JSONDecoder().decode(User.self, from: data) {
+                    DispatchQueue.main.async {
+                        self.name = user.name ?? ""
+                        self.optionSelected[0] = 1
+                        if let index = ages.firstIndex(of: user.age ?? "") {
+                            isSelected[index] = true
+                            ageSelected = true
+                            self.age = user.age ?? ""
+                        }
+                        if let index = genders.firstIndex(of: user.gender ?? "") {
+                            isSelectedGender[index] = true
+                            genderSelected = true
+                            self.gender = user.gender ?? ""
+                        }
+                        if (genderSelected && ageSelected) {
+                            self.optionSelected[1] = 1
+                        }
+                        self.hideInfo = user.hideInfo ?? false
+                    }
+                    return
+                }
+            } else {
+                print("No data in response: \(error?.localizedDescription ?? "Unknown error").")
+                return
+            }
+        }.resume()
     }
     
     func postUserData(){
         let patchData = UserNameAgeGen(name: name, age: age, gender: gender, hideInfo: hideInfo)
-        print(patchData)
+        id = UserDefaults.standard.string(forKey: "id") ?? ""
         
         guard let encoded = try? JSONEncoder().encode(patchData) else {
             print("Failed to encode order")
@@ -369,10 +415,13 @@ struct Intro2 : View {
     @Binding var optionSelected: Int
     @Binding var firstResponder: Bool?
     
+    @Binding var ageSelected: Bool
+    @Binding var genderSelected: Bool
+    
     @State var ages: [String] = ["12-17", "18-25", "26-35", "36-50", "51-70", "71+"]
     @State var genders: [String] = ["Männlich", "Weiblich", "Divers"]
-    @State var isSelected: [Bool] = [false, false, false, false, false, false]
-    @State var isSelectedGender: [Bool] = [false, false, false]
+    @Binding var isSelected: [Bool]
+    @Binding var isSelectedGender: [Bool]
     
     @ObservedObject private var keyboard = KeyboardResponder()
     
@@ -411,8 +460,9 @@ struct Intro2 : View {
                                         isSelected[i] = false
                                     }
                                     self.isSelected[index] = true
+                                    self.ageSelected = true
                                     
-                                    if (gender.count > 0) {
+                                    if (genderSelected && ageSelected) {
                                         self.optionSelected = 1
                                     }
                                 }){
@@ -445,8 +495,9 @@ struct Intro2 : View {
                             isSelectedGender[i] = false
                         }
                         self.isSelectedGender[index] = true
+                        self.genderSelected = true
                         
-                        if (age.count > 0) {
+                        if (genderSelected && ageSelected) {
                             self.optionSelected = 1
                         }
                     }){

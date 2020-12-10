@@ -18,8 +18,8 @@ struct TippCard2: View {
     
     @State var user: User
     
-    @Binding var isChecked: Bool
-    @Binding var isBookmarked: Bool
+    @State var isChecked: Bool = false
+    @State var isBookmarked: Bool = false
     @State var isClicked: Bool = false
     @State var isClicked2: Bool = false
     @State var tipp: Tipp
@@ -46,9 +46,9 @@ struct TippCard2: View {
     var body: some View {
         
         ZStack {
-            if (options) {
-                GeometryReader { size in
-                    VStack (spacing: 0){
+            GeometryReader { size in
+                VStack (spacing: 0){
+                    if options {
                         HStack(alignment: .top) {
                             Spacer()
                             Button(action: {
@@ -89,152 +89,152 @@ struct TippCard2: View {
                                     }
                                     Spacer()
                                 }.foregroundColor(Color("alwaysblack"))
-//                                if (tipp.postedBy == id) {
-//                                if (false) {
-//                                    Group {
-//                                        ZStack {
-//                                            HStack {
-//                                                Spacer()
-//                                                Image(systemName: "trash")
-//                                                    .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
-//                                                    .foregroundColor(.red)
-//                                                    .opacity(0.8)
-//                                                    .padding(10)
-//                                                    .onTapGesture(){
-//                                                        impact(style: .medium)
-//                                                        self.deleteTipp()
-//                                                    }
-//                                                Spacer()
-//                                                Image(systemName: "xmark")
-//                                                    .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
-//                                                    .opacity(0.8)
-//                                                    .padding(10)
-//                                                    .onTapGesture(){
-//                                                        impact(style: .medium)
-//                                                        self.showYouSure = false
-//                                                    }
-//                                                Spacer()
-//                                            }
-//                                            .offset(y: showYouSure ? 0 : 30)
-//                                            .opacity(showYouSure ? 1 : 0)
-//
-//                                            HStack (spacing: 20){
-//                                                Image(systemName: dislikeClicked ? "trash.fill" : "trash")
-//                                                    .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
-//                                                    .foregroundColor(.red)
-//                                                    .opacity(0.8)
-//                                                Text("Tipp löschen")
-//                                                    .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
-//                                                    .foregroundColor(.red)
-//                                                    .opacity(0.8)
-//                                            }
-//                                            .padding(10)
-//                                            .offset(y: showYouSure ? -30 : 0)
-//                                            .opacity(showYouSure ? 0 : 1)
-//                                            .cornerRadius(15)
-//                                            .onTapGesture(){
-//                                                impact(style: .medium)
-//
-//                                                self.showYouSure = true
-//                                            }
-//                                        }
-//                                        .animation(.spring())
-//                                        Spacer()
-//                                    }
-//                                } else {
-                                    Group {
-                                        HStack (spacing: 15){
-                                            Image(systemName: likeClicked ? "hand.thumbsup.fill" : "hand.thumbsup")
-                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
-                                                .opacity(0.8)
-                                            Text("Positiv bewerten")
-                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
-                                                .opacity(0.8)
-                                        }
-                                        .padding(10)
-                                        .onTapGesture(){
-                                            impact(style: .medium)
-                                            if (self.likeClicked) {
-                                                self.patchScore(thumb: "down")
-                                            } else {
-                                                if (self.reportClicked) {
-                                                    self.reportClicked = false
-                                                    self.patchScore(thumb: "unreport")
-                                                }
-                                                if (self.dislikeClicked) {
-                                                    self.dislikeClicked = false
-                                                    self.patchScore(thumb: "up")
-                                                }
-                                                self.patchScore(thumb: "up")
-                                            }
-                                            self.likeClicked.toggle()
-                                        }
-                                        .onTapGesture(){}
-                                        .gesture(DragGesture()
-                                                    .onChanged({ (value) in
-                                                        self.options = false
-                                                    }))
-                                        Spacer()
-                                            .frame(maxHeight: 5)
-                                        HStack (spacing: 20){
-                                            Image(systemName: dislikeClicked ? "hand.thumbsdown.fill" : "hand.thumbsdown")
-                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
-                                                .opacity(0.8)
-                                            Text("Negativ bewerten")
-                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
-                                                .opacity(0.8)
-                                        }
-                                        .padding(10)
-                                        .onTapGesture(){
-                                            impact(style: .medium)
-                                            
-                                            if (!self.dislikeClicked && self.likeClicked) {
-                                                self.patchScore(thumb: "down")
-                                                self.patchScore(thumb: "down")
-                                            } else if (self.dislikeClicked) {
-                                                self.patchScore(thumb: "up")
-                                            } else {
-                                                self.patchScore(thumb: "down")
-                                            }
-                                            self.likeClicked = false
-                                            self.dislikeClicked.toggle()
-                                        }
-                                        Spacer()
-                                            .frame(maxHeight: 5)
-                                        HStack (spacing: 20){
-                                            Image(systemName: reportClicked ? "flag.fill" : "flag")
-                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
-                                                .foregroundColor(.red)
-                                                .opacity(0.8)
-                                            Text("Diesen Tipp melden")
-                                                .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
-                                                .foregroundColor(.red)
-                                                .opacity(0.8)
-                                        }
-                                        .padding(10)
-                                        .animation(.spring())
-                                        .onTapGesture(){
-                                            impact(style: .medium)
+                                //                                if (tipp.postedBy == id) {
+                                //                                if (false) {
+                                //                                    Group {
+                                //                                        ZStack {
+                                //                                            HStack {
+                                //                                                Spacer()
+                                //                                                Image(systemName: "trash")
+                                //                                                    .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+                                //                                                    .foregroundColor(.red)
+                                //                                                    .opacity(0.8)
+                                //                                                    .padding(10)
+                                //                                                    .onTapGesture(){
+                                //                                                        impact(style: .medium)
+                                //                                                        self.deleteTipp()
+                                //                                                    }
+                                //                                                Spacer()
+                                //                                                Image(systemName: "xmark")
+                                //                                                    .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+                                //                                                    .opacity(0.8)
+                                //                                                    .padding(10)
+                                //                                                    .onTapGesture(){
+                                //                                                        impact(style: .medium)
+                                //                                                        self.showYouSure = false
+                                //                                                    }
+                                //                                                Spacer()
+                                //                                            }
+                                //                                            .offset(y: showYouSure ? 0 : 30)
+                                //                                            .opacity(showYouSure ? 1 : 0)
+                                //
+                                //                                            HStack (spacing: 20){
+                                //                                                Image(systemName: dislikeClicked ? "trash.fill" : "trash")
+                                //                                                    .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+                                //                                                    .foregroundColor(.red)
+                                //                                                    .opacity(0.8)
+                                //                                                Text("Tipp löschen")
+                                //                                                    .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
+                                //                                                    .foregroundColor(.red)
+                                //                                                    .opacity(0.8)
+                                //                                            }
+                                //                                            .padding(10)
+                                //                                            .offset(y: showYouSure ? -30 : 0)
+                                //                                            .opacity(showYouSure ? 0 : 1)
+                                //                                            .cornerRadius(15)
+                                //                                            .onTapGesture(){
+                                //                                                impact(style: .medium)
+                                //
+                                //                                                self.showYouSure = true
+                                //                                            }
+                                //                                        }
+                                //                                        .animation(.spring())
+                                //                                        Spacer()
+                                //                                    }
+                                //                                } else {
+                                Group {
+                                    HStack (spacing: 15){
+                                        Image(systemName: likeClicked ? "hand.thumbsup.fill" : "hand.thumbsup")
+                                            .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+                                            .opacity(0.8)
+                                        Text("Positiv bewerten")
+                                            .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
+                                            .opacity(0.8)
+                                    }
+                                    .padding(10)
+                                    .onTapGesture(){
+                                        impact(style: .medium)
+                                        if (self.likeClicked) {
+                                            self.patchScore(thumb: "down")
+                                        } else {
                                             if (self.reportClicked) {
+                                                self.reportClicked = false
                                                 self.patchScore(thumb: "unreport")
-                                                self.patchScoreUser(reportedTipps: "unreport")
-                                            } else {
-                                                self.patchScore(thumb: "report")
-                                                self.patchScoreUser(reportedTipps: "report")
-                                                if (!self.dislikeClicked) {
-                                                    self.dislikeClicked = true
-                                                    self.patchScore(thumb: "down")
-                                                }
-                                                if (self.likeClicked) {
-                                                    self.likeClicked = false
-                                                    self.patchScore(thumb: "down")
-                                                }
                                             }
-                                            self.reportClicked.toggle()
+                                            if (self.dislikeClicked) {
+                                                self.dislikeClicked = false
+                                                self.patchScore(thumb: "up")
+                                            }
+                                            self.patchScore(thumb: "up")
                                         }
-                                        Spacer()
-                                    }.foregroundColor(Color("alwaysblack"))
-//                                }
+                                        self.likeClicked.toggle()
+                                    }
+                                    .onTapGesture(){}
+                                    .gesture(DragGesture()
+                                                .onChanged({ (value) in
+                                                    self.options = false
+                                                }))
+                                    Spacer()
+                                        .frame(maxHeight: 5)
+                                    HStack (spacing: 20){
+                                        Image(systemName: dislikeClicked ? "hand.thumbsdown.fill" : "hand.thumbsdown")
+                                            .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+                                            .opacity(0.8)
+                                        Text("Negativ bewerten")
+                                            .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
+                                            .opacity(0.8)
+                                    }
+                                    .padding(10)
+                                    .onTapGesture(){
+                                        impact(style: .medium)
+                                        
+                                        if (!self.dislikeClicked && self.likeClicked) {
+                                            self.patchScore(thumb: "down")
+                                            self.patchScore(thumb: "down")
+                                        } else if (self.dislikeClicked) {
+                                            self.patchScore(thumb: "up")
+                                        } else {
+                                            self.patchScore(thumb: "down")
+                                        }
+                                        self.likeClicked = false
+                                        self.dislikeClicked.toggle()
+                                    }
+                                    Spacer()
+                                        .frame(maxHeight: 5)
+                                    HStack (spacing: 20){
+                                        Image(systemName: reportClicked ? "flag.fill" : "flag")
+                                            .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 22, weight: Font.Weight.medium))
+                                            .foregroundColor(.red)
+                                            .opacity(0.8)
+                                        Text("Diesen Tipp melden")
+                                            .font(.system(size: size.size.width < 500 ? size.size.width * 0.05 : 20))
+                                            .foregroundColor(.red)
+                                            .opacity(0.8)
+                                    }
+                                    .padding(10)
+                                    .animation(.spring())
+                                    .onTapGesture(){
+                                        impact(style: .medium)
+                                        if (self.reportClicked) {
+                                            self.patchScore(thumb: "unreport")
+                                            self.patchScoreUser(reportedTipps: "unreport")
+                                        } else {
+                                            self.patchScore(thumb: "report")
+                                            self.patchScoreUser(reportedTipps: "report")
+                                            if (!self.dislikeClicked) {
+                                                self.dislikeClicked = true
+                                                self.patchScore(thumb: "down")
+                                            }
+                                            if (self.likeClicked) {
+                                                self.likeClicked = false
+                                                self.patchScore(thumb: "down")
+                                            }
+                                        }
+                                        self.reportClicked.toggle()
+                                    }
+                                    Spacer()
+                                }.foregroundColor(Color("alwaysblack"))
+                                //                                }
                             }
                             .frame(width: size.size.width / 1.3)
                             .gesture(DragGesture()
@@ -243,18 +243,18 @@ struct TippCard2: View {
                                         }))
                         }
                     }
-                    .frame(width: UIScreen.main.bounds.width > 600 ? 600 - 30 : UIScreen.main.bounds.width - 30, height:
-                            UIScreen.main.bounds.height / 2.1)
-                    .background(Color.black.opacity(0.05))
-                    .background(Color(color))
-                    .cornerRadius(15)
-                    .onTapGesture(){}
-                    .gesture(DragGesture()
-                                .onChanged({ (value) in
-                                    self.options = false
-                                }))
-                    .animation(.spring())
                 }
+                .frame(width: UIScreen.main.bounds.width > 600 ? 600 - 30 : UIScreen.main.bounds.width - 30, height:
+                        UIScreen.main.bounds.height / 2.1)
+                .background(Color.black.opacity(0.05))
+                .background(Color(color))
+                .cornerRadius(15)
+                .onTapGesture(){}
+                .gesture(DragGesture()
+                            .onChanged({ (value) in
+                                self.options = false
+                            }))
+                .animation(.spring())
             }
             GeometryReader { size in
                 ZStack {
@@ -281,20 +281,20 @@ struct TippCard2: View {
                                         .font(.system(size: size.size.width * 0.03, weight: .medium))
                                         .multilineTextAlignment(.center)
                                         .padding(.top, 5)
-//                                    if isURL() {
-//                                        Image(systemName: "link")
-//                                            .foregroundColor(.gray)
-//                                            .font(.system(size: size.size.width * 0.02, weight: .medium))
-//                                    }
+                                    //                                    if isURL() {
+                                    //                                        Image(systemName: "link")
+                                    //                                            .foregroundColor(.gray)
+                                    //                                            .font(.system(size: size.size.width * 0.02, weight: .medium))
+                                    //                                    }
                                 }
                                 .onTapGesture {
                                     impact(style: .medium)
                                     self.openSource()
-                                    }
-                                    .sheet(isPresented: $quelleShowing) {
-                                        QuelleView(quelle: tipp.source, quelleShowing: self.$quelleShowing)
-                                            .environmentObject(ApiUrl())
-                                    }
+                                }
+                                .sheet(isPresented: $quelleShowing) {
+                                    QuelleView(quelle: tipp.source, quelleShowing: self.$quelleShowing)
+                                        .environmentObject(ApiUrl())
+                                }
                             }
                         }
                         Spacer()
@@ -404,6 +404,7 @@ struct TippCard2: View {
                             }
                         }))
         }
+//        .shadow(color: Color.black.opacity(0.03), radius: 5, x: 0, y: 0)
         .animation(.spring())
         .accentColor(.black)
         .frame(width: UIScreen.main.bounds.width > 600 ? 600 - 30 : UIScreen.main.bounds.width - 30, height: UIScreen.main.bounds.height/2.1)
@@ -412,13 +413,11 @@ struct TippCard2: View {
         }
     }
     func getUserTipps(){
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            if (user.checkedTipps.contains(self.tipp._id) ) {
-                self.isChecked = true
-            }
-            if (user.savedTipps.contains(self.tipp._id) ) {
-                self.isBookmarked = true
-            }
+        if (user.checkedTipps.contains(self.tipp._id) ) {
+            self.isChecked = true
+        }
+        if (user.savedTipps.contains(self.tipp._id) ) {
+            self.isBookmarked = true
         }
     }
     
@@ -526,13 +525,13 @@ struct TippCard2: View {
         var request = URLRequest(url: url)
         request.httpMethod = "DELETE"
         
-//        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-//            URLSession.shared.dataTask(with: request) { data, response, error in
-//                DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-//                    self.changeFilter.changeFilter = false
-//                }
-//            }.resume()
-//        }
+        //        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+        //            URLSession.shared.dataTask(with: request) { data, response, error in
+        //                DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+        //                    self.changeFilter.changeFilter = false
+        //                }
+        //            }.resume()
+        //        }
     }
 }
 
@@ -542,6 +541,32 @@ struct ReportedTipps: Encodable, Decodable {
 
 struct TippCard2_Previews: PreviewProvider {
     static var previews: some View {
-        TippCard2(user: User(_id: "", phoneId: "", checkedTipps: [], savedTipps: [], savedFacts: [], log: []), isChecked: .constant(false), isBookmarked: .constant(false), tipp: .init(_id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", level: "Leicht", category: "Ernährung", score: 25, postedBy: "123", official: "Community"), color: "cardblue2")
+        TippCard2(user: User(_id: "", phoneId: "", checkedTipps: [], savedTipps: [], savedFacts: [], log: []), tipp: .init(_id: "123", title: "Saisonale und Regionale Produkte sind umweltfreundlicher als Bio-Produkte", source: "www.google.com", level: "Leicht", category: "Ernährung", score: 25, postedBy: "123", official: "Community"), color: "cardblue2")
     }
 }
+
+//collectionCell.host(
+//    TestTippCard(
+//        user: user,
+//        isChecked: $tipps[indexPath.row].isChecked,
+//        isBookmarked: $tipps[indexPath.row].isBookmarked,
+//        isClicked: false, isClicked2: false,
+//        tipp: tipps[indexPath.row],
+//        user2: user,
+//        userLevelLocal: 123,
+//        quelleShowing: false,
+//        showSourceTextView: false,
+//        options: false,
+//        reportClicked: false,
+//        likeClicked: false,
+//        dislikeClicked: false,
+//        correctUrl: "",
+//        showYouSure: false,
+//        color: cardColors[indexPath.row % cardColors.count]),
+//            TippCard2(
+//                user: user,
+//                isChecked: $tipps[indexPath.row].isChecked,
+//                isBookmarked: $tipps[indexPath.row].isBookmarked,
+//                tipp: tipps[indexPath.row],
+//                color: cardColors[indexPath.row % cardColors.count]),
+//    parent: self)

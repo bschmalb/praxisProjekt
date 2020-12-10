@@ -81,7 +81,7 @@ struct ProfilHomeView: View {
                         }
                         }.navigationBarTitle("Navigation")
                     
-                    NavigationLink(destination: ProfilProfil(selection: $selectionProfil, isDark: $isDark, appearenceDark: $appearenceDark, offsetChangeName: $offsetChangeName, offsetLevel: $offsetLevel, filter: filter, isChanged: $isChanged)
+                    NavigationLink(destination: ProfilData(isChanged: $isChanged)
                                     .navigationBarTitle("")
                                     .navigationBarHidden(true)
                                     .navigationBarBackButtonHidden(true)

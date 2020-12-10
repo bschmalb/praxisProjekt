@@ -79,8 +79,6 @@ struct RateTippView: View {
                                         ForEach(rateTipps.indices, id: \.self) { index in
                                             TippCard2(
                                                 user: user,
-                                                isChecked: self.$rateTipps[index].isChecked,
-                                                isBookmarked: self.$rateTipps[index].isBookmarked,
                                                 tipp: rateTipps[index],
                                                 color: cardColors[counter % 9])
                                                 .animation(.spring())

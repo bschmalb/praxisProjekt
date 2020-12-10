@@ -76,9 +76,9 @@ struct RateFactView: View {
                                     ZStack {
                                         ForEach(rateFacts.indices, id: \.self) { index in
                                             FactCard(
-                                                isBookmarked: self.$rateFacts[counter].isBookmarked,
                                                 fact: self.rateFacts[counter],
-                                                color: cardColors[0], user: userObject)
+                                                color: cardColors[0],
+                                                user: userObject)
                                                 .animation(.spring())
                                                 .offset(x: counter < index ? 500 : 0)
                                                 .offset(x: counter > index ? -500 : 0)

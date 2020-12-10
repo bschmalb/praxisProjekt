@@ -17,6 +17,8 @@
 		B70BF7A12487EAC200B4C911 /* TagebuchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B70BF7A02487EAC200B4C911 /* TagebuchView.swift */; };
 		B71158742523B51500E6B5B7 /* KeyboardResponderIOS14.swift in Sources */ = {isa = PBXBuildFile; fileRef = B71158732523B51300E6B5B7 /* KeyboardResponderIOS14.swift */; };
 		B712CD14248973CD00A883A1 /* SwiftUIPager in Frameworks */ = {isa = PBXBuildFile; productRef = B712CD13248973CD00A883A1 /* SwiftUIPager */; };
+		B722BE60257D89E4001C66AE /* HostingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B722BE5F257D89E4001C66AE /* HostingTableViewCell.swift */; };
+		B722BE65257EA674001C66AE /* TestTippCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B722BE64257EA674001C66AE /* TestTippCard.swift */; };
 		B725218A248FDF9C00C43507 /* TippCardList.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7252189248FDF9C00C43507 /* TippCardList.swift */; };
 		B7301FE125387BC10017C5F2 /* SourceTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7301FE025387BC10017C5F2 /* SourceTextView.swift */; };
 		B74727C124B268B300775E16 /* ProfilChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B74727C024B268B300775E16 /* ProfilChallengeView.swift */; };
@@ -32,6 +34,9 @@
 		B7598B6A24A803B8000436B8 /* UserDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7598B6924A803B8000436B8 /* UserDataStore.swift */; };
 		B7598B6C24A8BF1B000436B8 /* ProfilEntwicklung.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7598B6B24A8BF1B000436B8 /* ProfilEntwicklung.swift */; };
 		B7598B6E24A8C22B000436B8 /* ProfilEinstellungen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7598B6D24A8C22B000436B8 /* ProfilEinstellungen.swift */; };
+		B75B04ED258179CA00398412 /* TippUICollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75B04EC258179CA00398412 /* TippUICollectionViewController.swift */; };
+		B75B04F5258179F800398412 /* UIScrollViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75B04F4258179F800398412 /* UIScrollViewViewController.swift */; };
+		B75B04FD2581ADD200398412 /* FactUICollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75B04FC2581ADD200398412 /* FactUICollectionViewController.swift */; };
 		B762F584251AC119001050A1 /* ProfilData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B762F583251AC118001050A1 /* ProfilData.swift */; };
 		B762F589251B3685001050A1 /* loadingWhite.json in Resources */ = {isa = PBXBuildFile; fileRef = B762F588251B3685001050A1 /* loadingWhite.json */; };
 		B7649E312490F3AB0079984A /* TippController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7649E302490F3AB0079984A /* TippController.swift */; };
@@ -120,6 +125,8 @@
 		B70BF79E2487EA8000B4C911 /* ProfilView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilView.swift; sourceTree = "<group>"; };
 		B70BF7A02487EAC200B4C911 /* TagebuchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagebuchView.swift; sourceTree = "<group>"; };
 		B71158732523B51300E6B5B7 /* KeyboardResponderIOS14.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardResponderIOS14.swift; sourceTree = "<group>"; };
+		B722BE5F257D89E4001C66AE /* HostingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingTableViewCell.swift; sourceTree = "<group>"; };
+		B722BE64257EA674001C66AE /* TestTippCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestTippCard.swift; sourceTree = "<group>"; };
 		B7252189248FDF9C00C43507 /* TippCardList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippCardList.swift; sourceTree = "<group>"; };
 		B7301FE025387BC10017C5F2 /* SourceTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceTextView.swift; sourceTree = "<group>"; };
 		B74727C024B268B300775E16 /* ProfilChallengeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilChallengeView.swift; sourceTree = "<group>"; };
@@ -135,6 +142,9 @@
 		B7598B6924A803B8000436B8 /* UserDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataStore.swift; sourceTree = "<group>"; };
 		B7598B6B24A8BF1B000436B8 /* ProfilEntwicklung.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilEntwicklung.swift; sourceTree = "<group>"; };
 		B7598B6D24A8C22B000436B8 /* ProfilEinstellungen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilEinstellungen.swift; sourceTree = "<group>"; };
+		B75B04EC258179CA00398412 /* TippUICollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippUICollectionViewController.swift; sourceTree = "<group>"; };
+		B75B04F4258179F800398412 /* UIScrollViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIScrollViewViewController.swift; sourceTree = "<group>"; };
+		B75B04FC2581ADD200398412 /* FactUICollectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FactUICollectionViewController.swift; sourceTree = "<group>"; };
 		B762F583251AC118001050A1 /* ProfilData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfilData.swift; sourceTree = "<group>"; };
 		B762F588251B3685001050A1 /* loadingWhite.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loadingWhite.json; sourceTree = "<group>"; };
 		B7649E302490F3AB0079984A /* TippController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TippController.swift; sourceTree = "<group>"; };
@@ -257,9 +267,13 @@
 			children = (
 				B7649E32249105540079984A /* TippView.swift */,
 				B7B50CEE250F9AD500DD2FE6 /* TippCard2.swift */,
+				B722BE64257EA674001C66AE /* TestTippCard.swift */,
 				B7301FE025387BC10017C5F2 /* SourceTextView.swift */,
 				B7B50CEC250E57AC00DD2FE6 /* SmallTippCard.swift */,
 				B7252189248FDF9C00C43507 /* TippCardList.swift */,
+				B75B04EC258179CA00398412 /* TippUICollectionViewController.swift */,
+				B75B04F4258179F800398412 /* UIScrollViewViewController.swift */,
+				B722BE5F257D89E4001C66AE /* HostingTableViewCell.swift */,
 			);
 			path = Tipps;
 			sourceTree = "<group>";
@@ -431,6 +445,7 @@
 				B7B50CE8250C160200DD2FE6 /* FactCardList.swift */,
 				B7B50CEA250C170200DD2FE6 /* FactCard.swift */,
 				B756AEDA2537029800DBBB17 /* SmallFactCard.swift */,
+				B75B04FC2581ADD200398412 /* FactUICollectionViewController.swift */,
 			);
 			path = Facts;
 			sourceTree = "<group>";
@@ -583,9 +598,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B722BE65257EA674001C66AE /* TestTippCard.swift in Sources */,
 				B7649E33249105540079984A /* TippView.swift in Sources */,
 				B7A8CBDC242C10C50036FD6E /* AppDelegate.swift in Sources */,
 				B7C19F6525096F6000E0D77D /* WebLinkView.swift in Sources */,
+				B75B04FD2581ADD200398412 /* FactUICollectionViewController.swift in Sources */,
 				B7C2285324AD1DC60075360D /* AddTagebuchCard3.swift in Sources */,
 				B7B50CEB250C170200DD2FE6 /* FactCard.swift in Sources */,
 				B7874C0B249D3E8C0045D609 /* ProfilTippView.swift in Sources */,
@@ -597,6 +614,7 @@
 				B7C2285B24AD26510075360D /* AddTagebuchCard7.swift in Sources */,
 				B7846970248D2E28000A4331 /* AddTippCard5.swift in Sources */,
 				B7598B6A24A803B8000436B8 /* UserDataStore.swift in Sources */,
+				B75B04ED258179CA00398412 /* TippUICollectionViewController.swift in Sources */,
 				B756AED62537012000DBBB17 /* ProfilFactView.swift in Sources */,
 				B7598B6E24A8C22B000436B8 /* ProfilEinstellungen.swift in Sources */,
 				B756AEC82530E47200DBBB17 /* AddFactView.swift in Sources */,
@@ -615,6 +633,7 @@
 				B701FFD324B2620C00207606 /* ChallengeCard.swift in Sources */,
 				B74727C124B268B300775E16 /* ProfilChallengeView.swift in Sources */,
 				B71158742523B51500E6B5B7 /* KeyboardResponderIOS14.swift in Sources */,
+				B722BE60257D89E4001C66AE /* HostingTableViewCell.swift in Sources */,
 				B70BF79F2487EA8000B4C911 /* ProfilView.swift in Sources */,
 				B7481A39248AC9B900C4CCF1 /* AddTippView.swift in Sources */,
 				B7301FE125387BC10017C5F2 /* SourceTextView.swift in Sources */,
@@ -636,6 +655,7 @@
 				B7DB1E2B24AA100E00F28B07 /* AllTippDataStore.swift in Sources */,
 				B7CF0F6D2497C02C00595EB2 /* RateTippData.swift in Sources */,
 				B701FFCE24B2607700207606 /* ChallengeDataStore.swift in Sources */,
+				B75B04F5258179F800398412 /* UIScrollViewViewController.swift in Sources */,
 				B7874C13249E84F50045D609 /* EntwicklungTabView.swift in Sources */,
 				B7598B6C24A8BF1B000436B8 /* ProfilEntwicklung.swift in Sources */,
 				B7919AF424981C5B00014240 /* LottieView.swift in Sources */,
