@@ -70,14 +70,20 @@ class FactApi {
         for i in filter {
             if (i == "Ernährung" || i == "Haushalt" || i == "Transport" || i == "Ressourcen") {
                 factUrl.append("category=")
+                factUrl.append(i)
+                if (i != filter[filter.count-1]){
+                    factUrl.append("&")
+                } else {
+                    factUrl.append("&minscore=20")
+                }
             } else if (i == "Community" || i == "Offiziell") {
                 factUrl.append("official=")
-            }
-            factUrl.append(i)
-            if (i != filter[filter.count-1]){
-                factUrl.append("&")
-            } else {
-                factUrl.append("&minscore=20")
+                factUrl.append(i)
+                if (i != filter[filter.count-1]){
+                    factUrl.append("&")
+                } else {
+                    factUrl.append("&minscore=20")
+                }
             }
         }
         

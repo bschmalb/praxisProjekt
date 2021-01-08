@@ -250,12 +250,12 @@ struct TippCard2: View {
                         .animation(.spring())
                     }
                 }
-            MainCard(user: user, user2: $user2, tipp: tipp, color: color, options: $options, isTipp: isTipp)
+                MainCard(user: user, user2: $user2, tipp: tipp, color: color, options: $options, isTipp: isTipp)
             } else {
                 LottieView(filename: "loadingCircle", loop: true)
-                        .shadow(color: Color(.white), radius: 1, x: 0, y: 0)
-                        .frame(width: 100, height: 100)
-                        .frame(height: UIScreen.main.bounds.height/2.1 + 20)
+                    .shadow(color: Color(.white), radius: 1, x: 0, y: 0)
+                    .frame(width: 100, height: 100)
+                    .frame(height: UIScreen.main.bounds.height/2.1 + 20)
             }
         }
         .animation(.spring())

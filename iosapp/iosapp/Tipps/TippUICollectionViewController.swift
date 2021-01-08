@@ -12,8 +12,6 @@ import SwiftUI
 
 class TippUICollectionViewController: UIViewController, UIGestureRecognizerDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
     
-    @EnvironmentObject var filterString: FilterString
-    
     var cardColors: [String]  = [
         "cardgreen2", "cardblue2", "cardyellow2", "cardpurple2", "cardorange2", "cardred2", "cardturqouise2", "cardyelgre2", "cardpink2"
     ]
@@ -22,19 +20,24 @@ class TippUICollectionViewController: UIViewController, UIGestureRecognizerDeleg
     var offlineTipps: [Tipp] = []
     var user: User = User(_id: "", phoneId: "", checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
     var filter: [String] = []
+    var firstLoad: Bool = true
     var loading = true
     
     var noTippsAvailable = true
     
     var collectionView: UICollectionView!
     
-    convenience init(filter: [String]) {
+    convenience init(filter: [String], firstLoad: Bool) {
         self.init(nibName:nil, bundle:nil)
         
         do {
             let storedObjTipp = UserDefaults.standard.object(forKey: "offlineTipps")
             if storedObjTipp != nil {
                 self.tipps = try JSONDecoder().decode([Tipp].self, from: storedObjTipp as! Data)
+                if firstLoad {
+                    loading = false
+                    self.noTippsAvailable = false
+                }
                 print("Retrieved Tipps: filteredTipps")
             }
         } catch let err {
@@ -173,6 +176,7 @@ class TippUICollectionViewController: UIViewController, UIGestureRecognizerDeleg
 struct TippUICollectionViewWrapper<Content: View>: UIViewControllerRepresentable {
     
     @EnvironmentObject var filterString: FilterString
+    @EnvironmentObject var firstLoad: FirstLoad
     
     var content: () -> Content
     
@@ -181,8 +185,10 @@ struct TippUICollectionViewWrapper<Content: View>: UIViewControllerRepresentable
     }
     
     func makeUIViewController(context: Context) -> TippUICollectionViewController {
-        let vc = TippUICollectionViewController(filter: filterString.filterString)
+        let vc = TippUICollectionViewController(filter: filterString.filterString, firstLoad: firstLoad.firstLoad)
         vc.hostingController.rootView = AnyView(self.content().environmentObject(FilterString()))
+        print(firstLoad.firstLoad)
+        self.firstLoad.firstLoad = false
         return vc
     }
     

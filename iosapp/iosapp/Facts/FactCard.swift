@@ -40,6 +40,11 @@ struct FactCard: View {
                     FactCardBackground(fact: fact, isBookmarked: $fact.isBookmarked, quelleShowing: $quelleShowing, color: color, options: $options, user2: $user2)
                 }
                 FactCardMain(user2: $user2, fact: fact, isBookmarked: $fact.isBookmarked, quelleShowing: $quelleShowing, color: color, options: $options, user: user, isFact: isFact)
+            } else {
+                LottieView(filename: "loadingCircle", loop: true)
+                    .shadow(color: Color(.white), radius: 1, x: 0, y: 0)
+                    .frame(width: 100, height: 100)
+                    .frame(height: UIScreen.main.bounds.height/2.1 + 20)
             }
         }
         .animation(.spring())

@@ -15,6 +15,7 @@ struct TippCardList: View {
     @EnvironmentObject var changeFilter: ChangeFilter
     @EnvironmentObject var filterString: FilterString
     @EnvironmentObject var myUrl: ApiUrl
+    @EnvironmentObject var firstLoad: FirstLoad
     
     @State var id = UserDefaults.standard.string(forKey: "id")
     
@@ -81,6 +82,7 @@ struct TippCardList: View {
                     TippUICollectionViewWrapper {}
                         .environmentObject(FilterString())
                         .environmentObject(ApiUrl())
+                        .environmentObject(firstLoad)
                         .animation(.spring())
                         .opacity(loading ? 0 : 1)
                 } else {

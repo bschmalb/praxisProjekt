@@ -89,6 +89,18 @@ class FilterStringFacts: ObservableObject {
     }
 }
 
+class FirstLoad: ObservableObject {
+    var didChange = PassthroughSubject<Void, Never>()
+    
+    @Published var firstLoad: Bool = true
+}
+
+class FirstLoadFacts: ObservableObject {
+    var didChange = PassthroughSubject<Void, Never>()
+    
+    @Published var firstLoadFacts: Bool = true
+}
+
 
 class Model: ObservableObject {
     @Published var pushed = false
@@ -112,6 +124,8 @@ struct ContentView: View {
     
     @EnvironmentObject var myUrl: ApiUrl
     @EnvironmentObject var filterString: FilterString
+    @EnvironmentObject var firstLoad: FirstLoad
+    @EnvironmentObject var firstLoadFacts: FirstLoadFacts
     
     @State private var appearenceDark = UserDefaults.standard.bool(forKey: "appearenceDark")
     @State private var isUser2 = UserDefaults.standard.bool(forKey: "isUser4")
@@ -356,10 +370,9 @@ struct ContentView: View {
                         self.createUser()
                     } else {
                         self.idLoaded = true
-                    }
-                    
-                    if nameUpdated {
-                        self.updateName()
+                        if !nameUpdated {
+                            self.updateName()
+                        }
                     }
                     
                     if (showTutorial) {
@@ -392,7 +405,7 @@ struct ContentView: View {
     }
     
     func updateName() {
-        let name = UserDefaults.standard.string(forKey: "userName") ?? "User123"
+        let name = UserDefaults.standard.string(forKey: "userName") ?? "NoName"
         
         let patchData = UserNameAgeGen(name: name)
         
@@ -501,6 +514,7 @@ struct ContentView: View {
                         DispatchQueue.main.async {
                             self.isUser2 = true
                             UserDefaults.standard.set(self.isUser2, forKey: "isUser4")
+                            UserDefaults.standard.set(true, forKey: "nameUpdated")
                             UserDefaults.standard.set(user._id, forKey: "id")
                             self.idLoaded = true
                         }

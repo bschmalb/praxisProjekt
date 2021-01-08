@@ -15,6 +15,7 @@ struct FactCardList: View {
     @EnvironmentObject var changeFilter: ChangeFilter
     @EnvironmentObject var filterStringFacts: FilterStringFacts
     @EnvironmentObject var myUrl: ApiUrl
+    @EnvironmentObject var firstLoadFacts: FirstLoadFacts
     
     @State var id = UserDefaults.standard.string(forKey: "id")
     
@@ -79,6 +80,7 @@ struct FactCardList: View {
                     FactUICollectionViewWrapper {}
                         .environmentObject(FilterStringFacts())
                         .environmentObject(ApiUrl())
+                        .environmentObject(firstLoadFacts)
                         .animation(.spring())
                         .opacity(loading ? 0 : 1)
                 } else {

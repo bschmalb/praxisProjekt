@@ -11,9 +11,7 @@ import SwiftUI
 
 
 class FactUICollectionViewController: UIViewController, UIGestureRecognizerDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
-    
-    @EnvironmentObject var filterString: FilterStringFacts
-    
+   
     var cardColors: [String]  = [
         "cardgreen2", "cardblue2", "cardyellow2", "cardpurple2", "cardorange2", "cardred2", "cardturqouise2", "cardyelgre2", "cardpink2"
     ]
@@ -22,18 +20,24 @@ class FactUICollectionViewController: UIViewController, UIGestureRecognizerDeleg
     var offlineFacts: [Fact] = []
     var user: User = User(_id: "", phoneId: "", checkedTipps: [], savedTipps: [], savedFacts: [], log: [])
     var filter: [String] = []
+    var firstLoad: Bool = true
     var loading = true
     
     var noFactsAvailable = true
     
     var collectionView: UICollectionView!
     
-    convenience init(filter: [String]) {
+    convenience init(filter: [String], firstLoad: Bool) {
+        print(filter)
         self.init(nibName:nil, bundle:nil)
         do {
             let storedObjTipp = UserDefaults.standard.object(forKey: "offlineFacts")
             if storedObjTipp != nil {
                 self.facts = try JSONDecoder().decode([Fact].self, from: storedObjTipp as! Data)
+                if firstLoad {
+                    loading = false
+                    self.noFactsAvailable = false
+                }
                 print("Retrieved Facts: filteredFacts")
             }
         } catch let err {
@@ -67,7 +71,6 @@ class FactUICollectionViewController: UIViewController, UIGestureRecognizerDeleg
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print(facts.count)
         return loading ? 1 : facts.count > 0 ? facts.count : 1
     }
     
@@ -172,6 +175,7 @@ class FactUICollectionViewController: UIViewController, UIGestureRecognizerDeleg
 struct FactUICollectionViewWrapper<Content: View>: UIViewControllerRepresentable {
     
     @EnvironmentObject var filterString: FilterStringFacts
+    @EnvironmentObject var firstLoadFacts: FirstLoadFacts
     
     var content: () -> Content
     
@@ -180,8 +184,9 @@ struct FactUICollectionViewWrapper<Content: View>: UIViewControllerRepresentable
     }
     
     func makeUIViewController(context: Context) -> FactUICollectionViewController {
-        let vc = FactUICollectionViewController(filter: filterString.filterString)
+        let vc = FactUICollectionViewController(filter: filterString.filterString, firstLoad: firstLoadFacts.firstLoadFacts)
         vc.hostingController.rootView = AnyView(self.content().environmentObject(FilterStringFacts()))
+        self.firstLoadFacts.firstLoadFacts = false
         return vc
     }
     
